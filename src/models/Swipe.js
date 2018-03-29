@@ -1,15 +1,14 @@
-
-class PanZoom {
+class Swipe {
   constructor (options) {
     this.el = null
   }
 
   listen () {
-    console.log('listen')
+    console.log('Swipe::listen')
   }
 
   unlisten () {
-    console.log('unlisten')
+    console.log('Swipe::unlisten')
   }
 
   setElement (el) {
@@ -17,4 +16,4 @@ class PanZoom {
   }
 }
 
-export default PanZoom
+export default Swipe
