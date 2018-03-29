@@ -5,6 +5,7 @@
   "main": "dist/node-panzoom.js",
   "scripts": {
     "test": "tap tests/panzoom2.test.js",
+    "dev": "npm run build -- --watch",
     "build": "rollup --config rollup.config.js",
     "start": "ecstatic ."
   },

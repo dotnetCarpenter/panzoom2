@@ -1,4 +1,4 @@
-const panzoom = require('../dist/panzoom2')
+const panzoom = require('../dist/panzoom')
 const tap = require('tap')
 
 const Translate3d = panzoom.Translate3d

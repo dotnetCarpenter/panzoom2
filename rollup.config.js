@@ -4,11 +4,12 @@ import resolve from 'rollup-plugin-node-resolve'
 import path from 'path'
 
 export default {
-  name: 'panzoom',
   input: path.resolve(__dirname, 'src', 'index.js'),
   output: {
+    name: 'panzoom',
     file: path.resolve(__dirname, 'dist','panzoom.js'),
-    format: 'umd'
+    format: 'umd',
+    sourcemap: true
   },
   plugins: [
     resolve(),
