@@ -1,6 +1,6 @@
 
 class Options {
-  constructor ({min, max}) {
+  constructor ({min = .5, max = 20}) {
     this.min = parseFloat(min)
     this.max = parseFloat(max)
   }
