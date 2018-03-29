@@ -4,8 +4,9 @@
   "description": "",
   "main": "dist/node-panzoom.js",
   "scripts": {
-    "test": "rollup --config tests/rollup.config.js && tap tests/test-panzoom2.js && rm tests/test-panzoom2.js",
-    "build": "rollup src/index.js --o dist/panzoom2.js --format umd --name 'panzoom2'"
+    "test": "tap tests/panzoom2.test.js",
+    "build": "rollup --config rollup.config.js",
+    "start": "ecstatic ."
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,7 @@
     "babel-core": "^6.26.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.6.1",
+    "ecstatic": "^3.2.0",
     "rollup": "^0.57.1",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-commonjs": "^9.1.0",

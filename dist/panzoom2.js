@@ -21,7 +21,7 @@
   }
 
   class Translate3d {
-    constructor ({tx = 0, ty = 0, tz = 0}) {
+    constructor ({tx, ty, tz} = {tx: 0, ty: 0, tz: 0}) {
       this.tx = parseFloat(tx);
       this.ty = parseFloat(ty);
       this.tz = parseFloat(tz);
@@ -33,8 +33,8 @@
       this.unit = unit;
     }
 
-    valueOf () {
-      return `translate3d(${this.tx + this.unit}, ${this.ty + this.unit}px, ${this.tz + this.unit}px);`
+    toString () {
+      return `translate3d(${this.tx + this.unit}, ${this.ty + this.unit}, ${this.tz + this.unit});`
     }
   }
 
