@@ -24,10 +24,14 @@ function Observer () {
 
     off (eventName, f) {
       listeners = listeners.filter(
-        listener => listener[0] === eventName
-          && listener[1] === f
-            ? false
-            : true)
+        listener => {
+          if (listener[0] === eventName) {
+            // if f is not defined then remove all listeners with the eventName
+            if (!f) return false
+            else return listener[1] === f ? false : true
+          }
+        }
+      )
     },
 
     once (eventName, f, errorHandler) {

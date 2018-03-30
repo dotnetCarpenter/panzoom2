@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/node-panzoom.js",
   "scripts": {
-    "test": "tap tests/panzoom2.test.js",
+    "test": "tap tests/*.test.js",
     "dev": "parallelshell -v 'npm run build -- --watch' 'npm run browsersync'",
     "build": "rollup --config rollup.config.js",
     "browsersync": "browser-sync start --server --files 'dist/*.js' --startPath examples/gestures/"

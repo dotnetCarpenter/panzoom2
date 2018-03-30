@@ -8,21 +8,28 @@ class PanZoom {
     this.options = options
     this.el = null
     this.swipe = null
+    this.isListening = false
   }
 
   listen () {
     console.log('PanZoom::listen')
 
+    if (this.isListening) return
+
     this.swipe = new Swipe()
     this.swipe.setElement(this.el)
     this.swipe.listen(this.fire)
+
+    this.isListening = true
   }
 
   unlisten () {
-    console.log('PanZoom::unlisten')
-
+    // console.log('PanZoom::unlisten')
+    this.off('swipe')
     this.swipe.unlisten()
     this.swipe = null
+
+    this.isListening = false
   }
 
   setElement (el) {

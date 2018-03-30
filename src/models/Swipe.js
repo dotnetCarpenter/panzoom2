@@ -7,7 +7,7 @@ class Swipe {
   }
 
   listen (action) {
-    console.log('Swipe::listen')
+    // console.log('Swipe::listen')
     if (!(action instanceof Function)) throw new TypeError('action must be a function')
 
     this.action = Swipe.action(this, action)
