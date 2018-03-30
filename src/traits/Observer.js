@@ -30,23 +30,32 @@ function Observer () {
             : true)
     },
 
-    once (eventName, f) {
+    once (eventName, f, errorHandler) {
+      const self = this
+      this.on(eventName, function once (...args) {
+        self.off(eventName, once)
+        f(...args)
+      }, errorHandler)
+    },
+
+    promise (eventName, f) {
       const self = this
 
       return new Promise((resolve, reject) => {
         this.on(
           eventName,
-          function f(...args) {
-            self.off(eventName, f)
+          function wrapper(...args) {
             resolve(...args)
+            self.off(eventName, wrapper)
           },
           (error) => {
-            self.off(eventName, f)
             reject(error)
+            self.off(eventName, wrapper)
           }
         )
       })
-      // debug .then(() => { console.log(listeners) })
+      // debug
+      // .then(() => { console.log(listeners) })
     },
 
     destroy () {
