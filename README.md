@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/dotnetCarpenter/panzoom2.svg?branch=master)](https://travis-ci.org/dotnetCarpenter/panzoom2)
+
 panzoom2
 ========
 
