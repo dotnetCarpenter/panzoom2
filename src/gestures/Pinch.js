@@ -1,29 +1,28 @@
 import Point from '../models/Point'
 
-class Swipe {
+class Pinch {
   constructor (options) {
     this.el = null
     this.lastTouches = null
   }
 
   listen (action) {
-    // console.log('Swipe::listen')
+    // console.log('Pinch::listen')
     if (!(action instanceof Function)) throw new TypeError('action must be a function')
 
-    this.action = Swipe.action(this, action)
+    this.action = Pinch.action(this, action)
 
-    this.el.addEventListener('mousedown', this.action)
+    this.el.addEventListener('wheel', this.action)
     this.el.addEventListener('touchstart', this.action)
   }
 
   unlisten () {
-    // console.log('Swipe::unlisten')
-    this.el.removeEventListener('mousedown', this.action)
+    // console.log('Pinch::unlisten')
+    this.el.removeEventListener('wheel', this.action)
     this.el.removeEventListener('touchstart', this.action)
   }
 
   setElement (el) {
-    // TODO: unlisten on el before changing
     this.el = el
   }
 
@@ -71,7 +70,7 @@ class Swipe {
           // tell event listeners
           const swipeEvent = new CustomEvent('swipe', { detail: direction })
           if (!swipe.el.dispatchEvent(swipeEvent)) {
-            console.log('Swipe::action - event was cancelled')
+            console.log('Pinch::action - event was cancelled')
           }
 
           // debugger
@@ -123,4 +122,4 @@ function diff (event1, event2) {
   }
 }
 
-export default Swipe
+export default Pinch

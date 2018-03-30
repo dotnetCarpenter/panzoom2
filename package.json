@@ -14,6 +14,7 @@
   ],
   "author": "Jon Ege Ronnenberg <jon.ronnenberg+panzoom2@gmail.com>",
   "license": "ISC",
+  "home": "",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-plugin-external-helpers": "^6.22.0",

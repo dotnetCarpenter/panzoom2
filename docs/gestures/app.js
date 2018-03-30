@@ -33,10 +33,6 @@ function listen () {
 
     listenButton.textContent = getButtonText(scene)
     listenButton.onclick = listen
-    // scene.off('swipe) // will remove all event listeners for the 'swipe' event
-    // scene.off('swipe', swipeHandler1) // promise can not be unlisten to - off all swipe event listeners or turn off swipe completely
-    // scene.off('swipe', swipeHandler3) // this will work
-    // scene.off('swipe', swipeHandler4) // once can not be unlisten to - off all swipe event listeners or turn off swipe completely
   }
 }
 
