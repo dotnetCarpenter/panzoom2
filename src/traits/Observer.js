@@ -4,10 +4,10 @@ function Observer () {
   let listeners = []
 
   return {
-    on (eventName, f) {
-      return new Promise((resolve, reject) => {
-        listeners.push([eventName, resolve, reject])
-      })
+    on (eventName, f, reject) {
+      if (!(reject instanceof Function)) reject = f
+
+      listeners.push([eventName, f, reject])
     },
 
     fire (eventName, ...args) {
@@ -32,10 +32,21 @@ function Observer () {
 
     once (eventName, f) {
       const self = this
-      this.on(eventName, function once (...args) {
-        self.off(eventName, once)
-        self.fire(eventName, ...args)
+
+      return new Promise((resolve, reject) => {
+        this.on(
+          eventName,
+          function f(...args) {
+            self.off(eventName, f)
+            resolve(...args)
+          },
+          (error) => {
+            self.off(eventName, f)
+            reject(error)
+          }
+        )
       })
+      // debug .then(() => { console.log(listeners) })
     },
 
     destroy () {

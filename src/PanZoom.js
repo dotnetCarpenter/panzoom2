@@ -10,7 +10,8 @@ class PanZoom {
     console.log('PanZoom::listen')
 
     this.swipe = new Swipe()
-    this.swipe.listen(this.el)
+    this.swipe.setElement(this.el)
+    this.swipe.listen(this.fire)
   }
 
   unlisten () {
