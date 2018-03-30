@@ -75,7 +75,22 @@
     </div>
   </div>
 
+  <script src="https://cdn.polyfill.io/v2/polyfill.minify.js?features=Promise,Object.assign,CustomEvent&amp;flags=gated&amp;rum=0"></script>
   <script src="/dist/panzoom.js"></script>
-  <script src="app.js"></script>
+  <script>
+    // Dynamic load to get local version of panzoom using browsersync
+    // or loading public unpkg version for github Pages.
+    if (!window.panzoom) {
+      loadScript('https://unpkg.com/panzoom2', loadScript.bind(null, 'app.js', null))
+    } else {
+      loadScript('app.js')
+    }
+    function loadScript (url, cb) {
+      const script = document.createElement('script')
+      script.src = url
+      if (cb) script.onload = cb
+      document.body.appendChild(script)
+    }
+  </script>
 </body>
 </html>

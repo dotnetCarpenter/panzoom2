@@ -5,6 +5,11 @@ panzoom2 BETA
 
 WORK IN PROGRESS
 
+```
+npm i panzoom2
+```
+_[panzoom 2 on npm](https://www.npmjs.com/package/panzoom2)_
+
 ## Internet Explorer 11
 
 Required polyfills:
