@@ -13,7 +13,7 @@ class Swipe {
     this.action = Swipe.action(this, action)
 
     this.el.addEventListener('mousedown', this.action)
-    this.el.addEventListener('touchmove', this.action)
+    this.el.addEventListener('touchmove', this.action) // TODO: seems that touchmove has to be followed the entire time, so different logic for mouse and touch
   }
 
   unlisten () {
@@ -49,14 +49,16 @@ class Swipe {
         const currentEvent = normalizeEvent(event)
         // console.log('getting moves!', currentEvent)
 
-        const distance = Math.sqrt(
+        // TODO: take timestamp into consideration - call endHandler if enough time has passed
+
+        const distance = Math.sqrt( // TODO: abstract this somewhere
           Math.pow(currentEvent.touches[0].x - swipe.lastTouches.touches[0].x , 2) +
           Math.pow(currentEvent.touches[0].y - swipe.lastTouches.touches[0].y , 2)
         )
 
         // console.log(distance)
 
-        if (distance > 100) {
+        if (distance > 100) { // TODO: make 100 a relative value and consider zoom
           const direction = diff(swipe.lastTouches, currentEvent)
           // console.log(direction)
 
@@ -88,7 +90,7 @@ function normalizeEvent(ev) {
   const event = {}
 
   event.touches = [new Point({ x: ev.pageX, y: ev.pageY })]
-  event.type = event.type === 'touchstart'
+  event.type = event.type === 'touchstart' // TODO: use a proper enum
     ? { move: 'touchmove', end: 'touchend' }
     : { move: 'mousemove', end: 'mouseup' }
   event.timeStamp = Date.now()
@@ -97,9 +99,10 @@ function normalizeEvent(ev) {
 }
 
 function diff (event1, event2) {
-  const deltaX = event1.touches[0].x - event2.touches[0].x
+  const deltaX = event1.touches[0].x - event2.touches[0].x // TODO: make addition and substraction easier for Point
   const deltaY = event1.touches[0].y - event2.touches[0].y
 
+  // TODO: return an enum instead
   // console.log(deltaX, deltaY)
   if (Math.abs(deltaX) > Math.abs(deltaY)) {
     if (deltaX > 0) return 'left'
