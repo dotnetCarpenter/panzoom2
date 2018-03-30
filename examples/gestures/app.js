@@ -74,6 +74,6 @@ let counter4 = 0
 const title4 = 'subscriber once'
 messages[3].textContent = title4
 function swipeHandler4(direction) {
-  messages[3].textContent = `${title4} once ${++counter4} - ${direction}`
+  messages[3].textContent = `${title4} ${++counter4} - ${direction}`
   // console.log(direction)
 }

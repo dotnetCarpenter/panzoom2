@@ -17,7 +17,7 @@ class Swipe {
   }
 
   unlisten () {
-    console.log('Swipe::unlisten')
+    // console.log('Swipe::unlisten')
     this.el.removeEventListener('mousedown', this.action)
     this.el.removeEventListener('touchstart', this.action)
   }
