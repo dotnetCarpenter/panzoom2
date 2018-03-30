@@ -9,8 +9,8 @@
     "build": "rollup --config rollup.config.js",
     "start": "ecstatic ."
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["panzoom"],
+  "author": "Jon Ege Ronnenberg <jon.ronnenberg+panzoom2@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.26.0",
