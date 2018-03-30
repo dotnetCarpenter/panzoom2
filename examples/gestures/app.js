@@ -1,22 +1,31 @@
 'use strict'
 
-const message = document.querySelector('#message')
+const messages = document.querySelectorAll('.message')
 const scene = panzoom.createPanzoom(document.querySelector('.scene'))
 
 // use promise
-scene.once('swipe').then(event => {
-  console.log('swipe promise')
-  message.textContent = 'swipe promise'
-})
+scene.once('swipe').then(swipeHandler1)
 
 // listen to event
-document.body.addEventListener('swipe', swipe, true)
+document.body.addEventListener('swipe', swipeHandler2, true)
 
-// TODO: subscribe
+// subscribe
+scene.on('swipe', swipeHandler3)
 
-function swipe(event) {
+
+let counter1 = 0
+function swipeHandler1 (event) {
+  messages[0].textContent = 'promise ' + ++counter1
+}
+
+let counter2 = 0
+function swipeHandler2(event) {
   // cancel event
   // event.preventDefault()
+  messages[1].textContent = 'event ' + ++counter2
+}
 
-  message.textContent = 'swipe event'
+let counter3 = 0
+function swipeHandler3(event) {
+  messages[2].textContent = 'subscriber ' + ++counter3
 }
