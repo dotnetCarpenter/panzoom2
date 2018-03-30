@@ -13,13 +13,13 @@ class Swipe {
     this.action = Swipe.action(this, action)
 
     this.el.addEventListener('mousedown', this.action)
-    this.el.addEventListener('touchmove', this.action) // TODO: seems that touchmove has to be followed the entire time, so different logic for mouse and touch
+    this.el.addEventListener('touchstart', this.action) // TODO: seems that touchstart has to be followed the entire time, so different logic for mouse and touch
   }
 
   unlisten () {
     console.log('Swipe::unlisten')
     this.el.removeEventListener('mousedown', this.action)
-    this.el.removeEventListener('touchmove', this.action)
+    this.el.removeEventListener('touchstart', this.action)
   }
 
   setElement (el) {
@@ -40,6 +40,8 @@ class Swipe {
 
       const startEvent = normalizeEvent(event)
       swipe.lastTouches = startEvent
+
+      // console.log(startEvent)
 
       swipe.el.addEventListener(startEvent.type.move, moveHandler)
 
@@ -89,8 +91,14 @@ class Swipe {
 function normalizeEvent(ev) {
   const event = {}
 
-  event.touches = [new Point({ x: ev.pageX, y: ev.pageY })]
-  event.type = event.type === 'touchstart' // TODO: use a proper enum
+  // console.log(ev)
+
+  event.touches = [
+    ev.touches
+      ? new Point({ x: ev.touches[0].pageX, y: ev.touches[0].pageY })
+      : new Point({ x: ev.pageX, y: ev.pageY })
+  ]
+  event.type = ev.type === 'touchstart' // TODO: use a proper enum
     ? { move: 'touchmove', end: 'touchend' }
     : { move: 'mousemove', end: 'mouseup' }
   event.timeStamp = Date.now()

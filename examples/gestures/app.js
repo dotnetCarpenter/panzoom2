@@ -49,7 +49,7 @@ const title1 = 'promise (once)'
 messages[0].textContent = title1
 function swipeHandler1 (direction) {
   messages[0].textContent = `${title1} ${++counter1} - ${direction}`
-  console.log(direction)
+  // console.log(direction)
 }
 
 let counter2 = 0
