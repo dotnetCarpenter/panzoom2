@@ -27,6 +27,7 @@ function listen () {
   listenButton.textContent = getButtonText(scene)
 
   listenButton.onclick = function () {
+    // unlisten will remove all event listeners and nullify the swipe module
     scene.unlisten('swipe')
     document.body.removeEventListener('swipe', swipeHandler2, true)
 

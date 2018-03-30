@@ -42,7 +42,7 @@ function Observer () {
       }, errorHandler)
     },
 
-    promise (eventName, f) {
+    promise (eventName) {
       const self = this
 
       return new Promise((resolve, reject) => {

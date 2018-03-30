@@ -1,14 +1,30 @@
 const test = require('tap').test
-const panzoom = require('../dist/panzoom')
+const createObserver = require('../dist/panzoom').Observer
 
-const Translate3d = panzoom.Translate3d
+test('Observer has a promise interface', t => {
+  t.plan(2)
 
-test('Translate3d returns a CSS string', t => {
+  const observer = createObserver()
+  const expected = 'foo'
+
+  observer.promise('test').then((arg) => {
+    t.equal(arg, expected)
+    t.ok(true)
+  })
+
+  observer.fire('test', expected)
+})
+
+test('Observer has a aync/await interface', async function (t) {
   t.plan(1)
-  const translate3d = new Translate3d()
 
-  const expected = 'translate3d(0px, 0px, 0px);'
-  const actual = String(translate3d)
+  const observer = createObserver()
 
+  setTimeout(() => {
+    observer.fire('test', expected)
+  }, 0)
+
+  const expected = 'bar'
+  const actual = await observer.promise('test')
   t.equal(actual, expected)
 })

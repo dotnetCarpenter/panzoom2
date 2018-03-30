@@ -1,7 +1,7 @@
 import Observer from './traits/Observer'
 
 import Options from './models/Options'
-import Swipe from './models/Swipe'
+import Swipe from './gestures/Swipe'
 
 class PanZoom {
   constructor (options) {
@@ -12,7 +12,7 @@ class PanZoom {
   }
 
   listen () {
-    console.log('PanZoom::listen')
+    // console.log('PanZoom::listen')
 
     if (this.isListening) return
 
