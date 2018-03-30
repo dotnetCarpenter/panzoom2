@@ -48,8 +48,8 @@ let counter1 = 0
 const title1 = 'promise (once)'
 messages[0].textContent = title1
 function swipeHandler1 (direction) {
-  messages[0].textContent = `${title1} ${++counter1} - ${direction}`
-  // console.log(direction)
+  messages[0].textContent = title1 + ' ' + ++counter1 + ' - ' + direction
+  console.log(direction)
 }
 
 let counter2 = 0
@@ -58,22 +58,22 @@ messages[1].textContent = title2
 function swipeHandler2(event) {
   // cancel event
   // event.preventDefault()
-  messages[1].textContent = `${title2} ${++counter2} - ${event.detail}`
-  // console.log(event)
+  messages[1].textContent = title2 + ' ' + ++counter2 + ' - ' + event.detail
+  console.log(event.detail)
 }
 
 let counter3 = 0
 const title3 = 'subscriber'
 messages[2].textContent = title3
 function swipeHandler3(direction) {
-  messages[2].textContent = `${title3} ${++counter3} - ${direction}`
-  // console.log(direction)
+  messages[2].textContent = title3 + ' ' + ++counter3 + ' - ' + direction
+  console.log(direction)
 }
 
 let counter4 = 0
 const title4 = 'subscriber once'
 messages[3].textContent = title4
 function swipeHandler4(direction) {
-  messages[3].textContent = `${title4} ${++counter4} - ${direction}`
-  // console.log(direction)
+  messages[3].textContent = title4 + ' ' + ++counter4 + ' - ' + direction
+  console.log(direction)
 }

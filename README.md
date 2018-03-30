@@ -1,19 +1,23 @@
 [![Build Status](https://travis-ci.org/dotnetCarpenter/panzoom2.svg?branch=master)](https://travis-ci.org/dotnetCarpenter/panzoom2)
 
-panzoom2
-========
+panzoom2 BETA
+=============
+
+WORK IN PROGRESS
 
 ## Internet Explorer 11
 
-Required polyfils:
+Required polyfills:
 
 - Promise
 - CustomEvent
 - Object.assign
 
-`<script src="https://cdn.polyfill.io/v2/polyfill.minify.js?features=Promise,Object.assign,CustomEvents&amp;flags=gated&amp;rum=0"></script>`
-
+You can use the polyfill service from [Financial Times](https://polyfill.io/v2/docs/)
+`<script src="https://cdn.polyfill.io/v2/polyfill.minify.js?features=Promise,Object.assign,CustomEvent&amp;flags=gated&amp;rum=0"></script>`
 
 ## Examples
 
-- examples/swipe `Showcase swipe detection and all the ways you can listen and unlisten to an event with panzoom.`
+[Overview](https://dotnetcarpenter.github.io/panzoom2/)
+
+- [swipe](https://dotnetcarpenter.github.io/panzoom2/swipe) `Showcase swipe detection and all the ways you can listen and unlisten to an event with panzoom.`

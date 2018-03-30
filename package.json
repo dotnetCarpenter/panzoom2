@@ -7,14 +7,14 @@
     "test": "tap tests/*.test.js",
     "dev": "parallelshell -v 'npm run build -- --watch' 'npm run browsersync'",
     "build": "rollup --config rollup.config.js",
-    "browsersync": "browser-sync start --server --files 'dist/*.js' --startPath examples/gestures/"
+    "browsersync": "browser-sync start --server --files 'dist/*.js' --startPath docs/"
   },
   "keywords": [
     "panzoom"
   ],
   "author": "Jon Ege Ronnenberg <jon.ronnenberg+panzoom2@gmail.com>",
   "license": "ISC",
-  "home": "",
+  "home": "https://dotnetcarpenter.github.io/panzoom2/",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-plugin-external-helpers": "^6.22.0",
