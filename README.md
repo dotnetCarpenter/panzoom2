@@ -12,3 +12,8 @@ Required polyfils:
 - Object.assign
 
 `<script src="https://cdn.polyfill.io/v2/polyfill.minify.js?features=Promise,Object.assign,CustomEvents&amp;flags=gated&amp;rum=0"></script>`
+
+
+## Examples
+
+- examples/swipe `Showcase swipe detection and all the ways you can listen and unlisten to an event with panzoom.`
