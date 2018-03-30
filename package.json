@@ -1,8 +1,8 @@
 {
   "name": "panzoom2",
   "version": "1.0.0-beta.1",
-  "description": "",
-  "main": "dist/node-panzoom.js",
+  "description": "Work In Progess - Hopefully a panzoom lib you can finally depend on",
+  "main": "dist/panzoom.js",
   "scripts": {
     "test": "tap tests/*.test.js",
     "dev": "parallelshell -v 'npm run build -- --watch' 'npm run browsersync'",
