@@ -26,3 +26,9 @@ You can use the polyfill service from [Financial Times](https://polyfill.io/v2/d
 [Overview](https://dotnetcarpenter.github.io/panzoom2/)
 
 - [swipe](https://dotnetcarpenter.github.io/panzoom2/swipe) `Showcase swipe detection and all the ways you can listen and unlisten to an event with panzoom.`
+
+## Inspiration drawn from
+
+- Andrei Kashcha's [panzoom](https://github.com/anvaka/panzoom/)
+- Ulrich-Matthias Schäfer's [svg.panzoom.js](https://github.com/svgdotjs/svg.panzoom.js/)
+- Eight Media's [HAMMER.JS](http://hammerjs.github.io/)

@@ -11,7 +11,7 @@
     }
     body {
       width: 100%;
-      margin: 0;
+      margin: 1em 0 0 0;
       padding: 0;
 
       font-size: 62.5%;
@@ -39,17 +39,35 @@
       display: inline-block;
     }
 
-    .button, .message {
+    .messages {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .button, .messages__message {
       height: 1.8rem;
       margin-right: 1rem;
 
+      font-family: Courier, sans-serif;
       font-size: 1.6rem;
       line-height: 1.6rem;
 
       list-style: none;
     }
     .button {
+      padding: 0 .3em;
+
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 1.2rem;
+      line-height: 1.8rem;
+      color: #24292e;
+      background-color: #eff3f6;
+      background-image: linear-gradient(-180deg, #fafbfc 0%, #eff3f6 90%);
+      border: 1px solid rgba(27,31,35,0.2);
+      border-radius: 0.25em;
+
       cursor: pointer;
+      user-select: none;
     }
   </style>
 </head>
@@ -58,11 +76,17 @@
     <ul class="nav__list">
       <li class="button" id="listenButton">Unlisten</li>
     </ul>
-    <ul>
-      <li id="message1" class="message"></li>
-      <li id="message2" class="message"></li>
-      <li id="message3" class="message"></li>
-      <li id="message4" class="message"></li>
+    <ul class="messages">
+      <li class="messages__message" data-gesture="swipe" data-method="promise">promise (once)</li>
+      <li class="messages__message" data-gesture="swipe" data-method="event">event</li>
+      <li class="messages__message" data-gesture="swipe" data-method="on">subscriber</li>
+      <li class="messages__message" data-gesture="swipe" data-method="once">subscriber once</li>
+    </ul>
+    <ul class="messages">
+      <li class="messages__message" data-gesture="pinch" data-method="promise">promise (once)</li>
+      <li class="messages__message" data-gesture="pinch" data-method="event">event</li>
+      <li class="messages__message" data-gesture="pinch" data-method="on">subscriber</li>
+      <li class="messages__message" data-gesture="pinch" data-method="once">subscriber once</li>
     </ul>
   </nav>
   <div class="scene"></div>

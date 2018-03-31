@@ -14,7 +14,7 @@ function Observer () {
       listeners.forEach(listener => {
         if (listener[0] === eventName) {
           try {
-            listener[1](...args)
+            listener[1].apply(listener[1], args)
           } catch (error) {
             listener[2](error)
           }

@@ -1,6 +1,6 @@
 {
   "name": "panzoom2",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Work In Progess - Hopefully a panzoom lib you can finally depend on",
   "main": "dist/panzoom.js",
   "scripts": {
@@ -20,6 +20,7 @@
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.6.1",
     "browser-sync": "^2.23.6",
+    "eslint": "^4.19.1",
     "jsdom": "^11.6.2",
     "parallelshell": "^3.0.2",
     "rollup": "^0.57.1",
