@@ -65,10 +65,10 @@ class Pinch {
           // console.log(direction)
 
           // tell subscribers
-          action('swipe', direction)
+          action('pinch', direction)
 
           // tell event listeners
-          const swipeEvent = new CustomEvent('swipe', { detail: direction })
+          const swipeEvent = new CustomEvent('pinch', { detail: direction })
           if (!swipe.el.dispatchEvent(swipeEvent)) {
             console.log('Pinch::action - event was cancelled')
           }
