@@ -42,9 +42,21 @@
     .messages {
       display: inline-block;
       vertical-align: top;
+      width: 49.4%;
     }
 
-    .button, .messages__message {
+    .messages__message-title {
+      text-transform: uppercase;
+      font-family: zillaslab,Palatino,"Palatino Linotype",serif;
+    }
+
+    .messages__message {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .button, .messages__message, .messages__message-title {
       height: 1.8rem;
       margin-right: 1rem;
 
@@ -76,13 +88,17 @@
     <ul class="nav__list">
       <li class="button" id="listenButton">Unlisten</li>
     </ul>
+
     <ul class="messages">
+      <li class="messages__message-title">Swipe:</li>
       <li class="messages__message" data-gesture="swipe" data-method="promise">promise (once)</li>
       <li class="messages__message" data-gesture="swipe" data-method="event">event</li>
       <li class="messages__message" data-gesture="swipe" data-method="on">subscriber</li>
       <li class="messages__message" data-gesture="swipe" data-method="once">subscriber once</li>
     </ul>
+
     <ul class="messages">
+      <li class="messages__message-title">Pinch:</li>
       <li class="messages__message" data-gesture="pinch" data-method="promise">promise (once)</li>
       <li class="messages__message" data-gesture="pinch" data-method="event">event</li>
       <li class="messages__message" data-gesture="pinch" data-method="on">subscriber</li>
