@@ -78,7 +78,7 @@ function wheelEventUnpack (event) {
 }
 
 function wheelUnpack (wheelEvent) {
-  return 'scale: ' + wheelEvent.scale + ' (' + wheelEvent.point.x + ', ' + wheelEvent.point.y + ')'
+  return 'scale: ' + wheelEvent.scale.toFixed(2) + ' (' + wheelEvent.point.x + ', ' + wheelEvent.point.y + ')'
 }
 
 function messagesFactory (gesture, method, title, messageEl, unpack) {
@@ -88,7 +88,7 @@ function messagesFactory (gesture, method, title, messageEl, unpack) {
     counter: 0,
     messageEl: messageEl,
     handler: function (payload) {
-      if (gesture === 'wheelDelta') console.log('payload', payload)
+      // if (gesture === 'wheelDelta') console.log('payload', payload)
       message.messageEl.textContent = title + ' ' + ++message.counter + ': ' + unpack(payload)
     }
   }

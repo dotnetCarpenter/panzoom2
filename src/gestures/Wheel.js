@@ -9,7 +9,7 @@ class Wheel {
   }
 
   listen (action) {
-    console.log('Wheel::listen')
+    // console.log('Wheel::listen')
     if (!(action instanceof Function)) throw new TypeError('action must be a function')
 
     this.action = Wheel.action(this, action)
@@ -18,7 +18,7 @@ class Wheel {
   }
 
   unlisten () {
-    console.log('Wheel::unlisten')
+    // console.log('Wheel::unlisten')
     this.el.removeEventListener('wheel', this.action, true)
   }
 
@@ -35,10 +35,10 @@ class Wheel {
 
   static action (wheel, action) {
     return event => {
-      event.preventDefault()
-      event.stopImmediatePropagation()
-      event.stopPropagation()
-      event.returnValue = false
+      // event.preventDefault()
+      // event.stopImmediatePropagation()
+      // event.stopPropagation()
+      // event.returnValue = false
 
       // touchpads can give event.deltaY == 0, which is something we never want to handle
       if (event.deltaY === 0) return
