@@ -1,4 +1,4 @@
-'use strict'
+/* global panzoom */
 
 const listenButton = document.getElementById('listenButton')
 const domMessages = document.querySelectorAll('.messages__message')
