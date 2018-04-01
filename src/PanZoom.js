@@ -14,6 +14,10 @@ try {
 /* end detect */
 console.log('supportsPassiveOption', supportsPassiveOption)
 
+// mobile recognition from hammer.js
+// const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i
+// const SUPPORT_ONLY_TOUCH = SUPPORT_TOUCH && MOBILE_REGEX.test(navigator.userAgent)
+
 class PanZoom {
   constructor (options) {
     this.options = options

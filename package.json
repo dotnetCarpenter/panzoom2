@@ -1,6 +1,6 @@
 {
   "name": "panzoom2",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "Work In Progess - Hopefully a panzoom lib you can finally depend on",
   "main": "dist/panzoom.js",
   "scripts": {
