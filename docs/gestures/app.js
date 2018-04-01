@@ -44,7 +44,7 @@ function panEventUnpack (event) {
 }
 
 function panUnpack (panEvent) {
-  return '(' + panEvent.x + ', ' + panEvent.y + ')'
+  return '(' + panEvent.x.toFixed(2) + ', ' + panEvent.y.toFixed(2) + ')'
 }
 
 function messagesFactory (gesture, method, title, messageEl, unpack) {
