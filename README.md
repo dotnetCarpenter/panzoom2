@@ -26,6 +26,7 @@ You can use the polyfill service from [Financial Times](https://polyfill.io/v2/d
 [Overview](https://dotnetcarpenter.github.io/panzoom2/)
 
 - [swipe](https://dotnetcarpenter.github.io/panzoom2/swipe) `Showcase swipe detection and all the ways you can listen and unlisten to an event with panzoom.`
+- [gestures](https://dotnetcarpenter.github.io/panzoom2/gestures) `Showcase gesture recognition. - INCOMPLETE`
 
 ## Inspiration drawn from
 
