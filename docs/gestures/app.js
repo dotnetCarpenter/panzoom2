@@ -42,8 +42,8 @@ function messagesFactory (gesture, method, title, messageEl, unpack) {
     counter: 0,
     messageEl: messageEl,
     handler: function (payload) {
-      if (gesture === 'pinch') console.log('payload', payload)
-      message.messageEl.textContent = title + ' ' + ++message.counter + ' - ' + unpack(payload)
+      // if (gesture === 'pinch') console.log('payload', payload)
+      message.messageEl.textContent = title + ' ' + ++message.counter + ': ' + unpack(payload)
     }
   }
 

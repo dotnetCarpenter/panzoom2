@@ -10,7 +10,7 @@ class Pinch {
   }
 
   listen (action) {
-    console.log('Pinch::listen')
+    // console.log('Pinch::listen')
     if (!(action instanceof Function)) throw new TypeError('action must be a function')
 
     this.action = Pinch.action(this, action)
@@ -19,7 +19,7 @@ class Pinch {
   }
 
   unlisten () {
-    console.log('Pinch::unlisten')
+    // console.log('Pinch::unlisten')
     this.el.removeEventListener('touchstart', this.action)
   }
 
@@ -71,7 +71,10 @@ class Pinch {
           +
           (currentEvent.touches[0].y - pinch.lastTouches.touches[1].y) ** 2
         )
-        if (pinch.lastDistance) console.log(distanceBetweenTwoFingers > pinch.lastDistance ? 'zoom in' : 'zoom out')
+
+        const pinchOutwards = pinch.lastDistance && distanceBetweenTwoFingers > pinch.lastDistance ? true : false
+        // console.log(pinchOutwards ? 'zoom in' : 'zoom out')
+
         pinch.lastDistance = distanceBetweenTwoFingers
 
         // console.log('distance', distanceFromFirstTouch, distanceBetweenTwoFingers)
@@ -91,9 +94,10 @@ class Pinch {
             y: pinch.lastTouches.touches[0].y + 0.5 * (pinch.lastTouches.touches[1].y - pinch.lastTouches.touches[0].y)
           })
 
+          // console.log(scale)
           const pinchEventData = {
             focus: currentFocus,
-            scale: distanceBetweenTwoFingers > pinch.lastDistance ? scale : -scale,
+            scale: pinchOutwards ? scale : -scale,
             focusAfterScale: new Point({ x: -lastFocus.x, y: -lastFocus.y })
           }
 
