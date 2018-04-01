@@ -30,9 +30,9 @@ function identity (x) {
 }
 
 function pinchUnpack (pinchEvent) {
-  return pinchEvent.scale.toFixed(4)
-    + ' (' + pinchEvent.focus.x.toFixed(2) + ', ' + pinchEvent.focus.y.toFixed(2) + ') ('
-    + pinchEvent.focusAfterScale.x.toFixed(2) + ', ' + pinchEvent.focusAfterScale.y.toFixed(2) + ')'
+  return pinchEvent.scale.toFixed(2)
+    + ' (' + pinchEvent.focus.x.toFixed(1) + ', ' + pinchEvent.focus.y.toFixed(1) + ') ('
+    + pinchEvent.focusAfterScale.x.toFixed(1) + ', ' + pinchEvent.focusAfterScale.y.toFixed(1) + ')'
 }
 
 function messagesFactory (gesture, method, title, messageEl, unpack) {

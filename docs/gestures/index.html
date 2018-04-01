@@ -28,6 +28,9 @@
     }
 
     .nav {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
       width: 90vw;
       margin: 0 auto;
     }
@@ -87,7 +90,7 @@
 </head>
 <body>
   <nav class="nav">
-    <ul class="messages">
+    <ul class="messages" style="flex: 1 1 0">
       <li class="messages__message-title">Swipe:</li>
       <li class="messages__message" data-gesture="swipe" data-method="promise">promise (once)</li>
       <li class="messages__message" data-gesture="swipe" data-method="event">event</li>
@@ -95,7 +98,7 @@
       <li class="messages__message" data-gesture="swipe" data-method="once">subscriber once</li>
     </ul>
 
-    <ul class="messages">
+    <ul class="messages" style="flex: 2 1 0">
       <li class="messages__message-title">Pinch:</li>
       <li class="messages__message" data-gesture="pinch" data-method="promise">promise (once)</li>
       <li class="messages__message" data-gesture="pinch" data-method="event">event</li>
@@ -103,7 +106,7 @@
       <li class="messages__message" data-gesture="pinch" data-method="once">subscriber once</li>
     </ul>
 
-    <ul class="nav__list">
+    <ul class="nav__list" style="flex: 1 1 100%">
       <li class="button" id="listenButton">Unlisten</li>
     </ul>
   </nav>

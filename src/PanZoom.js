@@ -3,6 +3,7 @@ import Observer from './mixins/Observer'
 import Options from './models/Options'
 import Swipe from './gestures/Swipe'
 import Pinch from './gestures/Pinch'
+import Pan from './gestures/Pan'
 
 class PanZoom {
   constructor (options) {
