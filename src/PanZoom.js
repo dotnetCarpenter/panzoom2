@@ -1,9 +1,5 @@
 import Observer from './mixins/Observer'
-
 import Options from './models/Options'
-import Swipe from './gestures/Swipe'
-import Pinch from './gestures/Pinch'
-import Pan from './gestures/Pan'
 
 /* detect passive option for event listeners */
 let supportsPassiveOption = false
@@ -28,43 +24,31 @@ class PanZoom {
     this.isListening = false
   }
 
-  listen (gesture) { // TODO: only enable gesture if defined
+  listen () {
     // console.log('PanZoom::listen')
 
     if (this.isListening) return
 
-    this.swipe = new Swipe()
-    this.swipe.setElement(this.el)
-    this.swipe.listen(this.fire)
+    for (let name of this.options.configurations.keys()) {
+      const factory = this.options.getFactory(name)
 
-    this.pinch = new Pinch({
-      threshold: .2
-    })
-    this.pinch.setElement(this.el)
-    this.pinch.listen(this.fire)
-
-    this.pan = new Pan()
-    this.pan.setElement(this.el)
-    this.pan.listen(this.fire)
+      this[name] = new factory()
+      this[name].setElement(this.el)
+      this[name].listen(this.fire)
+    }
 
     this.isListening = true
   }
 
-  unlisten (gesture) { // TODO: only disable gesture if defined
+  unlisten () {
     // console.log('PanZoom::unlisten')
     if (!this.isListening) return
 
-    this.off('swipe')
-    this.swipe.unlisten()
-    this.swipe = null
-
-    this.off('pinch')
-    this.pinch.unlisten()
-    this.pinch = null
-
-    this.off('pan')
-    this.pan.unlisten()
-    this.pan = null
+    for (let name of this.options.configurations.keys()) {
+      this.off(name)
+      this[name].unlisten()
+      this[name] = null
+    }
 
     this.isListening = false
   }
