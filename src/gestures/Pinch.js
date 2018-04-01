@@ -2,6 +2,7 @@ import Point from '../models/Point'
 
 class Pinch {
   constructor (options) {
+    this.threshold = options.threshold
     this.el = null
     this.lastTouches = null
     this.lastDistance = null
@@ -75,39 +76,39 @@ class Pinch {
 
         // console.log('distance', distanceFromFirstTouch, distanceBetweenTwoFingers)
 
-        const zoomAmount = distanceFromFirstTouch / distanceBetweenTwoFingers
-        console.log('zoomAmount', zoomAmount)
+        const scale = distanceFromFirstTouch / distanceBetweenTwoFingers
+        // console.log('scale', scale)
 
-        const currentFocus = new Point({
-          x: currentEvent.touches[0].x + .5 * (currentEvent.touches[1].x - currentEvent.touches[0].x),
-          y: currentEvent.touches[0].y + .5 * (currentEvent.touches[1].y - currentEvent.touches[0].y)
-        })
+        if (scale > pinch.threshold) {
+          // Focus formular ported from svg.panzoom.js - ask Ulrich why it's like that
+          const currentFocus = new Point({
+            x: currentEvent.touches[0].x + .5 * (currentEvent.touches[1].x - currentEvent.touches[0].x),
+            y: currentEvent.touches[0].y + .5 * (currentEvent.touches[1].y - currentEvent.touches[0].y)
+          })
 
-        const lastFocus = new Point({
-          x: pinch.lastTouches.touches[0].x + 0.5 * (pinch.lastTouches.touches[1].x - pinch.lastTouches.touches[0].x),
-          y: pinch.lastTouches.touches[0].y + 0.5 * (pinch.lastTouches.touches[1].y - pinch.lastTouches.touches[0].y)
-        })
+          const lastFocus = new Point({
+            x: pinch.lastTouches.touches[0].x + 0.5 * (pinch.lastTouches.touches[1].x - pinch.lastTouches.touches[0].x),
+            y: pinch.lastTouches.touches[0].y + 0.5 * (pinch.lastTouches.touches[1].y - pinch.lastTouches.touches[0].y)
+          })
 
-        // console.log('focus', currentFocus, new Point({
-        //   x: 2 * currentFocus.x - lastFocus.x,
-        //   y: 2 * currentFocus.y - lastFocus.y
-        // }))
-        // if (distance > 100) { // TODO: make 100 a relative value and consider zoom
-        //   const direction = diff(pinch.lastTouches, currentEvent)
-        //   // console.log(direction)
+          const pinchEventData = {
+            focus: currentFocus,
+            scale: distanceBetweenTwoFingers > pinch.lastDistance ? scale : -scale,
+            focusAfterScale: new Point({ x: -lastFocus.x, y: -lastFocus.y })
+          }
 
-        //   // tell subscribers
-        //   action('pinch', direction)
+          // console.dir(pinchEventData)
 
-        //   // tell event listeners
-        //   const pinchEvent = new CustomEvent('pinch', { detail: direction })
-        //   if (!pinch.el.dispatchEvent(pinchEvent)) {
-        //     console.log('Pinch::action - event was cancelled')
-        //   }
+          // tell subscribers
+          action('pinch', pinchEventData)
 
-        //   // debugger
-        //   endHandler()
-        // }
+          // tell event listeners
+          const pinchEvent = new CustomEvent('pinch', { detail: pinchEventData })
+          if (!pinch.el.dispatchEvent(pinchEvent)) {
+            endHandler()
+            console.log('Pinch::action - event was cancelled')
+          }
+        }
       }
 
       function endHandler () {

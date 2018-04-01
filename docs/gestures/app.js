@@ -12,9 +12,10 @@ function setupMessages () {
     const gesture = messageEl.dataset.gesture
     const method = messageEl.dataset.method
 
+    // unpack
     const unpack = messageEl.dataset.method === 'event'
-      ? eventDetail
-      : identity
+      ? gesture === 'pinch' ? function (event) { return pinchUnpack(eventDetail(event)) } : eventDetail
+      : (gesture === 'pinch') ? pinchUnpack : identity
 
     return messagesFactory(gesture, method, messageEl.textContent, messageEl, unpack)
   })
@@ -26,6 +27,12 @@ function eventDetail (event) {
 
 function identity (x) {
   return x
+}
+
+function pinchUnpack (pinchEvent) {
+  return pinchEvent.scale.toFixed(4)
+    + ' (' + pinchEvent.focus.x.toFixed(2) + ', ' + pinchEvent.focus.y.toFixed(2) + ') ('
+    + pinchEvent.focusAfterScale.x.toFixed(2) + ', ' + pinchEvent.focusAfterScale.y.toFixed(2) + ')'
 }
 
 function messagesFactory (gesture, method, title, messageEl, unpack) {

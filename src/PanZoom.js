@@ -22,7 +22,9 @@ class PanZoom {
     this.swipe.setElement(this.el)
     this.swipe.listen(this.fire)
 
-    this.pinch = new Pinch()
+    this.pinch = new Pinch({
+      threshold: .2
+    })
     this.pinch.setElement(this.el)
     this.pinch.listen(this.fire)
 
