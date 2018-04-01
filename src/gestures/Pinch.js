@@ -53,7 +53,7 @@ class Pinch {
       pinch.el.addEventListener(startEvent.type.end, endHandler) // removing event listeners from DOM via this
 
       function moveHandler (event) {
-        event.preventDefault()
+        event.preventDefault() // prevent native zoom TODO: perhaps we should not make that decision...
         const currentEvent = normalizeEvent(event)
         // console.log('getting moves!', currentEvent)
 

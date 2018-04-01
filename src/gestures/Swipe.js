@@ -36,8 +36,6 @@ class Swipe {
 
   static action (swipe, action) {
     return event => {
-      event.preventDefault()
-
       swipe.unlisten()
 
       const startEvent = normalizeEvent(event)

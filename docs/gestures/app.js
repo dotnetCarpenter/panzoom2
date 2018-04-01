@@ -12,10 +12,36 @@ function setupMessages () {
     const gesture = messageEl.dataset.gesture
     const method = messageEl.dataset.method
 
-    // unpack
-    const unpack = messageEl.dataset.method === 'event'
-      ? gesture === 'pinch' ? pinchEventUnpack : gesture === 'pan' ? panEventUnpack : eventDetail
-      : (gesture === 'pinch') ? pinchUnpack : gesture === 'pan' ? panUnpack : identity
+    let unpack
+    if (messageEl.dataset.method === 'event') {
+      switch (gesture) {
+        case 'pinch':
+          unpack = pinchEventUnpack
+          break
+        case 'pan':
+          unpack = panEventUnpack
+          break
+        case 'wheelDelta':
+          unpack = wheelEventUnpack
+          break
+        default:
+          unpack = eventDetail
+      }
+    } else {
+      switch (gesture) {
+        case 'pinch':
+          unpack = pinchUnpack
+          break
+        case 'pan':
+          unpack = panUnpack
+          break
+        case 'wheelDelta':
+          unpack = wheelUnpack
+          break
+        default:
+          unpack = identity
+      }
+    }
 
     return messagesFactory(gesture, method, messageEl.textContent, messageEl, unpack)
   })
@@ -47,6 +73,14 @@ function panUnpack (panEvent) {
   return '(' + panEvent.x.toFixed(2) + ', ' + panEvent.y.toFixed(2) + ')'
 }
 
+function wheelEventUnpack (event) {
+  return wheelUnpack(eventDetail(event))
+}
+
+function wheelUnpack (wheelEvent) {
+  return 'scale: ' + wheelEvent.scale + ' (' + wheelEvent.point.x + ', ' + wheelEvent.point.y + ')'
+}
+
 function messagesFactory (gesture, method, title, messageEl, unpack) {
   const message = {
     gesture: gesture,
@@ -54,7 +88,7 @@ function messagesFactory (gesture, method, title, messageEl, unpack) {
     counter: 0,
     messageEl: messageEl,
     handler: function (payload) {
-      // if (gesture === 'pinch') console.log('payload', payload)
+      if (gesture === 'wheelDelta') console.log('payload', payload)
       message.messageEl.textContent = title + ' ' + ++message.counter + ': ' + unpack(payload)
     }
   }
