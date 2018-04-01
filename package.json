@@ -14,7 +14,7 @@
   ],
   "author": "Jon Ege Ronnenberg <jon.ronnenberg+panzoom2@gmail.com>",
   "license": "ISC",
-  "home": "https://dotnetcarpenter.github.io/panzoom2/",
+  "homepage": "https://dotnetcarpenter.github.io/panzoom2/",
   "repository": {
     "type": "git",
     "url": "https://github.com/dotnetCarpenter/panzoom2.git"
