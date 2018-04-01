@@ -85,10 +85,6 @@
 </head>
 <body>
   <nav class="nav">
-    <ul class="nav__list">
-      <li class="button" id="listenButton">Unlisten</li>
-    </ul>
-
     <ul class="messages">
       <li class="messages__message-title">Swipe:</li>
       <li class="messages__message" data-gesture="swipe" data-method="promise">promise (once)</li>
@@ -103,6 +99,10 @@
       <li class="messages__message" data-gesture="pinch" data-method="event">event</li>
       <li class="messages__message" data-gesture="pinch" data-method="on">subscriber</li>
       <li class="messages__message" data-gesture="pinch" data-method="once">subscriber once</li>
+    </ul>
+
+    <ul class="nav__list">
+      <li class="button" id="listenButton">Unlisten</li>
     </ul>
   </nav>
   <div class="scene"></div>

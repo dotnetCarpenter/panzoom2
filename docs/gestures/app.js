@@ -12,10 +12,16 @@ function setupMessages () {
     const gesture = messageEl.dataset.gesture
     const method = messageEl.dataset.method
 
-    let unpack = identity
-    if (messageEl.dataset.method === 'event') unpack = function (event) { return event.detail }
+    const unpack = messageEl.dataset.method === 'event'
+      ? eventDetail
+      : identity
+
     return messagesFactory(gesture, method, messageEl.textContent, messageEl, unpack)
   })
+}
+
+function eventDetail (event) {
+  return event.detail
 }
 
 function identity (x) {
@@ -29,7 +35,7 @@ function messagesFactory (gesture, method, title, messageEl, unpack) {
     counter: 0,
     messageEl: messageEl,
     handler: function (payload) {
-      console.log(payload)
+      if (gesture === 'pinch') console.log('payload', payload)
       message.messageEl.textContent = title + ' ' + ++message.counter + ' - ' + unpack(payload)
     }
   }

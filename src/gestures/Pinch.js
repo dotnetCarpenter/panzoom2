@@ -4,21 +4,21 @@ class Pinch {
   constructor (options) {
     this.el = null
     this.lastTouches = null
+    this.lastDistance = null
+    this.detecting = false
   }
 
   listen (action) {
-    // console.log('Pinch::listen')
+    console.log('Pinch::listen')
     if (!(action instanceof Function)) throw new TypeError('action must be a function')
 
     this.action = Pinch.action(this, action)
 
-    this.el.addEventListener('wheel', this.action)
     this.el.addEventListener('touchstart', this.action)
   }
 
   unlisten () {
-    // console.log('Pinch::unlisten')
-    this.el.removeEventListener('wheel', this.action)
+    console.log('Pinch::unlisten')
     this.el.removeEventListener('touchstart', this.action)
   }
 
@@ -32,56 +32,89 @@ class Pinch {
     this.lastTouches = null
   }
 
-  static action (swipe, action) {
+  static action (pinch, action) {
     return event => {
       event.preventDefault()
 
-      swipe.unlisten()
+      pinch.unlisten()
 
       const startEvent = normalizeEvent(event)
-      swipe.lastTouches = startEvent
-
       // console.log(startEvent)
+      if (startEvent.touches.length < 2) {
+        endHandler()
+        return
+      }
+      pinch.lastTouches = startEvent
 
-      swipe.el.addEventListener(startEvent.type.move, moveHandler)
+      this.detecting = true
 
-      swipe.el.addEventListener(startEvent.type.end, endHandler)
+      pinch.el.addEventListener(startEvent.type.move, moveHandler)
+      pinch.el.addEventListener(startEvent.type.end, endHandler)
 
       function moveHandler (event) {
+        event.preventDefault()
         const currentEvent = normalizeEvent(event)
         // console.log('getting moves!', currentEvent)
 
         // TODO: take timestamp into consideration - call endHandler if enough time has passed
 
-        const distance = Math.sqrt( // TODO: abstract this somewhere
-          Math.pow(currentEvent.touches[0].x - swipe.lastTouches.touches[0].x , 2) +
-          Math.pow(currentEvent.touches[0].y - swipe.lastTouches.touches[0].y , 2)
+        // movement (translate)
+        const distanceFromFirstTouch = Math.sqrt( // TODO: abstract this somewhere
+          (currentEvent.touches[0].x - pinch.lastTouches.touches[0].x) ** 2
+          +
+          (currentEvent.touches[0].y - pinch.lastTouches.touches[0].y) ** 2
         )
+        // distance between two first fingers
+        const distanceBetweenTwoFingers = Math.sqrt( // TODO: abstract this somewhere
+          (currentEvent.touches[0].x - pinch.lastTouches.touches[1].x) ** 2
+          +
+          (currentEvent.touches[0].y - pinch.lastTouches.touches[1].y) ** 2
+        )
+        if (pinch.lastDistance) console.log(distanceBetweenTwoFingers > pinch.lastDistance ? 'zoom in' : 'zoom out')
+        pinch.lastDistance = distanceBetweenTwoFingers
 
-        // console.log(distance)
+        // console.log('distance', distanceFromFirstTouch, distanceBetweenTwoFingers)
 
-        if (distance > 100) { // TODO: make 100 a relative value and consider zoom
-          const direction = diff(swipe.lastTouches, currentEvent)
-          // console.log(direction)
+        const zoomAmount = distanceFromFirstTouch / distanceBetweenTwoFingers
+        console.log('zoomAmount', zoomAmount)
 
-          // tell subscribers
-          action('pinch', direction)
+        const currentFocus = new Point({
+          x: currentEvent.touches[0].x + .5 * (currentEvent.touches[1].x - currentEvent.touches[0].x),
+          y: currentEvent.touches[0].y + .5 * (currentEvent.touches[1].y - currentEvent.touches[0].y)
+        })
 
-          // tell event listeners
-          const swipeEvent = new CustomEvent('pinch', { detail: direction })
-          if (!swipe.el.dispatchEvent(swipeEvent)) {
-            console.log('Pinch::action - event was cancelled')
-          }
+        const lastFocus = new Point({
+          x: pinch.lastTouches.touches[0].x + 0.5 * (pinch.lastTouches.touches[1].x - pinch.lastTouches.touches[0].x),
+          y: pinch.lastTouches.touches[0].y + 0.5 * (pinch.lastTouches.touches[1].y - pinch.lastTouches.touches[0].y)
+        })
 
-          // debugger
-          endHandler()
-        }
+        // console.log('focus', currentFocus, new Point({
+        //   x: 2 * currentFocus.x - lastFocus.x,
+        //   y: 2 * currentFocus.y - lastFocus.y
+        // }))
+        // if (distance > 100) { // TODO: make 100 a relative value and consider zoom
+        //   const direction = diff(pinch.lastTouches, currentEvent)
+        //   // console.log(direction)
+
+        //   // tell subscribers
+        //   action('pinch', direction)
+
+        //   // tell event listeners
+        //   const pinchEvent = new CustomEvent('pinch', { detail: direction })
+        //   if (!pinch.el.dispatchEvent(pinchEvent)) {
+        //     console.log('Pinch::action - event was cancelled')
+        //   }
+
+        //   // debugger
+        //   endHandler()
+        // }
       }
 
       function endHandler () {
-        swipe.el.removeEventListener(startEvent.type.move, moveHandler)
-        swipe.el.removeEventListener(startEvent.type.end, endHandler)
-        swipe.listen(action)
+        pinch.el.removeEventListener(startEvent.type.move, moveHandler)
+        pinch.el.removeEventListener(startEvent.type.end, endHandler)
+        pinch.detecting = false
+        pinch.listen(action)
       }
 
     }
@@ -93,21 +126,18 @@ function normalizeEvent(ev) {
 
   // console.log(ev)
 
-  event.touches = [
-    ev.touches
-      ? new Point({ x: ev.touches[0].pageX, y: ev.touches[0].pageY })
-      : new Point({ x: ev.pageX, y: ev.pageY })
-  ]
-  event.type = ev.type === 'touchstart' // TODO: use a proper enum
-    ? { move: 'touchmove', end: 'touchend' }
-    : { move: 'mousemove', end: 'mouseup' }
+  event.touches = Array.prototype.map.call(
+    ev.touches,
+    t => new Point({ x: t.pageX, y: t.pageY })
+  )
+  event.type = { move: 'touchmove', end: 'touchend' } // TODO: use a proper enum
   event.timeStamp = Date.now()
 
   return event
 }
 
 function diff (event1, event2) {
-  // https://stackoverflow.com/questions/2264072/detect-a-finger-swipe-through-javascript-on-the-iphone-and-android
+  // https://stackoverflow.com/questions/2264072/detect-a-finger-pinch-through-javascript-on-the-iphone-and-android
   const deltaX = event1.touches[0].x - event2.touches[0].x // TODO: make addition and substraction easier for Point
   const deltaY = event1.touches[0].y - event2.touches[0].y
 

@@ -4,6 +4,7 @@ class Swipe {
   constructor (options) {
     this.el = null
     this.lastTouches = null
+    this.detecting = false
   }
 
   listen (action) {
@@ -43,9 +44,9 @@ class Swipe {
       swipe.lastTouches = startEvent
 
       // console.log(startEvent)
+      this.detecting = true
 
       swipe.el.addEventListener(startEvent.type.move, moveHandler)
-
       swipe.el.addEventListener(startEvent.type.end, endHandler)
 
       function moveHandler (event) {
@@ -55,8 +56,9 @@ class Swipe {
         // TODO: take timestamp into consideration - call endHandler if enough time has passed
 
         const distance = Math.sqrt( // TODO: abstract this somewhere
-          Math.pow(currentEvent.touches[0].x - swipe.lastTouches.touches[0].x , 2) +
-          Math.pow(currentEvent.touches[0].y - swipe.lastTouches.touches[0].y , 2)
+          (currentEvent.touches[0].x - swipe.lastTouches.touches[0].x) ** 2
+          +
+          (currentEvent.touches[0].y - swipe.lastTouches.touches[0].y) ** 2
         )
 
         // console.log(distance)
@@ -82,6 +84,7 @@ class Swipe {
       function endHandler () {
         swipe.el.removeEventListener(startEvent.type.move, moveHandler)
         swipe.el.removeEventListener(startEvent.type.end, endHandler)
+        swipe.detecting = false
         swipe.listen(action)
       }
 

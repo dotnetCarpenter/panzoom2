@@ -1,4 +1,4 @@
-import Observer from './traits/Observer'
+import Observer from './mixins/Observer'
 
 import Options from './models/Options'
 import Swipe from './gestures/Swipe'
@@ -53,7 +53,7 @@ function createPanzoom (el, options = {}) {
   if (!el) throw new TypeError('the first argument to createPanzoom must be an Element')
 
   const panzoom = new PanZoom(new Options(options))
-  Object.assign(panzoom, Observer()) // add traits
+  Object.assign(panzoom, Observer()) // add mixins
   panzoom.setElement(el)
   panzoom.listen()
 
