@@ -17,9 +17,10 @@ Required polyfills:
 - Promise
 - CustomEvent
 - Object.assign
+- Map
 
 You can use the polyfill service from [Financial Times](https://polyfill.io/v2/docs/)
-`<script src="https://cdn.polyfill.io/v2/polyfill.minify.js?features=Promise,Object.assign,CustomEvent&amp;flags=gated&amp;rum=0"></script>`
+`<script src="https://cdn.polyfill.io/v2/polyfill.minify.js?features=Promise,Object.assign,CustomEvent,Map&amp;flags=gated&amp;rum=0"></script>`
 
 ## Examples
 
