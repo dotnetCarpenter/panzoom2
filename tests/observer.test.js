@@ -97,3 +97,21 @@ test('Observer has a once method', t => {
     t.ok(true)
   }
 })
+
+test('Observer can have different event types and listeners', t => {
+  t.plan(3)
+
+  const observer = createObserver()
+
+  observer.on('test1', doCall)
+  observer.on('test2', doCall)
+
+  observer.fire('test1')
+  observer.fire('test2')
+  observer.off('test1')
+  observer.fire('test2')
+
+  function doCall () {
+    t.ok(true)
+  }
+})

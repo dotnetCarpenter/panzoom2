@@ -30,6 +30,7 @@ function Observer () {
             if (!f) return false
             else return listener[1] === f ? false : true
           }
+          return true
         }
       )
     },
