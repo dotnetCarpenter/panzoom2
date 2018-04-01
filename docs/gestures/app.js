@@ -14,8 +14,8 @@ function setupMessages () {
 
     // unpack
     const unpack = messageEl.dataset.method === 'event'
-      ? gesture === 'pinch' ? function (event) { return pinchUnpack(eventDetail(event)) } : eventDetail
-      : (gesture === 'pinch') ? pinchUnpack : identity
+      ? gesture === 'pinch' ? pinchEventUnpack : gesture === 'pan' ? panEventUnpack : eventDetail
+      : (gesture === 'pinch') ? pinchUnpack : gesture === 'pan' ? panUnpack : identity
 
     return messagesFactory(gesture, method, messageEl.textContent, messageEl, unpack)
   })
@@ -29,10 +29,22 @@ function identity (x) {
   return x
 }
 
+function pinchEventUnpack (event) {
+  return pinchUnpack(eventDetail(event))
+}
+
 function pinchUnpack (pinchEvent) {
   return pinchEvent.scale.toFixed(2)
     + ' (' + pinchEvent.focus.x.toFixed(1) + ', ' + pinchEvent.focus.y.toFixed(1) + ') ('
     + pinchEvent.focusAfterScale.x.toFixed(1) + ', ' + pinchEvent.focusAfterScale.y.toFixed(1) + ')'
+}
+
+function panEventUnpack (event) {
+  return panUnpack(eventDetail(event))
+}
+
+function panUnpack (panEvent) {
+  return '(' + panEvent.x + ', ' + panEvent.y + ')'
 }
 
 function messagesFactory (gesture, method, title, messageEl, unpack) {

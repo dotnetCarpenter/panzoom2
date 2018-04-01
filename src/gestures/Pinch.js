@@ -50,7 +50,7 @@ class Pinch {
       this.detecting = true
 
       pinch.el.addEventListener(startEvent.type.move, moveHandler)
-      pinch.el.addEventListener(startEvent.type.end, endHandler)
+      pinch.el.addEventListener(startEvent.type.end, endHandler) // removing event listeners from DOM via this
 
       function moveHandler (event) {
         event.preventDefault()

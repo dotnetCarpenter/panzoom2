@@ -5,12 +5,26 @@ import Swipe from './gestures/Swipe'
 import Pinch from './gestures/Pinch'
 import Pan from './gestures/Pan'
 
+/* detect passive option for event listeners */
+let supportsPassiveOption = false
+try {
+  var opts = Object.defineProperty({}, 'passive', {
+    get: function() {
+      supportsPassiveOption = true
+    }
+  })
+  window.addEventListener('test', null, opts)
+} catch (e) {}
+/* end detect */
+console.log('supportsPassiveOption', supportsPassiveOption)
+
 class PanZoom {
   constructor (options) {
     this.options = options
     this.el = null
     this.swipe = null
     this.pinch = null
+    this.pan = null
     this.isListening = false
   }
 
@@ -29,6 +43,10 @@ class PanZoom {
     this.pinch.setElement(this.el)
     this.pinch.listen(this.fire)
 
+    this.pan = new Pan()
+    this.pan.setElement(this.el)
+    this.pan.listen(this.fire)
+
     this.isListening = true
   }
 
@@ -43,6 +61,10 @@ class PanZoom {
     this.off('pinch')
     this.pinch.unlisten()
     this.pinch = null
+
+    this.off('pan')
+    this.pan.unlisten()
+    this.pan = null
 
     this.isListening = false
   }

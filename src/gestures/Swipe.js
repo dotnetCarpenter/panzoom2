@@ -47,7 +47,7 @@ class Swipe {
       this.detecting = true
 
       swipe.el.addEventListener(startEvent.type.move, moveHandler)
-      swipe.el.addEventListener(startEvent.type.end, endHandler)
+      swipe.el.addEventListener(startEvent.type.end, endHandler) // removing event listeners from DOM via this
 
       function moveHandler (event) {
         const currentEvent = normalizeEvent(event)
@@ -77,7 +77,7 @@ class Swipe {
           }
 
           // debugger
-          endHandler()
+          endHandler() // removing event listeners from DOM via this (before touchend/mouseup)
         }
       }
 
@@ -110,6 +110,7 @@ function normalizeEvent(ev) {
   return event
 }
 
+// TODO: might also be useful in Pan.js
 function diff (event1, event2) {
   // https://stackoverflow.com/questions/2264072/detect-a-finger-swipe-through-javascript-on-the-iphone-and-android
   const deltaX = event1.touches[0].x - event2.touches[0].x // TODO: make addition and substraction easier for Point
