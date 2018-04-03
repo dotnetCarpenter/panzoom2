@@ -8,12 +8,12 @@ class Options {
     this.min = parseFloat(min)
     this.max = parseFloat(max)
 
-    if (gestures && !Array.isArray(gestures)) throw new TypeError('gestures most be an array')
+    if (gestures && !Array.isArray(gestures)) throw new TypeError('gestures must be an array')
 
     this.configurations = gestures
       ? new Map(gestures)
       : new Map([
-        ['swipe', {}],
+        ['swipe', { distance: 100 }],
         ['pinch', { threshold: .2 }],
         ['pan', {}],
         ['wheel', { zoomFactor: 0.03 }],

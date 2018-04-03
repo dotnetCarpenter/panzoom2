@@ -15,6 +15,7 @@ try {
 console.log('supportsPassiveOption', supportsPassiveOption)
 
 // mobile recognition from hammer.js
+// const SUPPORT_TOUCH = 'ontouchstart' in window
 // const MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i
 // const SUPPORT_ONLY_TOUCH = SUPPORT_TOUCH && MOBILE_REGEX.test(navigator.userAgent)
 
