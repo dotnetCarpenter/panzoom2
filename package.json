@@ -4,7 +4,7 @@
   "description": "Work In Progess - Hopefully a panzoom lib you can finally depend on",
   "main": "dist/panzoom.js",
   "scripts": {
-    "test": "tap --node-arg=--experimental-modules tests/*.test.js",
+    "test": "tap tests/*.test.*",
     "dev": "parallelshell -v 'npm run build -- --watch' 'npm run browsersync'",
     "build": "rollup --config rollup.config.js",
     "browsersync": "browser-sync start --server --files 'dist/*.js' --startPath docs/"

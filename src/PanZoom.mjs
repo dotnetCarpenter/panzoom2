@@ -12,7 +12,7 @@ try {
   window.addEventListener('test', null, opts)
 } catch (e) {}
 /* end detect */
-console.log('supportsPassiveOption', supportsPassiveOption)
+// console.log('supportsPassiveOption', supportsPassiveOption)
 
 // mobile recognition from hammer.js
 // const SUPPORT_TOUCH = 'ontouchstart' in window

@@ -12,7 +12,10 @@ export default {
     sourcemap: true
   },
   plugins: [
-    resolve(),
+    resolve({
+      extensions: ['.js', '.mjs'],
+      modulesOnly: true
+    }),
     babel({
       // only transpile our source code
       exclude: 'node_modules/**'
