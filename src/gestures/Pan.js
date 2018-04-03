@@ -36,7 +36,7 @@ class Pan {
 
   static action (pan, action) {
     return event => {
-      event.preventDefault()
+      // event.preventDefault()
 
       pan.unlisten()
 

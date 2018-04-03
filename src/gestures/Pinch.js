@@ -24,6 +24,7 @@ class Pinch {
   }
 
   setElement (el) {
+    // TODO: unlisten on el before changing
     this.el = el
   }
 
