@@ -13,7 +13,7 @@ class Options {
     this.configurations = gestures
       ? new Map(gestures)
       : new Map([
-        ['swipe', { distance: 100 }],
+        ['swipe', { distance: '70%' }],
         ['pinch', { threshold: .2 }],
         ['pan', {}],
         ['wheel', { zoomFactor: 0.03 }],

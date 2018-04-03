@@ -1,7 +1,12 @@
 import Point from '../models/Point'
+import { percentToPixel, getUnit } from '../mixins/LengthUnits'
 
 class Swipe {
   constructor (options) {
+    Object.assign(this, { percentToPixel })
+
+    this.distance = options.distance
+
     this.el = null
     this.lastTouches = null
     this.detecting = false
@@ -10,6 +15,13 @@ class Swipe {
   listen (action) {
     // console.log('Swipe::listen')
     if (!(action instanceof Function)) throw new TypeError('action must be a function')
+
+    if (getUnit(this.distance) === '%') {
+      this.distance = Math.min(
+        this.percentToPixel(parseFloat(this.distance), 'width'),
+        this.percentToPixel(parseFloat(this.distance), 'height')
+      )
+    }
 
     this.action = Swipe.action(this, action)
 
@@ -45,7 +57,8 @@ class Swipe {
       this.detecting = true
 
       swipe.el.addEventListener(startEvent.type.move, moveHandler)
-      swipe.el.addEventListener(startEvent.type.end, endHandler) // removing event listeners from DOM via this
+      // removing event listeners from DOM via endHandler
+      swipe.el.addEventListener(startEvent.type.end, endHandler)
 
       function moveHandler (event) {
         const currentEvent = normalizeEvent(event)
@@ -61,7 +74,7 @@ class Swipe {
 
         // console.log(distance)
 
-        if (distance > 100) { // TODO: make 100 a relative value and consider zoom
+        if (distance > swipe.distance) { // TODO: consider zoom in distance?
           const direction = diff(swipe.lastTouches, currentEvent)
           // console.log(direction)
 

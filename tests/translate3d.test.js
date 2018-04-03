@@ -41,7 +41,7 @@ test('Translate3d returns a CSS string with percentage to pixel values', t => {
 
   const div = createMockDiv(200, 200)
   const translate3d = new Translate3d('100%', '200%', 0.5)
-  translate3d.setContainer(div)
+  translate3d.setElement(div)
 
   const expected = 'translate3d(200px, 400px, 0.5px);'
   const actual = String(translate3d)
@@ -54,7 +54,7 @@ test('Translate3d can translate percentage values to pixel values', t => {
 
   const div = createMockDiv(200, 200)
   const translate3d = new Translate3d('50%', '100%', '0.5')
-  translate3d.setContainer(div)
+  translate3d.setElement(div)
 
   const expected = { tx: 100, ty: 200, tz: .5 }
   const actual = translate3d.toObject()

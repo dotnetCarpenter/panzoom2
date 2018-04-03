@@ -1,4 +1,4 @@
-import Translate3d from './models/Translate3d'
+import Translate3d from './mixins/Translate3d'
 import Observer from './mixins/Observer'
 import { createPanzoom, PanZoom } from './PanZoom'
 
