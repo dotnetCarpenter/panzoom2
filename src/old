@@ -1,0 +1,60 @@
+// Regex
+const FLOATING = '(\\-?[\\d\\.e]+)'
+const COMMA_SPACE = '\\,?\\s*'
+const R_MATRIX = new RegExp(
+  '^matrix\\(' +
+  FLOATING + COMMA_SPACE +
+  FLOATING + COMMA_SPACE +
+  FLOATING + COMMA_SPACE +
+  FLOATING + COMMA_SPACE +
+  FLOATING + COMMA_SPACE +
+  FLOATING + '\\)$'
+)
+// const DEFAULT_MATRIX = [ 1, 0, 0, 1, 0, 0 ]
+
+/**
+ * Retrieve the current transform matrix for $elem (or turn a transform into it's array values)
+ * @param {String} [transform] matrix-formatted transform value
+ * @returns {Array} Returns the current transform matrix split up into it's parts, or a default matrix
+ */
+// function getMatrix (transform) {
+//   var matrix = R_MATRIX.exec(transform)
+//   if (matrix) {
+//     matrix.shift()
+//     matrix = matrix.map(function (n) { return +n })
+//   }
+
+//   return matrix || DEFAULT_MATRIX
+// }
+
+// function getViewbox (matrix, box) {
+//   return {
+//     width () {
+//       return box.width * matrix[0] + box.height * matrix[2] + matrix[4]
+//     },
+//     height () {
+//       return box.width * matrix[1] + box.height * matrix[3] + matrix[5]
+//     },
+//     scale (amount) {
+//       matrix[0] = box.width * matrix[0] * amount
+//       matrix[4] = box.height * matrix[4] * amount
+
+//       return matrix
+//     }
+//   }
+// }
+
+  static getMatrixString (translate) {
+    let matrix = R_MATRIX.exec(cssString)
+
+    if (!matrix) throw new Error('error parsing css matrix string')
+
+    matrix.shift()
+    matrix = matrix.map(function (n) { return Number(n) })
+
+    const x = matrix[12]
+    const y = matrix[13]
+    const z = translate3d
+
+    return new Translate3d(x, y, z)
+  }

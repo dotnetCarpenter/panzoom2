@@ -1,9 +1,8 @@
 import Point from '../models/Point'
-import ListeningManager from '../ListeningManager'
 
 class Pinch {
   constructor (options) {
-    this.threshold = options.threshold
+    this.threshold = options.pinchThreshold
     this.el = null
     this.lastTouches = null
     this.lastDistance = null
@@ -98,7 +97,7 @@ class Pinch {
 
           // console.log(scale)
           const pinchEventData = {
-            focus: currentFocus,
+            point: currentFocus,
             scale: pinchOutwards ? scale : -scale,
             focusAfterScale: new Point({ x: -lastFocus.x, y: -lastFocus.y })
           }

@@ -1,21 +1,63 @@
 'use strict'
 
 const listenButton = document.getElementById('listenButton')
-const scene = document.querySelector('.container')
-const stage = document.querySelector('.stage')
+const container = document.querySelector('.container')
+const scene = document.querySelector('.scene')
 
-let options = new panzoom.Options({
+const options = {
   bounds: scene.getBoundingClientRect(),
   zoomFactor: 0.03,
-  threshold: .3,
-  el: scene
+  pinchThreshold: .3,
+  world: container,
+  scene: scene
+}
+
+const pinch = new panzoom.Pinch({
+  threshold: options.pinchThreshold
 })
-const panzoomAction = panzoom.referents.get('panzoom')
+const wheel = new panzoom.Wheel({
+  zoomFactor: options.zoomFactor
+})
+const pan = new panzoom.Pan()
+
+const panAction = panzoom.referents.get('move')
+// panAction.with('pan')
+panAction.setOptions(options)
+
+const panzoomAction = panzoom.referents.get('zoom')
+// panzoomAction.with('pintch', 'wheel')
 panzoomAction.setOptions(options)
 
+panzoomAction.on('wheelDelta', function (event) {
+  unlistenPan()
+  const point = event.point
+  panzoomAction.zoom(point.x, point.y, event.scale)
+    .then(listenPan)
+})
+
+panzoomAction.on('pinch', function (event) {
+  unlistenPanzoom()
+  const point = event.point
+  panzoomAction.zoom(point.x, point.y, event.scale)
+    .then(listenPanzoom)
+})
+
 listenButton.onclick = function () {
-  if (panzoomAction.isListening) panzoomAction.unlisten()
-  else panzoomAction.listen()
+  if (panzoom.isListening) panzoom.unlisten()
+  else panzoom.listen()
 
   listenButton.textContent = panzoomAction.isListening ? 'Unlisten' : 'Listen'
+}
+
+function listenPan () {
+  panAction.listen()
+}
+function unlistenPan () {
+  panAction.unlisten()
+}
+function listenPanzoom () {
+  panzoomAction.listen()
+}
+function unlistenPanzoom () {
+  panzoomAction.unlisten()
 }

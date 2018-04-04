@@ -1,5 +1,12 @@
 import Observer from './mixins/Observer'
-import Options from './models/Options'
+
+import Swipe from './gestures/Swipe'
+import Pinch from './gestures/Pinch'
+import Pan from './gestures/Pan'
+import Wheel from './gestures/Wheel'
+
+import Zoom from './referents/Zoom'
+import Move from './referents/Move'
 
 /* detect passive option for event listeners */
 let supportsPassiveOption = false
@@ -27,6 +34,25 @@ class PanZoom {
     this.pinch = null
     this.pan = null
     this.isListening = false
+
+    this.referents = new Map([
+      ['zoom', Zoom],
+      ['move', Move]
+    ])
+    this.gestures = new Map([
+      ['pinch', Pinch],
+      ['wheel', Wheel],
+      ['swipe', Swipe],
+      ['pan', Pan]
+    ])
+  }
+
+  with (...gestures) {
+    this.gestures = gestures
+  }
+
+  setOptions (options) {
+    this.options = options
   }
 
   listen () {
@@ -34,10 +60,10 @@ class PanZoom {
 
     if (this.isListening) return
 
-    for (let name of this.options.configurations.keys()) {
-      const factory = this.options.getFactory(name)
+    for (let [name, options] of this.options.configurations.entries()) {
+      const factory = this.gestures.get(name)
 
-      this[name] = new factory()
+      this[name] = new factory(options)
       this[name].setElement(this.el)
       this[name].listen(this.fire)
     }
@@ -69,18 +95,18 @@ function createPanzoom (el, options) {
   const defaultOptions = {
     min: 0.5,
     max: 20,
-    gestures: [
+    configurations: new Map([
       ['swipe', { distance: '70%' }],
-      ['pinch', { threshold: .2 }],
+      ['pinch', { pinchThreshold: .2 }],
       ['pan', {}],
       ['wheel', { zoomFactor: 0.03 }],
-    ],
+    ]),
     actions: [
       ['zoom', ['wheel', 'pinch']]
     ]
   }
 
-  const panzoom = new PanZoom(new Options(defaultOptions))
+  const panzoom = new PanZoom(options || defaultOptions)
   Object.assign(panzoom, Observer()) // add mixins
   panzoom.setElement(el)
   panzoom.listen()
