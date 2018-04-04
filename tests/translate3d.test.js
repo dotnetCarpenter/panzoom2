@@ -13,7 +13,7 @@ test('Translate3d returns a CSS string width default values', t => {
   t.plan(1)
   const translate3d = new Translate3d()
 
-  const expected = 'translate3d(0px, 0px, 0px);'
+  const expected = 'matrix(0, 0, 0, 0, 0, 0)'
   const actual = String(translate3d)
 
   t.equal(actual, expected)
@@ -23,7 +23,7 @@ test('Translate3d returns a CSS string with parameter values', t => {
   t.plan(1)
   const translate3d = new Translate3d(100, 200, 0.5)
 
-  const expected = 'translate3d(100px, 200px, 0.5px);'
+  const expected = 'matrix(0.5, 0, 0, 0.5, 100, 200)'
   const actual = String(translate3d)
 
   t.equal(actual, expected)
@@ -43,7 +43,7 @@ test('Translate3d returns a CSS string with percentage to pixel values', t => {
   const translate3d = new Translate3d('100%', '200%', 0.5)
   translate3d.setElement(div)
 
-  const expected = 'translate3d(200px, 400px, 0.5px);'
+  const expected = 'matrix(0.5, 0, 0, 0.5, 200, 400)'
   const actual = String(translate3d)
 
   t.equal(actual, expected)
@@ -62,11 +62,23 @@ test('Translate3d can translate percentage values to pixel values', t => {
   t.match(actual, expected)
 })
 
+// test('Translate3d can parse a css style string', t => {
+//   t.plan(1)
+
+//   const translate3d = Translate3d.parseMatrix3d('matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 200, 400, 0.5, 1)')
+//   translate3d.setElement(div)
+
+//   const expected = { tx: 200, ty: 500, tz: 0.5 }
+//   const actual = translate3d.toObject()
+
+//   t.match(actual, expected)
+// })
+
 function createMockDiv (width, height) {
   const div = global.document.createElement('div')
   Object.assign(div.style, {
-    width: width + 'px',
-    height: height + 'px',
+    width: width + '',
+    height: height + '',
   })
 
   // we have to mock this for jsdom.

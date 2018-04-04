@@ -1,4 +1,5 @@
 import Point from '../models/Point'
+import ListeningManager from '../ListeningManager'
 
 class Pinch {
   constructor (options) {

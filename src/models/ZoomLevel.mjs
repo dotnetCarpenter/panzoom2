@@ -1,4 +1,3 @@
-
 class ZoomLevel {
   constructor (levels = []) {
     this.map = new Map(levels)

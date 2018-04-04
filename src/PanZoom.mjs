@@ -63,10 +63,24 @@ class PanZoom {
   }
 }
 
-function createPanzoom (el, options = {}) {
+function createPanzoom (el, options) {
   if (!el) throw new TypeError('the first argument to createPanzoom must be an Element')
 
-  const panzoom = new PanZoom(new Options(options))
+  const defaultOptions = {
+    min: 0.5,
+    max: 20,
+    gestures: [
+      ['swipe', { distance: '70%' }],
+      ['pinch', { threshold: .2 }],
+      ['pan', {}],
+      ['wheel', { zoomFactor: 0.03 }],
+    ],
+    actions: [
+      ['zoom', ['wheel', 'pinch']]
+    ]
+  }
+
+  const panzoom = new PanZoom(new Options(defaultOptions))
   Object.assign(panzoom, Observer()) // add mixins
   panzoom.setElement(el)
   panzoom.listen()

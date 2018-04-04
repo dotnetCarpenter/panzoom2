@@ -24,18 +24,7 @@ class Translate3d {
   }
 
   toString () {
-    switch (this.unit) {
-      case '%':
-        if (!this.el) throw new Error('Translate3d.el must be set')
-
-        const matrix = this.toObject()
-
-        return `translate3d(${matrix.tx}px, ${matrix.ty}px, ${matrix.tz}px);`
-      case 'px':
-        return `translate3d(${this.tx}px, ${this.ty}px, ${this.tz}px);`
-      default:
-        throw new Error('Not implemented')
-    }
+    return Translate3d.getMatrixString(this.toObject())
   }
 
   toObject () {
@@ -48,6 +37,10 @@ class Translate3d {
     return this.unit === '%'
       ? this.percentToPixelMatrix(/* this.el, matrix */)
       : matrix
+  }
+
+  static getMatrixString (transform) {
+    return `matrix(${transform.tz}, 0, 0, ${transform.tz}, ${transform.tx}, ${transform.ty})`
   }
 }
 

@@ -10,14 +10,7 @@ class Options {
 
     if (gestures && !Array.isArray(gestures)) throw new TypeError('gestures must be an array')
 
-    this.configurations = gestures
-      ? new Map(gestures)
-      : new Map([
-        ['swipe', { distance: '70%' }],
-        ['pinch', { threshold: .2 }],
-        ['pan', {}],
-        ['wheel', { zoomFactor: 0.03 }],
-      ])
+    this.configurations = new Map(gestures)
 
     this.factories = new Map([
       ['swipe', opt => new Swipe(opt || this.configurations.get('swipe'))],
