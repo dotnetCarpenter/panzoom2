@@ -61,7 +61,7 @@ function pinchEventUnpack (event) {
 
 function pinchUnpack (pinchEvent) {
   return pinchEvent.scale.toFixed(2)
-    + ' (' + pinchEvent.focus.x.toFixed(1) + ', ' + pinchEvent.focus.y.toFixed(1) + ') ('
+    + ' (' + pinchEvent.point.x.toFixed(1) + ', ' + pinchEvent.point.y.toFixed(1) + ') ('
     + pinchEvent.focusAfterScale.x.toFixed(1) + ', ' + pinchEvent.focusAfterScale.y.toFixed(1) + ')'
 }
 

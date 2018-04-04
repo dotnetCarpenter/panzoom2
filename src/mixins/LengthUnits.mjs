@@ -12,6 +12,24 @@ function percentToPixel (percentage, side = 'width') {
   return box[side] * percentage * .01
 }
 
+function remToPixel (rem) {
+  const fontSize = window.getComputedStyle(documentElement).fontSize
+  return rem * fontSize
+}
+
+function emToPixel (em) {
+  const fontSize = window.getComputedStyle(this.el).fontSize
+  return em * fontSize
+}
+
+function cmToPixel (cm) {
+  return cm * 96/2.54
+}
+
+function mmToPixel (mm) {
+  return cmToPixel(mm) / 10
+}
+
 function getUnit (value) {
   return String(value).indexOf('%') > -1 ? '%' : 'px'
 }
