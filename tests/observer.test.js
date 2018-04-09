@@ -115,3 +115,22 @@ test('Observer can have different event types and listeners', t => {
     t.ok(true)
   }
 })
+
+test('Observer returns a list of listener types via currentListenerTypes', t => {
+  t.plan(3)
+
+  const observer = createObserver()
+  const expected = ['wheel']
+
+  observer.on('wheel', noop)
+  t.match(observer.currentListenerTypes, expected, 'should match [wheel]')
+
+  observer.on('mousedown', noop)
+  expected.push('mousedown')
+  t.match(observer.currentListenerTypes.sort(), expected.sort(), 'should match [wheel, mousedown]')
+
+  observer.on('wheel', noop)
+  t.strictSame(observer.currentListenerTypes.sort(), expected.sort(), 'should match [wheel, mousedown]')
+
+  function noop () {}
+})
