@@ -17,8 +17,8 @@ const zoom = new Zoom()
 /* referent */
 function Zoom (el, options) {
   const manager = new Manager({el:el})
-  const wheel = new Wheel({eventName: 'zoom'}) /* gesture */
-  const pinch = new Pinch({eventName: 'zoom'}) /* gesture */
+  const wheel = new Wheel({eventName: 'zoom'})
+  const pinch = new Pinch({eventName: 'zoom'})
 
   manager.addReferent('zoom', action)
 
@@ -30,6 +30,7 @@ function Zoom (el, options) {
 
 function Manager (options) {
   const el = options.el
+  const dispatchEvents = options.dispatchEvents || false
 
   // #region gestures
   /*
@@ -45,26 +46,47 @@ function Manager (options) {
   // #endregion
   const eventListeners = {}
 
-  //TODO: mixin observer to an object that attach at most on event type
+  //TODO: mixin observer to an object that attach at most one event type
   // trigger events via fire
   // normalize the event but send the originale event too
   // Let the gesture get access to observer directly
-  const observer = Object.seal(panzoom.Observer())
+  const internalPublisher = panzoom.Observer()
+  internalPublisher.on = aspect(registrate, internalPublisher.on, internalPublisher)
+  internalPublisher.once = aspect(registrate, internalPublisher.once, internalPublisher)
+  internalPublisher.promise = aspect(registrate, internalPublisher.promise, internalPublisher)
 
-  const api = Object.freeze({
-    addReferent: function (referent) {},
-    registrate: function (eventNames, f) {
-      eventNames.forEach(function (eventName) {
-        observer.once(eventName, f)
-      })
+  function aspect (wrapper, originale, context) {
+    return function () {
+      const args = [].slice.call(arguments, 0)
+      // addEvent(eventName, dispatch)
+      wrapper.apply(null, args)
+      return originale.apply(context, args)
     }
-  })
-
-  function addEvent (name) {
-    el.addEventListener(name, dispatch)
   }
 
-  function dispatch (event) {}
+  function registrate (eventName, success, error) {
+    // TODO: map eventlisteners
+    const listeners = eventListeners[eventName] || []
+
+    listeners.push()
+
+    eventListeners[eventName] = listeners
+  }
+
+  function addEvent () {
+    el.addEventListener(name, dispatch, true)
+  }
+
+  function dispatch (ev) {
+    const event = Object.assign({
+      originale: ev
+    }, normalizeEvent(ev))
+    internalPublisher.fire(event)
+  }
+
+  const api = Object.assign({
+    addReferent: function (referent) {}
+  }, panzoom.Observer())
 
   // from Pinch.js
   function normalizeEvent(ev) {
@@ -103,7 +125,7 @@ function Manager (options) {
 /* gestures */
 function Wheel () {}
 Wheel.prototype.setup = function (manager) {
-  manager.registrate(['wheel'], this.listen)
+  manager.on('wheel', this.listen)
 }
 Wheel.prototype.listen = function () {}
 Wheel.prototype.moveHandler = function () {}
@@ -113,7 +135,7 @@ Wheel.prototype.destroy = function () {}
 
 function Pinch () {}
 Pinch.prototype.setup = function (manager) {
-  manager.registrate(['touchstart'], this.listen)
+  manager.on('touchstart', this.listen)
 }
 Pinch.prototype.listen = function () {}
 Pinch.prototype.moveHandler = function () {}
