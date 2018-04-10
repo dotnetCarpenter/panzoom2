@@ -10,6 +10,11 @@ npm i panzoom2
 ```
 _[panzoom 2 on npm](https://www.npmjs.com/package/panzoom2)_
 
+
+## Supported browsers
+
+The project aim to support every [browser that has more than 1% market share, plus IE11](http://browserl.ist/?q=IE+11%2C+%3E+1%25).
+
 ## Internet Explorer 11
 
 Required polyfills:

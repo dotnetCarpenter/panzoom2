@@ -44,7 +44,7 @@ class Pan {
       pan.lastTouches = startEvent
 
       // console.log(startEvent)
-      this.detecting = true
+      pan.detecting = true
 
       pan.el.addEventListener(startEvent.type.move, moveHandler)
       pan.el.addEventListener(startEvent.type.end, endHandler) // removing event listeners from DOM via this

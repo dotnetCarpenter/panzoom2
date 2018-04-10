@@ -44,7 +44,7 @@ class Wheel {
       if (event.deltaY === 0) return
 
       wheel.unlisten()
-      this.detecting = true
+      wheel.detecting = true
 
       const wheelEventData = {
         point: normalizeEvent(event).touches[0],

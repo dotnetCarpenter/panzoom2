@@ -36,7 +36,7 @@ class Pinch {
 
   static action (pinch, action) {
     return event => {
-      event.preventDefault()
+      // event.preventDefault()
 
       pinch.unlisten()
 
@@ -48,7 +48,7 @@ class Pinch {
       }
       pinch.lastTouches = startEvent
 
-      this.detecting = true
+      pinch.detecting = true
 
       pinch.el.addEventListener(startEvent.type.move, moveHandler)
       pinch.el.addEventListener(startEvent.type.end, endHandler) // removing event listeners from DOM via this
