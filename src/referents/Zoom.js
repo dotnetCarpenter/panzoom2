@@ -1,23 +1,29 @@
-import Pinch from '../gestures/Pinch'
-import Wheel from '../gestures/Wheel'
+import pinch from '../gestures/pinch2'
+import wheel from '../gestures/wheel2'
 
 export default {
   gestures: {
-    Pinch,
-    Wheel
+    pinch,
+    wheel
   },
 
   // required custom properties from option object
   props: {},
 
   // life cycle handlers
-  setup () {
-    this.$el.on('pinch')
+  listen () {
+    this.$el.on('pinch', this.transform)
   },
-  moveHandler () {},
-  endHandler () {},
   unlisten () {},
-  destroy () {},
+  destroy () {
+    this.$gestures.pinch.destroy()
+    this.$gestures.wheel.destroy()
+  },
+
+  // private methods
+  transform (event) {
+    console.log('transform', event)
+  },
 
   // public methods to expose
   methods: {
