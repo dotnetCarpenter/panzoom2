@@ -1,6 +1,11 @@
 import Translate3d from './mixins/Translate3d'
 import Observer from './mixins/Observer'
 
+import Point from './models/Point'
+import eventTypes from './models/EventTypes'
+
+import { compose } from './utils'
+
 import Pinch from './gestures/Pinch'
 import Pan from './gestures/Pan'
 import Wheel from './gestures/Wheel'
@@ -11,19 +16,22 @@ import Zoom from './referents/Zoom'
 function panzoom (el, options) {
   if (!el) throw new TypeError('the first argument to panzoom must be an Element')
 
-  const zoom = initReferent(Zoom, options)
+  const zoom = initReferent(Zoom, el, options)
 
   zoom.listen()
 
   return zoom
 }
 
-function initReferent (referent, options) {
+function initReferent (referent, el, options) {
   if (!referent.gestures) {
-    throw new Error('Referent most have gestures')
+    throw new Error('Referent must have gestures')
   }
 
   const observer = Observer()
+  const eventNotifier = compose(event => {
+    observer.fire(event.type, event)
+  }, normalizeEvent)
 
   const ref = Object.assign(
     {
@@ -32,6 +40,11 @@ function initReferent (referent, options) {
       listen () {
         proxy('listen', this.$gestures)
         referent.listen.call(this)
+        this.$el.currentListenerTypes.forEach(type => {
+          if (eventTypes.indexOf(type) > -1) {
+            addEvent(el, type, eventNotifier)
+          }
+        })
       },
       unlisten () {
         proxy('unlisten', referent, this.$gestures)
@@ -48,17 +61,37 @@ function initReferent (referent, options) {
   return Object.seal(ref)
 }
 
+function initGestures (gestures, observer) {
+  Object.values(gestures).forEach(gesture => {
+    gesture.$el = observer
+  })
+  return gestures
+}
+
 function proxy (methodName, dependents) {
   Object.values(dependents).forEach(gesture => {
     gesture[methodName]()
   })
 }
 
-function initGestures (gestures, observer) {
-  Object.values(gestures).forEach(gesture => {
-    gesture.$el = observer
-  })
-  return gestures
+function addEvent (el, type, listener) {
+  el.addEventListener(type, listener, true)
+}
+
+function removeEvent (el, type, listener) {}
+
+function normalizeEvent (nativeEvent) {
+  const event = {
+    touches: nativeEvent.touches
+      ? Array.prototype.map.call(
+          nativeEvent.touches,
+          t => new Point({ x: t.pageX, y: t.pageY }))
+      : [new Point({ x: nativeEvent.pageX, y: nativeEvent.pageY })]
+    ,
+    type: nativeEvent.type
+  }
+
+  return event
 }
 
 panzoom.Translate3d = Translate3d

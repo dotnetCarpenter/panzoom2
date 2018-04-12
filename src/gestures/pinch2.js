@@ -7,12 +7,15 @@ export default {
   // life cycle handlers
   listen () {
     this.$el.on('touchstart', this.moveHandler)
+    console.log('pinch2::listen')
   },
   unlisten () {},
   destroy () {},
 
   // private methods
-  moveHandler () {},
+  moveHandler (event) {
+    console.log('pinch2::moveHandler', event)
+  },
   endHandler () {},
 
   // public methods

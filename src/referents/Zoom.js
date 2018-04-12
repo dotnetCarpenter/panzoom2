@@ -13,6 +13,7 @@ export default {
   // life cycle handlers
   listen () {
     this.$el.on('pinch', this.transform)
+    console.log('zoom::listen')
   },
   unlisten () {},
   destroy () {
