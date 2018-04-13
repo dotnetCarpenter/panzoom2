@@ -6,7 +6,8 @@ export default {
 
   // life cycle handlers
   listen () {
-    this.$el.on('wheel', this.moveHandler)
+    const moveHandler = this.moveHandler.bind(this)
+    this.$el.on('wheel', moveHandler)
     console.log('wheel2::listen')
   },
   unlisten () {},
@@ -14,7 +15,7 @@ export default {
 
   // private methods
   moveHandler (event) {
-    console.log('wheel2::moveHandler', event)
+    console.log('wheel2::moveHandler', event, this)
   },
   endHandler () {},
 

@@ -14,7 +14,7 @@ export default {
 
   // private methods
   moveHandler (event) {
-    console.log('pinch2::moveHandler', event)
+    console.log('pinch2::moveHandler', event, this)
   },
   endHandler () {},
 
