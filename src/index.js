@@ -66,30 +66,23 @@ function initGestures (gestures, observer) {
     // Explicitly bind gesture functions
     // to gesture even object, even
     // if they are called from the observer.
-    for (let key in gesture) {
-      if (gesture[key] instanceof Function) {
-        gesture[key] = gesture[key].bind(gesture)
-      }
-    }
+    bindMethods(gesture)
+
     gesture.$el = observer
-    // // FIXME: architecture
-    // // add wrapper to on to fix `this` context in gestures
-    // const listeners = new Map()
-    // gesture.$el.on = (eventName, f, reject) => {
-    //   debugger
-    //   const bindedHandler = f.bind(gesture)
-    //   const bindedErrorHandler = reject && reject.bind(gesture)
-    //   listeners.set(f, bindedHandler)
-    //   observer.on(eventName, bindedHandler, bindedErrorHandler)
-    // }
-    // gesture.$el.off = (eventName, f) => {
-    //   const bindedHandler = listeners.get(f)
-    //   observer.off(eventName, bindedHandler)
-    //   listeners.delete(f)
-    // }
-    // // end wrapper
   })
   return gestures
+}
+
+function bindMethods (object, context) {
+  if (!context) context = object
+
+  for (let key in object) {
+    if (key === 'methods') bindMethods(object['methods'], object)
+    if (object[key] instanceof Function) {
+      console.log(key)
+      object[key] = object[key].bind(context)
+    }
+  }
 }
 
 function proxy (methodName, dependents) {

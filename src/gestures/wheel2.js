@@ -6,10 +6,7 @@ export default {
 
   // life cycle handlers
   listen () {
-    // const moveHandler = this.moveHandler.bind(this)
-    const moveHandler = this.moveHandler
-    this.$el.on('wheel', moveHandler)
-    this.$el.on('wheel', this.methods.zoom)
+    this.$el.on('wheel', this.moveHandler)
     console.log('wheel2::listen')
   },
   unlisten () {},
