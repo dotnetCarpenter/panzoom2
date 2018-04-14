@@ -6,7 +6,6 @@ function Observer () {
   return {
     on (eventName, f, reject) {
       if (!(reject instanceof Function)) reject = f
-
       listeners.push([eventName, f, reject])
     },
 

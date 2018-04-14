@@ -63,23 +63,31 @@ function initReferent (referent, el, options) {
 
 function initGestures (gestures, observer) {
   Object.values(gestures).forEach(gesture => {
+    // Explicitly bind gesture functions
+    // to gesture even object, even
+    // if they are called from the observer.
+    for (let key in gesture) {
+      if (gesture[key] instanceof Function) {
+        gesture[key] = gesture[key].bind(gesture)
+      }
+    }
     gesture.$el = observer
-    // FIXME: architecture
-    // add wrapper to on to fix `this` context in gestures
-    const listeners = new Map()
-    gesture.$el.on = (eventName, f, reject) => {
-      debugger
-      const bindedHandler = f.bind(gesture)
-      const bindedErrorHandler = reject && reject.bind(gesture)
-      listeners.set(f, bindedHandler)
-      observer.on(eventName, bindedHandler, bindedErrorHandler)
-    }
-    gesture.$el.off = (eventName, f) => {
-      const bindedHandler = listeners.get(f)
-      observer.off(eventName, bindedHandler)
-      listeners.delete(f)
-    }
-    // end wrapper
+    // // FIXME: architecture
+    // // add wrapper to on to fix `this` context in gestures
+    // const listeners = new Map()
+    // gesture.$el.on = (eventName, f, reject) => {
+    //   debugger
+    //   const bindedHandler = f.bind(gesture)
+    //   const bindedErrorHandler = reject && reject.bind(gesture)
+    //   listeners.set(f, bindedHandler)
+    //   observer.on(eventName, bindedHandler, bindedErrorHandler)
+    // }
+    // gesture.$el.off = (eventName, f) => {
+    //   const bindedHandler = listeners.get(f)
+    //   observer.off(eventName, bindedHandler)
+    //   listeners.delete(f)
+    // }
+    // // end wrapper
   })
   return gestures
 }
