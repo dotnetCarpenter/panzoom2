@@ -18,9 +18,6 @@ export default {
   },
   endHandler () {},
 
-  // public methods
-  methods: {
-    zoom (point, multiplier) {}
-  }
+  zoom (point, multiplier) {}
 
 }

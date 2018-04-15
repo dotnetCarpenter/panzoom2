@@ -34,29 +34,27 @@ function initReferent (referent, el, options) {
   }, normalizeEvent)
 
   const ref = Object.assign(
-    {
-      $el: observer,
-      $gestures: initGestures(referent.gestures, observer),
-      listen () {
-        proxy('listen', this.$gestures)
-        referent.listen.call(this)
-        this.$el.currentListenerTypes.forEach(type => {
-          if (eventTypes.indexOf(type) > -1) {
-            addEvent(el, type, eventNotifier)
-          }
-        })
-      },
-      unlisten () {
-        proxy('unlisten', referent, this.$gestures)
-        referent.unlisten.call(this)
-      },
-      destroy () {
-        proxy('destroy', referent, this.$gestures)
-        referent.destroy.call(this)
-      }
+    bindMethods(referent.methods, referent), {
+    $el: observer,
+    $gestures: initGestures(referent.gestures, observer),
+    listen () {
+      proxy('listen', this.$gestures)
+      referent.listen.call(this)
+      this.$el.currentListenerTypes.forEach(type => {
+        if (eventTypes.indexOf(type) > -1) {
+          addEvent(el, type, eventNotifier)
+        }
+      })
     },
-    referent.methods
-  )
+    unlisten () {
+      proxy('unlisten', this.$gestures)
+      referent.unlisten.call(this)
+    },
+    destroy () {
+      proxy('destroy', this.$gestures)
+      referent.destroy.call(this)
+    }
+  })
 
   return Object.seal(ref)
 }
@@ -66,9 +64,10 @@ function initGestures (gestures, observer) {
     // Explicitly bind gesture functions
     // to gesture even object, even
     // if they are called from the observer.
-    bindMethods(gesture)
+    gesture = Object.assign(bindMethods(gesture), {
+      $el: observer
+    }, gesture.methods)
 
-    gesture.$el = observer
   })
   return gestures
 }
@@ -77,12 +76,13 @@ function bindMethods (object, context) {
   if (!context) context = object
 
   for (let key in object) {
-    if (key === 'methods') bindMethods(object['methods'], object)
+    // if (key === 'methods') return bindMethods(object['methods'], object)
     if (object[key] instanceof Function) {
-      console.log(key)
       object[key] = object[key].bind(context)
     }
   }
+
+  return object
 }
 
 function proxy (methodName, dependents) {
@@ -105,7 +105,11 @@ function normalizeEvent (nativeEvent) {
           t => new Point({ x: t.pageX, y: t.pageY }))
       : [new Point({ x: nativeEvent.pageX, y: nativeEvent.pageY })]
     ,
-    type: nativeEvent.type
+    type: nativeEvent.type,
+    deltaY: nativeEvent.deltaY,
+    preventDefault () {
+      nativeEvent.preventDefault()
+    }
   }
 
   return event

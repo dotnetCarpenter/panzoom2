@@ -1,28 +1,25 @@
 import Point from '../models/Point'
 
 export default {
-  // required custom properties from option object
-  props: {},
-
   // life cycle handlers
   listen () {
     this.$el.on('wheel', this.moveHandler)
     console.log('wheel2::listen')
   },
-  unlisten () {},
-  destroy () {},
-
-  // private methods
-  moveHandler (event) {
-    console.log('wheel2::moveHandler', event, this)
+  unlisten () {
+    console.log('wheel2::unlisten')
+    this.$el.off('wheel', this.moveHandler)
   },
-  endHandler () {},
+  destroy () {
+    this.$el.off('wheel', this.moveHandler)
+  },
 
-  // public methods
-  methods: {
-    zoom (point, multiplier) {
-      console.log('zoom', this)
-    }
+  moveHandler (event) {
+    // touchpads can give event.deltaY == 0, which is something we never want to handle
+    if (event.deltaY === 0) return
+
+    event.point = event.touches[0]
+    this.$el.fire('wheelEventData', event)
   }
 
 }
