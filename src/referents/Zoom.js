@@ -1,5 +1,6 @@
 import pinch from '../gestures/pinch2'
 import wheel from '../gestures/wheel2'
+import Translate3d from '../models/Translate3d'
 
 export default {
   gestures: {
@@ -14,12 +15,15 @@ export default {
 
   // life cycle handlers
   listen () {
+    console.log('zoom::listen')
+
     this.$el.on('wheelEventData', this.transform, error => {
       console.error(error)
     })
-    console.log('zoom::listen')
   },
-  unlisten () {},
+  unlisten () {
+    console.log('zoom::unlisten')
+  },
 
   destroy () {
     this.$gestures.pinch.destroy()
@@ -29,18 +33,16 @@ export default {
   methods: {
 
     transform (event) {
-      console.log('transform')
       event.preventDefault()
 
-      const wheelEventData = {
-        point: event.point,
-        scale: this.options.zoomFactor * -event.deltaY
-      }
-      console.log(wheelEventData)
+      this.zoom(event.point, this.$options.zoomFactor * -event.deltaY)
     },
 
     zoom (point, multiplier) {
-      console.log('zoom', this)
+      this.tx = point.x
+      this.ty = point.y
+      this.tz = multiplier
+      this.el.style.transform = Translate3d.getMatrixString(this)
     }
   }
 

@@ -1,6 +1,6 @@
-import Translate3d from './mixins/Translate3d'
 import Observer from './mixins/Observer'
 
+import Translate3d from './models/Translate3d'
 import Point from './models/Point'
 import eventTypes from './models/EventTypes'
 
@@ -33,13 +33,16 @@ function initReferent (referent, el, options) {
     observer.fire(event.type, event)
   }, normalizeEvent)
 
-  const ref = Object.assign(
-    bindMethods(referent.methods, referent), {
+  const ref = Object.assign(new Translate3d,
+    referent.methods, {
     $el: observer,
+    $options: options || referent.options,
     $gestures: initGestures(referent.gestures, observer),
     listen () {
       proxy('listen', this.$gestures)
+
       referent.listen.call(this)
+
       this.$el.currentListenerTypes.forEach(type => {
         if (eventTypes.indexOf(type) > -1) {
           addEvent(el, type, eventNotifier)
@@ -55,6 +58,10 @@ function initReferent (referent, el, options) {
       referent.destroy.call(this)
     }
   })
+
+  bindMethods(ref)
+
+  ref.setElement(el)
 
   return Object.seal(ref)
 }
@@ -109,7 +116,8 @@ function normalizeEvent (nativeEvent) {
     deltaY: nativeEvent.deltaY,
     preventDefault () {
       nativeEvent.preventDefault()
-    }
+    },
+    target: nativeEvent.target
   }
 
   return event

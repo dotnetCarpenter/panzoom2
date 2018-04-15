@@ -1,4 +1,4 @@
-import * as units from './LengthUnits'
+import * as units from '../mixins/LengthUnits'
 
 /**
  * tz Is a <length> representing the z component of the translating vector. It can't be a <percentage> value; in that case the property containing the transform is considered invalid.
@@ -9,7 +9,7 @@ class Translate3d {
 
     this.tx = parseFloat(tx || 0)
     this.ty = parseFloat(ty || 0)
-    this.tz = parseFloat(tz || 0)
+    this.tz = parseFloat(tz || 1)
 
     this.unit = this.getUnit(tx)
     this.el = null
