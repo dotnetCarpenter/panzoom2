@@ -23,4 +23,4 @@ test('createPanzoom creates a PanZoom object', t => {
   const content = document.querySelector('.content')
 
   t.ok(panzoom.createPanzoom(content) instanceof PanZoom)
-})
+}, {skip: true})

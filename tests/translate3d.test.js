@@ -13,7 +13,7 @@ test('Translate3d returns a CSS string width default values', t => {
   t.plan(1)
   const translate3d = new Translate3d()
 
-  const expected = 'matrix(0, 0, 0, 0, 0, 0)'
+  const expected = 'matrix(1, 0, 0, 1, 0, 0)'
   const actual = String(translate3d)
 
   t.equal(actual, expected)
