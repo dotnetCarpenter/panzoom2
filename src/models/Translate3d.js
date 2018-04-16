@@ -1,9 +1,14 @@
 import * as units from '../mixins/LengthUnits'
 
-/**
- * tz Is a <length> representing the z component of the translating vector. It can't be a <percentage> value; in that case the property containing the transform is considered invalid.
- */
 class Translate3d {
+/**
+ * @param {number} tx
+ * @param {number} tx
+ * @param {number} tz Is a <length> representing the z
+ * component of the translating vector. It can't be a
+ * <percentage> value; in that case the property
+ * containing the transform is considered invalid.
+ */
   constructor (tx, ty, tz) {
     Object.assign(this, units)
 

@@ -35,15 +35,28 @@ export default {
     transform (event) {
       event.preventDefault()
 
-      this.zoom(event.point, this.$options.zoomFactor * -event.deltaY)
+      this.zoom(event.point, getScaleMultiplier(event.deltaY, this.$options.zoomFactor))
     },
 
     zoom (point, multiplier) {
-      this.tx = point.x
-      this.ty = point.y
-      this.tz = multiplier
+      this.tx = point.x - multiplier * (point.x - this.tx)
+      this.ty = point.y - multiplier * (point.y - this.ty)
+      this.tz *= multiplier
       this.el.style.transform = Translate3d.getMatrixString(this)
     }
   }
 
+}
+
+function getScaleMultiplier(delta, zoomFactor) {
+  let scaleMultiplier = 1
+  if (delta > 0) {
+    // zoom out
+    scaleMultiplier = (1 - zoomFactor)
+  } else if (delta < 0) {
+    // zoom in
+    scaleMultiplier = (1 + zoomFactor)
+  }
+
+  return scaleMultiplier
 }
