@@ -17,6 +17,7 @@ export default {
   listen () {
     console.log('zoom::listen')
 
+    this.el.style.transformOrigin = '0 0 0;'
     this.$el.on('wheelEventData', this.transform, error => {
       console.error(error)
     })

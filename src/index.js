@@ -33,31 +33,34 @@ function initReferent (referent, el, options) {
     observer.fire(event.type, event)
   }, normalizeEvent)
 
-  const ref = Object.assign(new Translate3d,
-    referent.methods, {
-    $el: observer,
-    $options: options || referent.options,
-    $gestures: initGestures(referent.gestures, observer),
-    listen () {
-      proxy('listen', this.$gestures)
+  const ref = Object.assign(
+    new Translate3d,
+    referent.methods,
+    {
+      $el: observer,
+      $options: options || referent.options,
+      $gestures: initGestures(referent.gestures, observer),
+      listen () {
+        proxy('listen', this.$gestures)
 
-      referent.listen.call(this)
+        referent.listen.call(this)
 
-      this.$el.currentListenerTypes.forEach(type => {
-        if (eventTypes.indexOf(type) > -1) {
-          addEvent(el, type, eventNotifier)
-        }
-      })
-    },
-    unlisten () {
-      proxy('unlisten', this.$gestures)
-      referent.unlisten.call(this)
-    },
-    destroy () {
-      proxy('destroy', this.$gestures)
-      referent.destroy.call(this)
+        this.$el.currentListenerTypes.forEach(type => {
+          if (eventTypes.indexOf(type) > -1) {
+            addEvent(el, type, eventNotifier)
+          }
+        })
+      },
+      unlisten () {
+        proxy('unlisten', this.$gestures)
+        referent.unlisten.call(this)
+      },
+      destroy () {
+        proxy('destroy', this.$gestures)
+        referent.destroy.call(this)
+      }
     }
-  })
+  )
 
   bindMethods(ref)
 
