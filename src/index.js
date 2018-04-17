@@ -28,61 +28,76 @@ function initReferent (referent, el, options) {
     throw new Error('Referent must have gestures')
   }
 
-  const observer = Observer()
+  // shared observer between a referent and all of its gestures
+  const hivemind = Observer()
+
+  const gestures = map(gesture => Object.assign(gesture, hivemind), referent.gestures)
+
   const eventNotifier = compose(event => {
-    observer.fire(event.type, event)
+    hivemind.fire(event.type, event)
   }, normalizeEvent)
 
   const ref = Object.assign(
-    new Translate3d,
-    referent.methods,
+    hivemind,
+    referent,
     {
-      $el: observer,
-      $options: options || referent.options,
-      $gestures: initGestures(referent.gestures, observer),
-      listen () {
-        proxy('listen', this.$gestures)
+      el,
+      options: options || referent.options,
+      listen (arg) {
+        gestures.forEach(gesture => {
+          gesture.listen(arg)
+        })
 
         referent.listen.call(this)
 
-        this.$el.currentListenerTypes.forEach(type => {
+        this.currentListenerTypes().forEach(type => {
           if (eventTypes.indexOf(type) > -1) {
             addEvent(el, type, eventNotifier)
           }
         })
       },
-      unlisten () {
-        proxy('unlisten', this.$gestures)
-        referent.unlisten.call(this)
+      unlisten (arg) {
+        gestures.forEach(gesture => {
+          gesture.unlisten(arg)
+        })
+
+        referent.unlisten()
+
+        this.currentListenerTypes().forEach(type => {
+          if (eventTypes.indexOf(type) > -1) {
+            removeEvent(el, type, eventNotifier)
+          }
+        })
       },
       destroy () {
-        proxy('destroy', this.$gestures)
-        referent.destroy.call(this)
+        gestures.forEach(gesture => {
+          gesture.destroy()
+        })
+        referent.destroy()
       }
     }
   )
 
-  bindMethods(ref)
-
-  ref.setElement(el)
+  // Object.assign(ref, bindMethods(referent.methods, ref))
 
   return Object.seal(ref)
 }
 
-function initGestures (gestures, observer) {
-  Object.values(gestures).forEach(gesture => {
-    // Explicitly bind gesture functions
-    // to gesture even object, even
-    // if they are called from the observer.
-    gesture = Object.assign(bindMethods(gesture), {
-      $el: observer
-    }, gesture.methods)
-
-  })
-  return gestures
+function each (f, list) {
+  for (let key in list) {
+    f(list[key], key)
+  }
 }
 
-function bindMethods (object, context) {
+function map (f, list) {
+  const m = []
+  each((value, key) => {
+    m.push(f(value, key))
+  }, list)
+  return m
+}
+
+/* function bindMethods (object, context) {
   if (!context) context = object
 
   for (let key in object) {
@@ -93,19 +108,15 @@ function bindMethods (object, context) {
   }
 
   return object
-}
-
-function proxy (methodName, dependents) {
-  Object.values(dependents).forEach(gesture => {
-    gesture[methodName]()
-  })
-}
+} */
 
 function addEvent (el, type, listener) {
   el.addEventListener(type, listener, true)
 }
 
-function removeEvent (el, type, listener) {}
+function removeEvent (el, type, listener) {
+  el.removeEventListener(type, listener, true)
+}
 
 function normalizeEvent (nativeEvent) {
   const event = {

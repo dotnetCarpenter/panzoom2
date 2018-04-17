@@ -6,7 +6,7 @@ export default {
 
   // life cycle handlers
   listen () {
-    this.$el.on('touchstart', this.moveHandler)
+    this.on('touchstart', this.moveHandler)
     console.log('pinch2::listen')
   },
   unlisten () {},
@@ -16,8 +16,6 @@ export default {
   moveHandler (event) {
     console.log('pinch2::moveHandler', event, this)
   },
-  endHandler () {},
-
-  zoom (point, multiplier) {}
+  endHandler () {}
 
 }

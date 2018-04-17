@@ -123,14 +123,14 @@ test('Observer returns a list of listener types via currentListenerTypes', t => 
   const expected = ['wheel']
 
   observer.on('wheel', noop)
-  t.match(observer.currentListenerTypes, expected, 'should match [wheel]')
+  t.match(observer.currentListenerTypes(), expected, 'should match [wheel]')
 
   observer.on('mousedown', noop)
   expected.push('mousedown')
-  t.match(observer.currentListenerTypes.sort(), expected.sort(), 'should match [wheel, mousedown]')
+  t.match(observer.currentListenerTypes().sort(), expected.sort(), 'should match [wheel, mousedown]')
 
   observer.on('wheel', noop)
-  t.strictSame(observer.currentListenerTypes.sort(), expected.sort(), 'should match [wheel, mousedown]')
+  t.strictSame(observer.currentListenerTypes().sort(), expected.sort(), 'should match [wheel, mousedown]')
 
   function noop () {}
 })

@@ -3,15 +3,15 @@ import Point from '../models/Point'
 export default {
   // life cycle handlers
   listen () {
-    this.$el.on('wheel', this.moveHandler)
+    this.on('wheel', this.moveHandler)
     console.log('wheel2::listen')
   },
   unlisten () {
     console.log('wheel2::unlisten')
-    this.$el.off('wheel', this.moveHandler)
+    this.off('wheel', this.moveHandler)
   },
   destroy () {
-    this.$el.off('wheel', this.moveHandler)
+    this.off('wheel', this.moveHandler)
   },
 
   moveHandler (event) {
@@ -19,7 +19,7 @@ export default {
     if (event.deltaY === 0) return
 
     event.point = event.touches[0]
-    this.$el.fire('wheelEventData', event)
+    this.fire('wheelEventData', event)
   }
 
 }

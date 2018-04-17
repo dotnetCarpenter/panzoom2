@@ -14,8 +14,8 @@ function Observer () {
       listeners.forEach(listener => {
         if (listener[0] === eventName) {
           try {
-            // listener[1].apply(listener[1], args)
-            listener[1](...args)
+            listener[1].apply(this, args)
+            // listener[1](...args)
           } catch (error) {
             listener[2](error)
           }
@@ -68,7 +68,7 @@ function Observer () {
       listeners = null
     },
 
-    get currentListenerTypes () {
+    currentListenerTypes () {
       return listeners
         .map(x => x[0])
         .reduce((a, b) => a.indexOf(b) > -1 ? a : a.concat([b]), [])
