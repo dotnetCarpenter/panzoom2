@@ -2,7 +2,7 @@ import pinch from '../gestures/pinch2'
 import wheel from '../gestures/wheel2'
 import Translate3d from '../models/Translate3d'
 
-const translate3d = new Translate3d(0, 0, 1)
+let translate3d = null
 
 export default {
   gestures: {
@@ -18,7 +18,7 @@ export default {
   // life cycle handlers
   listen () {
     console.log('zoom::listen')
-
+    translate3d = Translate3d.parse(this.el.style.transform)
     this.el.style.transformOrigin = '0 0 0;'
     this.on('wheelEventData', this.transform, error => {
       console.error(error)
