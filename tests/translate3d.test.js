@@ -62,17 +62,22 @@ test('Translate3d can translate percentage values to pixel values', t => {
   t.match(actual, expected)
 })
 
-// test('Translate3d can parse a css style string', t => {
-//   t.plan(1)
+test('Translate3d can parse a css style string', t => {
+  t.plan(3)
 
-//   const translate3d = Translate3d.parseMatrix3d('matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 200, 400, 0.5, 1)')
-//   translate3d.setElement(div)
+  const translate3d = Translate3d.parse('matrix(1.3, 0, 0, 1.3, 0, 0)')
 
-//   const expected = { tx: 200, ty: 500, tz: 0.5 }
-//   const actual = translate3d.toObject()
+  t.ok(translate3d instanceof Translate3d, '.parse() should return an instance of Translate3d')
 
-//   t.match(actual, expected)
-// })
+  let expected = { tx: 0, ty: 0, tz: 1.3 }
+  let actual = translate3d
+
+  t.match(actual, expected, ' should return a string identical to the parsed string')
+
+  expected = null
+  actual = Translate3d.parse('matrix(something very wrong)')
+  t.equal(actual, expected, '.parse() should return null for incorrect transform matrix')
+})
 
 function createMockDiv (width, height) {
   const div = global.document.createElement('div')

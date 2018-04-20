@@ -1,5 +1,16 @@
 import * as units from '../mixins/LengthUnits'
 
+const FLOATING = '(\\-?[\\d\\.e]+)'
+const COMMA_SPACE = '\\,?\\s*'
+const R_MATRIX = new RegExp(
+  '^matrix\\(' +
+  FLOATING + COMMA_SPACE +
+  FLOATING + COMMA_SPACE +
+  FLOATING + COMMA_SPACE +
+  FLOATING + COMMA_SPACE +
+  FLOATING + COMMA_SPACE +
+  FLOATING + '\\)$'
+)
 class Translate3d {
 /**
  * @param {number} tx
@@ -46,6 +57,13 @@ class Translate3d {
 
   static getMatrixString (transform) {
     return `matrix(${transform.tz}, 0, 0, ${transform.tz}, ${transform.tx}, ${transform.ty})`
+  }
+
+  static parse (cssTransform) {
+    const matrix = R_MATRIX.exec(cssTransform)
+    return matrix
+      ? new Translate3d(matrix[5], matrix[6], matrix[1])
+      : null
   }
 }
 
