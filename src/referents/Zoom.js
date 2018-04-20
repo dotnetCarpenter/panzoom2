@@ -19,6 +19,7 @@ export default {
   listen () {
     console.log('zoom::listen')
     translate3d = Translate3d.parse(this.el.style.transform)
+    // TODO: Figure what to do with transformOrigin
     this.el.style.transformOrigin = '0 0 0;'
     this.on('wheelEventData', this.transform, error => {
       console.error(error)
