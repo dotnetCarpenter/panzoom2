@@ -45,7 +45,6 @@ export default {
 
   destroy () {
     translate3d = null
-    this.gestures.forEach(g => { g.destroy() })
   },
 
   // methods: {

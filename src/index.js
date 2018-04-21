@@ -4,7 +4,7 @@ import Translate3d from './models/Translate3d'
 import Point from './models/Point'
 import eventTypes from './models/EventTypes'
 
-import { compose } from './utils'
+import { map, compose } from './utils'
 
 import Pinch from './gestures/Pinch'
 import Pan from './gestures/Pan'
@@ -38,7 +38,7 @@ function initReferent (referent, el, options) {
     hivemind.fire(event.type, event)
   }, normalizeEvent)
 
-  const proxy = Object.assign(
+  let proxy = Object.assign(
     hivemind,
     referent,
     {
@@ -46,13 +46,13 @@ function initReferent (referent, el, options) {
       options: options || referent.options,
       isListening: false,
       listen (arg) {
-        gestures.forEach(gesture => {
+        each(gestures, gesture => {
           gesture.listen(arg)
         })
 
         referent.listen.call(this)
 
-        this.currentListenerTypes().forEach(type => {
+        each(this.currentListenerTypes(), type => {
           if (eventTypes.indexOf(type) > -1) {
             addEvent(el, type, eventNotifier)
           }
@@ -61,46 +61,65 @@ function initReferent (referent, el, options) {
         this.isListening = true
       },
       unlisten (arg) {
-        gestures.forEach(gesture => {
+        removeNativeEvents(this.currentListenerTypes())
+
+        each(gestures, gesture => {
           gesture.unlisten(arg)
         })
 
         referent.unlisten.call(this)
 
-        this.currentListenerTypes().forEach(type => {
-          if (eventTypes.indexOf(type) > -1) {
-            removeEvent(el, type, eventNotifier)
-          }
-        })
-
         this.isListening = false
       },
       destroy () {
-        gestures.forEach(gesture => {
-          gesture.destroy()
-        })
+        removeNativeEvents(this.currentListenerTypes())
+        debugger
+        // FIXME: hivemind.destroy currently points to this function - use traits instead
+        // hivemind.destroy()
+        // gestures.forEach(gesture => {
+        //   gesture.destroy()
+        // })
+
         referent.destroy.call(this)
+        proxy = null
       }
     }
   )
 
-  // Object.assign(ref, bindMethods(referent.methods, ref))
-
   return Object.seal(proxy)
 }
 
-function each (f, list) {
-  for (let key in list) {
-    f(list[key], key)
+function normalizeEvent (nativeEvent) {
+  const event = {
+    touches: nativeEvent.touches
+      ? map(nativeEvent.touches, t => new Point({ x: t.pageX, y: t.pageY }))
+      : [new Point({ x: nativeEvent.pageX, y: nativeEvent.pageY })]
+    ,
+    type: nativeEvent.type,
+    deltaY: nativeEvent.deltaY,
+    preventDefault () {
+      nativeEvent.preventDefault()
+    },
+    target: nativeEvent.target
   }
+
+  return event
 }
 
-function map (f, list) {
-  const m = []
-  each((value, key) => {
-    m.push(f(value, key))
-  }, list)
-  return m
+function removeNativeEvents (eventNames) {
+  eventNames.forEach(type => {
+    if (eventTypes.indexOf(type) > -1) {
+      removeEvent(el, type, eventNotifier)
+    }
+  })
+}
+
+function addEvent (el, type, listener) {
+  el.addEventListener(type, listener, true)
+}
+
+function removeEvent (el, type, listener) {
+  el.removeEventListener(type, listener, true)
 }
 
 /* function bindMethods (object, context) {
@@ -116,32 +135,6 @@ function map (f, list) {
   return object
 } */
 
-function addEvent (el, type, listener) {
-  el.addEventListener(type, listener, true)
-}
-
-function removeEvent (el, type, listener) {
-  el.removeEventListener(type, listener, true)
-}
-
-function normalizeEvent (nativeEvent) {
-  const event = {
-    touches: nativeEvent.touches
-      ? Array.prototype.map.call(
-          nativeEvent.touches,
-          t => new Point({ x: t.pageX, y: t.pageY }))
-      : [new Point({ x: nativeEvent.pageX, y: nativeEvent.pageY })]
-    ,
-    type: nativeEvent.type,
-    deltaY: nativeEvent.deltaY,
-    preventDefault () {
-      nativeEvent.preventDefault()
-    },
-    target: nativeEvent.target
-  }
-
-  return event
-}
 
 panzoom.Translate3d = Translate3d
 panzoom.Observer = Observer

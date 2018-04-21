@@ -9,8 +9,9 @@ export default {
     this.on('touchstart', this.moveHandler)
     console.log('pinch2::listen')
   },
-  unlisten () {},
-  destroy () {},
+  unlisten () {
+    this.off('touchstart', this.moveHandler)
+  },
 
   // private methods
   moveHandler (event) {

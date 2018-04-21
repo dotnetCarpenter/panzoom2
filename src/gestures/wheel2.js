@@ -10,9 +10,6 @@ export default {
     console.log('wheel2::unlisten')
     this.off('wheel', this.moveHandler)
   },
-  destroy () {
-    this.off('wheel', this.moveHandler)
-  },
 
   moveHandler (event) {
     // touchpads can give event.deltaY == 0, which is something we never want to handle
