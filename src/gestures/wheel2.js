@@ -19,7 +19,7 @@ export default {
     if (event.deltaY === 0) return
 
     event.point = event.touches[0]
-    this.fire('wheelEventData', event)
+    this.fire('wheelEvent', event)
   }
 
 }

@@ -32,17 +32,19 @@ function initReferent (referent, el, options) {
   const hivemind = Observer()
 
   const gestures = map(gesture => Object.assign(gesture, hivemind), referent.gestures)
+  referent.gestures = gestures
 
   const eventNotifier = compose(event => {
     hivemind.fire(event.type, event)
   }, normalizeEvent)
 
-  const ref = Object.assign(
+  const proxy = Object.assign(
     hivemind,
     referent,
     {
       el,
       options: options || referent.options,
+      isListening: false,
       listen (arg) {
         gestures.forEach(gesture => {
           gesture.listen(arg)
@@ -55,32 +57,36 @@ function initReferent (referent, el, options) {
             addEvent(el, type, eventNotifier)
           }
         })
+
+        this.isListening = true
       },
       unlisten (arg) {
         gestures.forEach(gesture => {
           gesture.unlisten(arg)
         })
 
-        referent.unlisten()
+        referent.unlisten.call(this)
 
         this.currentListenerTypes().forEach(type => {
           if (eventTypes.indexOf(type) > -1) {
             removeEvent(el, type, eventNotifier)
           }
         })
+
+        this.isListening = false
       },
       destroy () {
         gestures.forEach(gesture => {
           gesture.destroy()
         })
-        referent.destroy()
+        referent.destroy.call(this)
       }
     }
   )
 
   // Object.assign(ref, bindMethods(referent.methods, ref))
 
-  return Object.seal(ref)
+  return Object.seal(proxy)
 }
 
 function each (f, list) {
