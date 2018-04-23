@@ -1,9 +1,11 @@
-'use strict'
+import Trait from 'traits.js'
 
-function Observer () {
+console.dir(Trait)
+
+export default function Observer () {
   let listeners = []
 
-  return {
+  return Trait({
     on (eventName, f, reject) {
       if (!(f instanceof Function)) throw new TypeError('event handler is not a function')
       if (!(reject instanceof Function)) reject = f
@@ -73,7 +75,5 @@ function Observer () {
         .map(x => x[0])
         .reduce((a, b) => a.indexOf(b) > -1 ? a : a.concat([b]), [])
     }
-  }
+  })
 }
-
-export default Observer

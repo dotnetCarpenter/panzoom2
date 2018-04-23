@@ -14,7 +14,7 @@ export default {
   plugins: [
     resolve({
       extensions: ['.js', '.mjs'],
-      modulesOnly: true
+      module: true
     }),
     babel({
       // only transpile our source code

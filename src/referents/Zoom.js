@@ -47,22 +47,18 @@ export default {
     translate3d = null
   },
 
-  // methods: {
+  transform (event) {
+    event.preventDefault()
 
-    transform (event) {
-      event.preventDefault()
+    this.zoom(event.point, getScaleMultiplier(event.deltaY, this.options.zoomFactor))
+  },
 
-      this.zoom(event.point, getScaleMultiplier(event.deltaY, this.options.zoomFactor))
-    },
-
-    zoom (point, multiplier) {
-      translate3d.tx = point.x - multiplier * (point.x - translate3d.tx)
-      translate3d.ty = point.y - multiplier * (point.y - translate3d.ty)
-      translate3d.tz *= multiplier
-      this.el.style.transform = Translate3d.getMatrixString(translate3d)
-    }
-  // }
-
+  zoom (point, multiplier) {
+    translate3d.tx = point.x - multiplier * (point.x - translate3d.tx)
+    translate3d.ty = point.y - multiplier * (point.y - translate3d.ty)
+    translate3d.tz *= multiplier
+    this.el.style.transform = Translate3d.getMatrixString(translate3d)
+  }
 }
 
 function getScaleMultiplier(delta, zoomFactor) {
