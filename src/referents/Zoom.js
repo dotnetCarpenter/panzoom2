@@ -1,5 +1,5 @@
 import pinch from '../gestures/pinch2'
-import wheel from '../gestures/wheel2'
+import wheel from '../gestures/Wheel'
 import Translate3d from '../models/Translate3d'
 
 let translate3d = null
@@ -19,7 +19,8 @@ export default {
 
   // default options
   options: {
-    zoomFactor: 0.03
+    zoomFactor: 0.03,
+    domEvents: false
   },
 
   // life cycle handlers
@@ -33,23 +34,36 @@ export default {
 
     this.el.style.transformOrigin = 'top left'
 
-    this.on('wheelEvent', this.transform, error => {
+    this.on('wheelEvent', this.eventHandler, error => {
       console.error(error)
     })
   },
   unlisten () {
     console.log('zoom::unlisten')
 
-    this.off('wheelEvent', this.transform)
+    this.off('wheelEvent', this.eventHandler)
   },
 
   destroy () {
     translate3d = null
   },
 
-  transform (event) {
-    event.preventDefault()
+  eventHandler (event) {
+    if (this.options.domEvents) {
+      const zoomEvent = new CustomEvent('zoom', {
+        detail: event,
+        bubbles: true,
+        cancelable: true,
+      })
 
+      if (!this.el.dispatchEvent(zoomEvent)) {
+        console.log('Zoom::eventHandler - event was cancelled')
+        return
+      }
+    }
+
+    event.preventDefault()
+    // TODO: add async zoom operation here?
     this.zoom(event.point, getScaleMultiplier(event.deltaY, this.options.zoomFactor))
   },
 

@@ -18,6 +18,7 @@ function panzoom (el, options) {
   if (!el) throw new TypeError('the first argument to panzoom must be an Element')
 
   const zoom = initReferent(Zoom, el, options)
+
   console.log(zoom)
 
   zoom.listen()
@@ -58,7 +59,7 @@ function initReferent (referent, el, options) {
       ),
       Trait({
         el,
-        options: options || referent.options,
+        options: Object.assign({}, referent.options, options),
         get isListening () { return isListening },
         gestures: map(
           gesture => Trait.create(
