@@ -10,11 +10,13 @@ const elements = {
 }
 
 let zoom
-initializeButton.onclick = function initialize () {
+initializeButton.onclick = initialize
+function initialize () {
   const el = getEl()
 
   zoom = panzoom(el)
   console.dir(zoom)
+  listenButton.textContent = getButtonText(zoom)
 }
 listenButton.onclick = function () {
   if (zoom && zoom.isListening) {
@@ -29,6 +31,9 @@ listenButton.onclick = function () {
 }
 destroyButton.onclick = function () {
   zoom.destroy()
+  zoom = null
+
+  listenButton.textContent = 'Listen'
 }
 
 function getEl () {

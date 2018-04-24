@@ -29,22 +29,15 @@ function initReferent (referent, el, options) {
   if (!referent.gestures) {
     throw new Error('Referent must have gestures')
   }
-  if (referent.isInitialized) {
-    throw new Error('Referent is initialized - use .listen() or destroy()')
-  }
+  // if (referent.isInitialized) {
+  //   throw new Error('Referent is initialized - use .listen() or destroy()')
+  // }
+  // referent.isInitialized = true
 
   // shared observer between a referent and all of its gestures
   const hivemind = Trait(Observer())
-
-  const gestures = map(
-    gesture => Trait.create(
-      Object.prototype,
-      Trait.compose(Trait(gesture), hivemind)
-    ), referent.gestures)
-  referent.gestures = gestures
-  referent.isInitialized = true
-
   const concreteHivemind = Trait.create(Object.prototype, hivemind)
+
   const eventNotifier = compose(event => {
     concreteHivemind.fire(event.type, event)
   }, normalizeEvent)
@@ -58,7 +51,8 @@ function initReferent (referent, el, options) {
           'listen': 'listenReferent',
           'unlisten': 'unlistenReferent',
           'destroy': 'destroyReferent',
-          'options': undefined
+          'options': undefined,
+          'gestures': undefined
         },
         Trait(referent)
       ),
@@ -66,10 +60,17 @@ function initReferent (referent, el, options) {
         el,
         options: options || referent.options,
         get isListening () { return isListening },
+        gestures: map(
+          gesture => Trait.create(
+            Object.prototype,
+            Trait.compose(Trait(gesture), hivemind)
+          ),
+          referent.gestures
+        ),
         listen (arg) {
           each(gesture => {
             gesture.listen(arg)
-          }, gestures)
+          }, this.gestures)
 
           this.listenReferent(arg)
 
@@ -84,7 +85,7 @@ function initReferent (referent, el, options) {
         unlisten (arg) {
           removeNativeEvents(this.el, this.currentListenerTypes(), eventNotifier)
 
-          each(gestures, gesture => {
+          each(this.gestures, gesture => {
             gesture.unlisten(arg)
           })
 
@@ -96,7 +97,7 @@ function initReferent (referent, el, options) {
           removeNativeEvents(this.el, this.currentListenerTypes(), eventNotifier)
           this.destroyListeners()
           this.destroyReferent()
-          proxy = null
+          return proxy = null
         }
       })
     )
