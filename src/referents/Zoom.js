@@ -30,8 +30,8 @@ export default {
     if (!translate3d) translate3d = new Translate3d()
 
     translate3d.setElement(this.el) // enable percentage stuff
-    // FIXME: Errors in FF and figure what to do with transformOrigin
-    this.el.style.transformOrigin = '0 0 0;'
+
+    this.el.style.transformOrigin = 'top left'
 
     this.on('wheelEvent', this.transform, error => {
       console.error(error)
