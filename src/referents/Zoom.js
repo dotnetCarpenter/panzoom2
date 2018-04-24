@@ -27,8 +27,10 @@ export default {
     console.log('zoom::listen')
 
     translate3d = Translate3d.parse(this.el.style.transform)
+    if (!translate3d) translate3d = new Translate3d()
+
     translate3d.setElement(this.el) // enable percentage stuff
-    // TODO: Figure what to do with transformOrigin
+    // FIXME: Errors in FF and figure what to do with transformOrigin
     this.el.style.transformOrigin = '0 0 0;'
 
     this.on('wheelEvent', this.transform, error => {

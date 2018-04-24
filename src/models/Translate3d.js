@@ -63,7 +63,7 @@ class Translate3d {
     const matrix = R_MATRIX.exec(cssTransform)
     return matrix
       ? new Translate3d(matrix[5], matrix[6], matrix[1])
-      : new Translate3d()
+      : null
   }
 }
 
