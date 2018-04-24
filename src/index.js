@@ -85,9 +85,9 @@ function initReferent (referent, el, options) {
         unlisten (arg) {
           removeNativeEvents(this.el, this.currentListenerTypes(), eventNotifier)
 
-          each(this.gestures, gesture => {
+          each(gesture => {
             gesture.unlisten(arg)
-          })
+          }, this.gestures)
 
           this.unlistenReferent(arg)
 

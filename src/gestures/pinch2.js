@@ -11,6 +11,7 @@ export default {
   },
   unlisten () {
     this.off('touchstart', this.moveHandler)
+    console.log('pinch2::unlisten')
   },
 
   // private methods
