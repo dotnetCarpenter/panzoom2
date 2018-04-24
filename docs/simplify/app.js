@@ -14,15 +14,16 @@ initializeButton.onclick = initialize
 
 function initialize () {
   const el = getEl()
-  el.addEventListener('zoom', zoomHandler)
+  // el.addEventListener('zoom', zoomHandler)
 
-  zoom = panzoom(el, { domEvents: true })
+  // zoom = panzoom(el, { domEvents: true })
+  zoom = panzoom(el)
   listenButton.textContent = getButtonText(zoom)
 }
 
-function zoomHandler (event) {
-  event.preventDefault()
-}
+// function zoomHandler (event) {
+//   event.preventDefault()
+// }
 
 listenButton.onclick = function () {
   if (zoom && zoom.isListening) {
@@ -37,8 +38,8 @@ listenButton.onclick = function () {
 }
 
 destroyButton.onclick = function () {
-  const el = getEl()
-  el.removeEventListener('zoom', zoomHandler)
+  // const el = getEl()
+  // el.removeEventListener('zoom', zoomHandler)
 
   zoom.destroy()
   zoom = null
