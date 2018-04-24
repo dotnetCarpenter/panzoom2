@@ -29,6 +29,9 @@ function initReferent (referent, el, options) {
   if (!referent.gestures) {
     throw new Error('Referent must have gestures')
   }
+  if (referent.isInitialized) {
+    throw new Error('Referent is initialized - use .listen() or destroy()')
+  }
 
   // shared observer between a referent and all of its gestures
   const hivemind = Trait(Observer())
@@ -39,6 +42,7 @@ function initReferent (referent, el, options) {
       Trait.compose(Trait(gesture), hivemind)
     ), referent.gestures)
   referent.gestures = gestures
+  referent.isInitialized = true
 
   const concreteHivemind = Trait.create(Object.prototype, hivemind)
   const eventNotifier = compose(event => {

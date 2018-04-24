@@ -1,24 +1,39 @@
 'use strict'
 
 const listenButton = document.getElementById('listenButton')
+const initializeButton = document.getElementById('initializeButton')
+const destroyButton = document.getElementById('destroyButton')
+
 const elements = {
   container: document.querySelector('.container'),
   scene: document.querySelector('.scene')
 }
 
 let zoom
-listenButton.onclick = function () {
-  const elValue = document.querySelector('input[type="radio"]:checked').value
-  const el = elements[elValue]
+initializeButton.onclick = function initialize () {
+  const el = getEl()
 
+  zoom = panzoom(el)
+  console.dir(zoom)
+}
+listenButton.onclick = function () {
   if (zoom && zoom.isListening) {
     zoom.unlisten()
+  } else if (zoom && !zoom.isListening) {
+    zoom.listen()
   } else {
-    zoom = panzoom(el)
-    console.dir(zoom)
+    initialize()
   }
 
   listenButton.textContent = getButtonText(zoom)
+}
+destroyButton.onclick = function () {
+  zoom.destroy()
+}
+
+function getEl () {
+  const elValue = document.querySelector('input[type="radio"]:checked').value
+  return elements[elValue]
 }
 
 function getButtonText (referent) {
