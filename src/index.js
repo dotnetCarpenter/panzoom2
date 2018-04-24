@@ -1,10 +1,11 @@
+import Trait from 'traits.js'
 import Observer from './mixins/Observer'
 
 import Translate3d from './models/Translate3d'
 import Point from './models/Point'
 import eventTypes from './models/EventTypes'
 
-import { map, compose } from './utils'
+import { map, each, compose } from './utils'
 
 import Pinch from './gestures/Pinch'
 import Pan from './gestures/Pan'
@@ -17,6 +18,7 @@ function panzoom (el, options) {
   if (!el) throw new TypeError('the first argument to panzoom must be an Element')
 
   const zoom = initReferent(Zoom, el, options)
+  console.log(zoom)
 
   zoom.listen()
 
@@ -29,70 +31,80 @@ function initReferent (referent, el, options) {
   }
 
   // shared observer between a referent and all of its gestures
-  const hivemind = Observer()
+  const hivemind = Trait(Observer())
 
-  const gestures = map(gesture => Object.assign(gesture, hivemind), referent.gestures)
+  const gestures = map(
+    gesture => Trait.create(
+      Object.prototype,
+      Trait.compose(Trait(gesture), hivemind)
+    ), referent.gestures)
   referent.gestures = gestures
 
+  const concreteHivemind = Trait.create(Object.prototype, hivemind)
   const eventNotifier = compose(event => {
-    hivemind.fire(event.type, event)
+    concreteHivemind.fire(event.type, event)
   }, normalizeEvent)
 
-  let proxy = Object.assign(
-    hivemind,
-    referent,
-    {
-      el,
-      options: options || referent.options,
-      isListening: false,
-      listen (arg) {
-        each(gestures, gesture => {
-          gesture.listen(arg)
-        })
+  let isListening = false
+  let proxy = Trait.create(Object.prototype,
+    Trait.compose(
+      Trait.resolve({ destroy: 'destroyListeners' }, hivemind),
+      Trait.resolve(
+        {
+          'listen': 'listenReferent',
+          'unlisten': 'unlistenReferent',
+          'destroy': 'destroyReferent',
+          'options': undefined
+        },
+        Trait(referent)
+      ),
+      Trait({
+        el,
+        options: options || referent.options,
+        get isListening () { return isListening },
+        listen (arg) {
+          each(gesture => {
+            gesture.listen(arg)
+          }, gestures)
 
-        referent.listen.call(this)
+          this.listenReferent(arg)
 
-        each(this.currentListenerTypes(), type => {
-          if (eventTypes.indexOf(type) > -1) {
-            addEvent(el, type, eventNotifier)
-          }
-        })
+          each(type => {
+            if (eventTypes.indexOf(type) > -1) {
+              addEvent(el, type, eventNotifier)
+            }
+          }, this.currentListenerTypes())
 
-        this.isListening = true
-      },
-      unlisten (arg) {
-        removeNativeEvents(this.currentListenerTypes())
+          isListening = true
+        },
+        unlisten (arg) {
+          removeNativeEvents(this.el, this.currentListenerTypes(), eventNotifier)
 
-        each(gestures, gesture => {
-          gesture.unlisten(arg)
-        })
+          each(gestures, gesture => {
+            gesture.unlisten(arg)
+          })
 
-        referent.unlisten.call(this)
+          this.unlistenReferent(arg)
 
-        this.isListening = false
-      },
-      destroy () {
-        removeNativeEvents(this.currentListenerTypes())
-        debugger
-        // FIXME: hivemind.destroy currently points to this function - use traits instead
-        // hivemind.destroy()
-        // gestures.forEach(gesture => {
-        //   gesture.destroy()
-        // })
-
-        referent.destroy.call(this)
-        proxy = null
-      }
-    }
+          isListening = false
+        },
+        destroy () {
+          removeNativeEvents(this.el, this.currentListenerTypes(), eventNotifier)
+          this.destroyListeners()
+          this.destroyReferent()
+          proxy = null
+        }
+      })
+    )
   )
 
-  return Object.seal(proxy)
+  return proxy
 }
 
 function normalizeEvent (nativeEvent) {
   const event = {
     touches: nativeEvent.touches
-      ? map(nativeEvent.touches, t => new Point({ x: t.pageX, y: t.pageY }))
+      ? map(t => new Point({ x: t.pageX, y: t.pageY }), nativeEvent.touches)
       : [new Point({ x: nativeEvent.pageX, y: nativeEvent.pageY })]
     ,
     type: nativeEvent.type,
@@ -106,10 +118,10 @@ function normalizeEvent (nativeEvent) {
   return event
 }
 
-function removeNativeEvents (eventNames) {
+function removeNativeEvents (el, eventNames, eventHandler) {
   eventNames.forEach(type => {
     if (eventTypes.indexOf(type) > -1) {
-      removeEvent(el, type, eventNotifier)
+      removeEvent(el, type, eventHandler)
     }
   })
 }

@@ -8,6 +8,12 @@ export function compose (...fs) {
   return x => fs.reduceRight((x, a) => a(x), x)
 }
 
+/**
+ * map
+ * @param {function} f
+ * @param {array|object} list
+ * @returns {array}
+ */
 export function map (f, list) {
   const m = []
   each((value, key) => {
@@ -16,6 +22,12 @@ export function map (f, list) {
   return m
 }
 
+/**
+ *
+ * @param {function} f
+ * @param {array|object} list
+ * @returns {array}
+ */
 export function each (f, list) {
   for (let key in list) {
     f(list[key], key)

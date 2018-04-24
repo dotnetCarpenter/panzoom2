@@ -22,8 +22,6 @@ export default {
     zoomFactor: 0.03
   },
 
-  isListening: false,
-
   // life cycle handlers
   listen () {
     console.log('zoom::listen')

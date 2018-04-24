@@ -1,11 +1,7 @@
-import Trait from 'traits.js'
-
-console.dir(Trait)
-
 export default function Observer () {
   let listeners = []
 
-  return Trait({
+  return {
     on (eventName, f, reject) {
       if (!(f instanceof Function)) throw new TypeError('event handler is not a function')
       if (!(reject instanceof Function)) reject = f
@@ -75,5 +71,5 @@ export default function Observer () {
         .map(x => x[0])
         .reduce((a, b) => a.indexOf(b) > -1 ? a : a.concat([b]), [])
     }
-  })
+  }
 }

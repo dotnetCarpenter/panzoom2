@@ -5,19 +5,18 @@ const elements = {
   container: document.querySelector('.container'),
   scene: document.querySelector('.scene')
 }
-let zoom
 
+let zoom
 listenButton.onclick = function () {
   const elValue = document.querySelector('input[type="radio"]:checked').value
   const el = elements[elValue]
 
-  if (zoom) {
-    zoom.destroy()
+  if (zoom && zoom.isListening) {
+    zoom.unlisten()
+  } else {
+    zoom = panzoom(el)
     console.dir(zoom)
   }
-
-  zoom = panzoom(el)
-  console.dir(zoom)
 
   listenButton.textContent = getButtonText(zoom)
 }
