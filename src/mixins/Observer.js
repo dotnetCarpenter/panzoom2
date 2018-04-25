@@ -66,7 +66,7 @@ export default function Observer () {
       listeners = null
     },
 
-    currentListenerTypes () {
+    get currentListenerTypes () {
       return listeners
         .map(x => x[0])
         .reduce((a, b) => a.indexOf(b) > -1 ? a : a.concat([b]), [])

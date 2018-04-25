@@ -1,63 +1,57 @@
 'use strict'
 
 const listenButton = document.getElementById('listenButton')
-const container = document.querySelector('.container')
-const scene = document.querySelector('.scene')
+const initializeButton = document.getElementById('initializeButton')
+const destroyButton = document.getElementById('destroyButton')
 
-const options = {
-  bounds: scene.getBoundingClientRect(),
-  zoomFactor: 0.03,
-  pinchThreshold: .3,
-  world: container,
-  scene: scene
+const elements = {
+  container: document.querySelector('.container'),
+  scene: document.querySelector('.scene')
 }
 
-const pinch = new panzoom.Pinch({
-  threshold: options.pinchThreshold
-})
-const wheel = new panzoom.Wheel({
-  zoomFactor: options.zoomFactor
-})
-const pan = new panzoom.Pan()
+let zoom
+initializeButton.onclick = initialize
 
-const panAction = panzoom.referents.get('move')
-// panAction.with('pan')
-panAction.setOptions(options)
+function initialize () {
+  const el = getEl()
+  // el.addEventListener('zoom', zoomHandler)
 
-const panzoomAction = panzoom.referents.get('zoom')
-// panzoomAction.with('pintch', 'wheel')
-panzoomAction.setOptions(options)
+  // zoom = panzoom(el, panzoom.referents.Zoom, { domEvents: true })
+  zoom = panzoom(el)
+  listenButton.textContent = getButtonText(zoom)
+}
 
-panzoomAction.on('wheelDelta', function (event) {
-  unlistenPan()
-  const point = event.point
-  panzoomAction.zoom(point.x, point.y, event.scale)
-    .then(listenPan)
-})
-
-panzoomAction.on('pinch', function (event) {
-  unlistenPanzoom()
-  const point = event.point
-  panzoomAction.zoom(point.x, point.y, event.scale)
-    .then(listenPanzoom)
-})
+// function zoomHandler (event) {
+//   event.preventDefault()
+// }
 
 listenButton.onclick = function () {
-  if (panzoom.isListening) panzoom.unlisten()
-  else panzoom.listen()
+  if (zoom && zoom.isListening) {
+    zoom.unlisten()
+  } else if (zoom && !zoom.isListening) {
+    zoom.listen()
+  } else {
+    initialize()
+  }
 
-  listenButton.textContent = panzoomAction.isListening ? 'Unlisten' : 'Listen'
+  listenButton.textContent = getButtonText(zoom)
 }
 
-function listenPan () {
-  panAction.listen()
+destroyButton.onclick = function () {
+  // const el = getEl()
+  // el.removeEventListener('zoom', zoomHandler)
+
+  zoom.destroy()
+  zoom = null
+
+  listenButton.textContent = 'Listen'
 }
-function unlistenPan () {
-  panAction.unlisten()
+
+function getEl () {
+  const elValue = document.querySelector('input[type="radio"]:checked').value
+  return elements[elValue]
 }
-function listenPanzoom () {
-  panzoomAction.listen()
-}
-function unlistenPanzoom () {
-  panzoomAction.unlisten()
+
+function getButtonText (referent) {
+  return referent.isListening ? 'Unlisten' : 'Listen'
 }

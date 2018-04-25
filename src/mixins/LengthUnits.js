@@ -1,3 +1,8 @@
+function percentToPixel (percentage, side = 'width') {
+  const box = this.el.getBoundingClientRect()
+  return box[side] * percentage * .01
+}
+
 function percentToPixelMatrix () {
   const box = this.el.getBoundingClientRect()
   return {
@@ -5,11 +10,6 @@ function percentToPixelMatrix () {
     ty: box.height * (this.ty * .01),
     tz: this.tz
   }
-}
-
-function percentToPixel (percentage, side = 'width') {
-  const box = this.el.getBoundingClientRect()
-  return box[side] * percentage * .01
 }
 
 function remToPixel (rem) {
@@ -37,5 +37,9 @@ function getUnit (value) {
 export {
   percentToPixel,
   percentToPixelMatrix,
+  remToPixel,
+  emToPixel,
+  cmToPixel,
+  mmToPixel,
   getUnit
 }

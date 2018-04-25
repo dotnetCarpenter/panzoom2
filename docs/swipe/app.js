@@ -2,54 +2,70 @@
 
 const listenButton = document.getElementById('listenButton')
 const messages = document.querySelectorAll('.message')
-const scene = panzoom.createPanzoom(document.querySelector('.scene'))
 
-listen()
+// our custom referent
+const displaySwipe = {
+  gestures: [panzoom.gestures.Swipe],
 
-function listen () {
+  options: {
+    distance: '70%'
+  },
 
-  // use promise
-  scene.promise('swipe').then(swipeHandler1)
+  listen: function () {
+    // use promise
+    this.promise('swipe').then(swipeHandler1)
 
-  // listen to event
-  document.body.addEventListener('swipe', swipeHandler2, true)
+    // listen to event
+    document.body.addEventListener('swipe', swipeHandler2, true)
 
-  // subscribe
-  scene.on('swipe', swipeHandler3)
+    // subscribe
+    this.on('swipe', swipeHandler3)
 
-  // subscribe once
-  scene.once('swipe', swipeHandler4)
+    // subscribe once
+    this.once('swipe', swipeHandler4)
 
-  // If you have unlisten then you have to enable listen again
-  // , but it's irrelevant when you start to listen again.
-  scene.listen()
-
-  listenButton.textContent = getButtonText(scene)
-
-  listenButton.onclick = function () {
-    // unlisten will remove all event listeners and nullify the swipe module
-    scene.unlisten('swipe')
+    if (this.options.domEvents) {
+      this.on('swipe', this.delegateEvent)
+    }
+  },
+  unlisten: function () {
     document.body.removeEventListener('swipe', swipeHandler2, true)
 
-    listenButton.textContent = getButtonText(scene)
-    listenButton.onclick = listen
-    // scene.off('swipe) // will remove all event listeners for the 'swipe' event
+    this.off('swipe') // will remove all event listeners for the 'swipe' event
     // scene.off('swipe', swipeHandler1) // promise can not be unlisten to - off all swipe event listeners or turn off swipe completely
     // scene.off('swipe', swipeHandler3) // this will work
     // scene.off('swipe', swipeHandler4) // once can not be unlisten to - off all swipe event listeners or turn off swipe completely
+  },
+  delegateEvent: function (event) {
+    const swipeEvent = new CustomEvent('swipe', { detail: event.direction })
+    if (!this.el.dispatchEvent(swipeEvent)) {
+      console.log('Swipe::action - event was cancelled')
+    }
   }
+}
+
+const scene = panzoom(document.querySelector('.scene'), displaySwipe, { domEvents: true })
+
+listenButton.onclick = function () {
+  // unlisten will remove all event listeners
+  if (scene.isListening) scene.unlisten()
+  else scene.listen()
+
+  listenButton.textContent = getButtonText(scene)
 }
 
 function getButtonText (scene) {
   return scene.isListening ? 'Unlisten' : 'Listen'
 }
 
+scene.listen()
+
 let counter1 = 0
 const title1 = 'promise (once)'
 messages[0].textContent = title1
-function swipeHandler1 (direction) {
-  messages[0].textContent = title1 + ' ' + ++counter1 + ' - ' + direction
-  console.log(direction)
+function swipeHandler1 (event) {
+  messages[0].textContent = title1 + ' ' + ++counter1 + ' - ' + event.direction
+  console.log(event)
 }
 
 let counter2 = 0
@@ -65,15 +81,15 @@ function swipeHandler2(event) {
 let counter3 = 0
 const title3 = 'subscriber'
 messages[2].textContent = title3
-function swipeHandler3(direction) {
-  messages[2].textContent = title3 + ' ' + ++counter3 + ' - ' + direction
-  console.log(direction)
+function swipeHandler3(event) {
+  messages[2].textContent = title3 + ' ' + ++counter3 + ' - ' + event.direction
+  console.log(event)
 }
 
 let counter4 = 0
 const title4 = 'subscriber once'
 messages[3].textContent = title4
-function swipeHandler4(direction) {
-  messages[3].textContent = title4 + ' ' + ++counter4 + ' - ' + direction
-  console.log(direction)
+function swipeHandler4(event) {
+  messages[3].textContent = title4 + ' ' + ++counter4 + ' - ' + event.direction
+  console.log(event)
 }
