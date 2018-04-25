@@ -62,11 +62,10 @@ class Swipe {
 
       function moveHandler (event) {
         const currentEvent = normalizeEvent(event)
-        // console.log('getting moves!', currentEvent)
 
         // TODO: take timestamp into consideration - call endHandler if enough time has passed
 
-        const distance = Math.sqrt( // TODO: abstract this somewhere
+        const distance = Math.sqrt(
           (currentEvent.touches[0].x - swipe.lastTouches.touches[0].x) ** 2
           +
           (currentEvent.touches[0].y - swipe.lastTouches.touches[0].y) ** 2
