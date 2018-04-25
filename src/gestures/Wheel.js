@@ -4,10 +4,10 @@ export default {
   // life cycle handlers
   listen () {
     this.on('wheel', this.moveHandler)
-    console.log('wheel2::listen')
+    console.log('Wheel::listen')
   },
   unlisten () {
-    console.log('wheel2::unlisten')
+    console.log('Wheel::unlisten')
     this.off('wheel', this.moveHandler)
   },
 

@@ -33,3 +33,17 @@ export function each (f, list) {
     f(list[key], key)
   }
 }
+
+/**
+ * Detect mouse or touch move and end event names.
+ * Given an event getEventTypeNames will return an
+ * object, where move is touchmove/mousemove and
+ * end is touchend/mouseup.
+ * @param {event} event
+ * @returns {object} { move: String, end: String }
+ */
+export function getEventTypeNames (event) {
+  return event.type === 'touchstart'
+  ? { move: 'touchmove', end: 'touchend' }
+  : { move: 'mousemove', end: 'mouseup' }
+}

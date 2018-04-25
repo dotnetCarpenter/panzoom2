@@ -1,105 +1,72 @@
 import Point from '../models/Point'
+import { getEventTypeNames } from '../utils'
 
-class Pan {
-  constructor (options) {
-    this.el = null
-    this.lastTouches = null
-    this.detecting = false
-  }
+let lastTouches = null
+let eventNames = null
 
-  listen (action) {
-    // console.log('Pan::listen')
-    if (!(action instanceof Function)) throw new TypeError('action must be a function')
-
-    this.action = Pan.action(this, action)
-
-    this.el.addEventListener('mousedown', this.action)
-    this.el.addEventListener('touchstart', this.action)
-  }
-
+export default {
+  // life cycle handlers
+  listen () {
+    this.on('mousedown', this.startHandler)
+    this.on('touchstart', this.startHandler)
+    console.log('Pan::listen')
+  },
   unlisten () {
-    // console.log('Pan::unlisten')
-    this.el.removeEventListener('mousedown', this.action)
-    this.el.removeEventListener('touchstart', this.action)
-  }
+    this.off('mousedown', this.startHandler)
+    this.off('touchstart', this.startHandler)
+    console.log('Pan::unlisten')
+  },
 
-  setElement (el) {
-    // TODO: unlisten on el before changing
-    this.el = el
-  }
+  // custom methods
+  startHandler (event) {
+    this.unlisten()
 
-  destroy () {
-    this.el = null
-    this.action = null
-    this.lastTouches = null
-  }
+    // TODO: take timestamp into consideration - call endHandler if enough time has passed
+    lastTouches = event
 
-  static action (pan, action) {
-    return event => {
-      // event.preventDefault()
+    eventNames = getEventTypeNames(event)
 
-      pan.unlisten()
+    this.on(eventNames.move, this.moveHandler, error => {
+      console.error(error)
+      this.unlisten()
+    })
+    this.on(eventNames.end, this.endHandler)
+  },
 
-      const startEvent = normalizeEvent(event)
-      pan.lastTouches = startEvent
+  moveHandler (event) {
+    // TODO: take timestamp into consideration - call endHandler if enough time has passed
 
-      // console.log(startEvent)
-      pan.detecting = true
+    const delta = new Point({ // TODO: abstract this somewhere
+      x: event.touches[0].x - lastTouches.touches[0].x,
+      y: event.touches[0].y - lastTouches.touches[0].y
+    })
+    // console.log(delta)
 
-      pan.el.addEventListener(startEvent.type.move, moveHandler)
-      pan.el.addEventListener(startEvent.type.end, endHandler) // removing event listeners from DOM via this
+    event.direction = getDirection(lastTouches, event)
 
-      function moveHandler (event) {
-        const currentEvent = normalizeEvent(event)
-        // console.log('getting moves!', currentEvent)
+    this.fire('pan', event)
+  },
 
-        // TODO: take timestamp into consideration - call endHandler if enough time has passed
-
-        // TODO: abstract this somewhere
-        const delta = new Point({
-          x: currentEvent.touches[0].x - pan.lastTouches.touches[0].x,
-          y: currentEvent.touches[0].y - pan.lastTouches.touches[0].y
-        })
-        // console.log(delta)
-
-        // tell subscribers
-        action('pan', delta)
-
-        // tell event listeners
-        const panEvent = new CustomEvent('pan', { detail: delta })
-        if (!pan.el.dispatchEvent(panEvent)) {
-          endHandler()
-          console.log('Pan::action - event was cancelled')
-        }
-      }
-
-      function endHandler () {
-        pan.el.removeEventListener(startEvent.type.move, moveHandler)
-        pan.el.removeEventListener(startEvent.type.end, endHandler)
-        pan.detecting = false
-        pan.listen(action)
-      }
-
-    }
+  endHandler () {
+    this.off(eventNames.move, this.moveHandler)
+    this.off(eventNames.end, this.endHandler)
+    this.listen()
   }
 }
 
-function normalizeEvent(ev) {
-  const event = {}
+// TODO: Move to own model
+function getDirection (event1, event2) {
+  // https://stackoverflow.com/questions/2264072/detect-a-finger-swipe-through-javascript-on-the-iphone-and-android
+  const deltaX = event1.touches[0].x - event2.touches[0].x // TODO: make addition and substraction easier for Point
+  const deltaY = event1.touches[0].y - event2.touches[0].y
 
-  // console.log(ev)
-
-  event.touches = [
-    ev.touches
-      ? new Point({ x: ev.touches[0].pageX, y: ev.touches[0].pageY })
-      : new Point({ x: ev.pageX, y: ev.pageY })
-  ]
-  event.type = ev.type === 'touchstart' // TODO: use a proper enum
-    ? { move: 'touchmove', end: 'touchend' }
-    : { move: 'mousemove', end: 'mouseup' }
-  event.timeStamp = Date.now()
-
-  return event
+  // TODO: return an enum instead
+  // console.log(deltaX, deltaY)
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 0) return 'left'
+    else return 'right'
+  } else {
+    if (deltaY > 0) return 'up'
+    else return 'down'
+  }
 }
-
-export default Pan

@@ -35,7 +35,7 @@ function panzoom (el, referent = Zoom, options) {
 }
 
 function initReferent (referent, el, options) {
-  if (!referent.gestures) {
+  if (!(referent.gestures && referent.gestures[0])) {
     throw new Error('Referent must have gestures')
   }
 
@@ -75,15 +75,14 @@ function initReferent (referent, el, options) {
           gesture => {
             gesture.el = el
 
-            // mark options properties as required
-            const requireOptions = {}
+            const defaultOptions = {}
             each((value, key) => {
-              if (value.required) requireOptions[key] = Trait.required
-              else requireOptions[key] = value
+              if (value.required) defaultOptions[key] = Trait.required
+              else defaultOptions[key] = value
             }, gesture.options)
             // convert a gesture's options record into a trait instance where
             // `options` overwrite a gesture's default options
-            gesture.options = Trait.object(Object.assign((requireOptions), options))
+            gesture.options = Trait.object(Object.assign((defaultOptions), options))
 
             // convert gesture record into a trait instance
             const t = Trait.create(

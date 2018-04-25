@@ -1,8 +1,21 @@
 /* global panzoom */
-
+const miniReferent = {
+  gestures: [
+    panzoom.gestures.Pinch,
+    panzoom.gestures.Pan,
+    panzoom.gestures.Wheel,
+    panzoom.gestures.Swipe
+  ],
+  options: {
+    domEvents: true,
+    distance: '200px'
+  },
+  listen () {},
+  unlisten () {}
+}
 const listenButton = document.getElementById('listenButton')
 const domMessages = document.querySelectorAll('.messages__message')
-const scene = panzoom.createPanzoom(document.querySelector('.scene'))
+const scene = panzoom(document.querySelector('.scene'), miniReferent)
 
 const messages = setupMessages()
 listen(messages)

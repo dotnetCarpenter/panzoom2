@@ -1,5 +1,5 @@
-import pinch from '../gestures/pinch2'
-import wheel from '../gestures/Wheel'
+import Pinch from '../gestures/Pinch'
+import Wheel from '../gestures/Wheel'
 import Translate3d from '../models/Translate3d'
 
 let translate3d = null
@@ -13,8 +13,8 @@ export default {
    * will always be an array after initialization.
    */
   gestures: [
-    pinch,
-    wheel
+    Pinch,
+    Wheel
   ],
 
   // default options

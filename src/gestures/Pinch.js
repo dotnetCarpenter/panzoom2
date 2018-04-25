@@ -1,145 +1,96 @@
 import Point from '../models/Point'
+import { getEventTypeNames } from '../utils'
 
-class Pinch {
-  constructor (options) {
-    this.threshold = options.pinchThreshold
-    this.el = null
-    this.lastTouches = null
-    this.lastDistance = null
-    this.detecting = false
-  }
+let minDistance = ''
+let lastTouches = null
+let lastDistance = null
+let eventNames = null
 
-  listen (action) {
-    // console.log('Pinch::listen')
-    if (!(action instanceof Function)) throw new TypeError('action must be a function')
+export default {
+  // required custom properties from option object
+  options: {
+    pinchThreshold: .2,
+    preventDefault: true
+  },
 
-    this.action = Pinch.action(this, action)
-
-    this.el.addEventListener('touchstart', this.action)
-  }
-
+  // life cycle handlers
+  listen () {
+    this.on('touchstart', this.startHandler)
+    console.log('Pinch::listen')
+  },
   unlisten () {
-    // console.log('Pinch::unlisten')
-    this.el.removeEventListener('touchstart', this.action)
-  }
+    this.off('touchstart', this.startHandler)
+    console.log('Pinch::unlisten')
+  },
 
-  setElement (el) {
-    // TODO: unlisten on el before changing
-    this.el = el
-  }
+  // custom methods
+  startHandler (event) {
+    console.log('Pinch::moveHandler', event, this)
 
-  destroy () {
-    this.el = null
-    this.action = null
-    this.lastTouches = null
-  }
+    this.unlisten()
 
-  static action (pinch, action) {
-    return event => {
-      // event.preventDefault()
+    if (event.touches.length < 2) {
+      this.endHandler()
+      return
+    }
 
-      pinch.unlisten()
+    lastTouches = event
+    eventNames = getEventTypeNames(event)
 
-      const startEvent = normalizeEvent(event)
-      // console.log(startEvent)
-      if (startEvent.touches.length < 2) {
-        endHandler()
-        return
-      }
-      pinch.lastTouches = startEvent
+    this.on(eventNames.move, this.moveHandler)
+    this.on(eventNames.end, this.endHandler)
+  },
 
-      pinch.detecting = true
+  moveHandler (event) {
+    if (this.options.preventDefault) event.preventDefault()
 
-      pinch.el.addEventListener(startEvent.type.move, moveHandler)
-      pinch.el.addEventListener(startEvent.type.end, endHandler) // removing event listeners from DOM via this
+    // TODO: take timestamp into consideration - call endHandler if enough time has passed
 
-      function moveHandler (event) {
-        event.preventDefault() // prevent native zoom TODO: perhaps we should not make that decision...
-        const currentEvent = normalizeEvent(event)
-        // console.log('getting moves!', currentEvent)
+    // movement (translate)
+    const distanceFromFirstTouch = Math.sqrt( // TODO: abstract this somewhere
+      (event.touches[0].x - lastTouches.touches[0].x) ** 2
+      +
+      (event.touches[0].y - lastTouches.touches[0].y) ** 2
+    )
+    // distance between two first fingers
+    const distanceBetweenTwoFingers = Math.sqrt( // TODO: abstract this somewhere
+      (event.touches[0].x - lastTouches.touches[1].x) ** 2
+      +
+      (event.touches[0].y - lastTouches.touches[1].y) ** 2
+    )
 
-        // TODO: take timestamp into consideration - call endHandler if enough time has passed
+    const pinchOutwards = lastDistance && distanceBetweenTwoFingers > lastDistance ? true : false
+    // console.log(pinchOutwards ? 'zoom in' : 'zoom out')
 
-        // movement (translate)
-        const distanceFromFirstTouch = Math.sqrt( // TODO: abstract this somewhere
-          (currentEvent.touches[0].x - pinch.lastTouches.touches[0].x) ** 2
-          +
-          (currentEvent.touches[0].y - pinch.lastTouches.touches[0].y) ** 2
-        )
-        // distance between two first fingers
-        const distanceBetweenTwoFingers = Math.sqrt( // TODO: abstract this somewhere
-          (currentEvent.touches[0].x - pinch.lastTouches.touches[1].x) ** 2
-          +
-          (currentEvent.touches[0].y - pinch.lastTouches.touches[1].y) ** 2
-        )
+    lastDistance = distanceBetweenTwoFingers
 
-        const pinchOutwards = pinch.lastDistance && distanceBetweenTwoFingers > pinch.lastDistance ? true : false
-        // console.log(pinchOutwards ? 'zoom in' : 'zoom out')
-
-        pinch.lastDistance = distanceBetweenTwoFingers
-
-        // console.log('distance', distanceFromFirstTouch, distanceBetweenTwoFingers)
-
-        const scale = distanceFromFirstTouch / distanceBetweenTwoFingers
+    const scale = distanceFromFirstTouch / distanceBetweenTwoFingers
         // console.log('scale', scale)
 
-        if (scale > pinch.threshold) {
-          // Focus formular ported from svg.panzoom.js - ask Ulrich why it's like that
-          const currentFocus = new Point({
-            x: currentEvent.touches[0].x + .5 * (currentEvent.touches[1].x - currentEvent.touches[0].x),
-            y: currentEvent.touches[0].y + .5 * (currentEvent.touches[1].y - currentEvent.touches[0].y)
-          })
+    if (scale > pinch.threshold) {
+      // Focus formular ported from svg.panzoom.js - ask Ulrich why it's like that
+      const currentFocus = new Point({
+        x: event.touches[0].x + .5 * (event.touches[1].x - event.touches[0].x),
+        y: event.touches[0].y + .5 * (event.touches[1].y - event.touches[0].y)
+      })
 
-          const lastFocus = new Point({
-            x: pinch.lastTouches.touches[0].x + 0.5 * (pinch.lastTouches.touches[1].x - pinch.lastTouches.touches[0].x),
-            y: pinch.lastTouches.touches[0].y + 0.5 * (pinch.lastTouches.touches[1].y - pinch.lastTouches.touches[0].y)
-          })
+      const lastFocus = new Point({
+        x: pinch.lastTouches.touches[0].x + 0.5 * (pinch.lastTouches.touches[1].x - pinch.lastTouches.touches[0].x),
+        y: pinch.lastTouches.touches[0].y + 0.5 * (pinch.lastTouches.touches[1].y - pinch.lastTouches.touches[0].y)
+      })
 
-          // console.log(scale)
-          const pinchEventData = {
-            point: currentFocus,
-            scale: pinchOutwards ? scale : -scale,
-            focusAfterScale: new Point({ x: -lastFocus.x, y: -lastFocus.y })
-          }
+      // console.log(scale)
+      event.point = currentFocus
+      event.scale = pinchOutwards ? scale : -scale,
+      event.focusAfterScale = new Point({ x: -lastFocus.x, y: -lastFocus.y })
 
-          // console.dir(pinchEventData)
-
-          // tell subscribers
-          action('pinch', pinchEventData)
-
-          // tell event listeners
-          const pinchEvent = new CustomEvent('pinch', { detail: pinchEventData })
-          if (!pinch.el.dispatchEvent(pinchEvent)) {
-            endHandler()
-            console.log('Pinch::action - event was cancelled')
-          }
-        }
-      }
-
-      function endHandler () {
-        pinch.el.removeEventListener(startEvent.type.move, moveHandler)
-        pinch.el.removeEventListener(startEvent.type.end, endHandler)
-        pinch.detecting = false
-        pinch.listen(action)
-      }
-
+      this.fire('pinch', event)
     }
+  },
+  endHandler () {
+    this.off(eventNames.move, this.moveHandler)
+    this.off(eventNames.end, this.endHandler)
+    this.listen()
   }
+
 }
-
-function normalizeEvent(ev) {
-  const event = {}
-
-  // console.log(ev)
-
-  event.touches = Array.prototype.map.call(
-    ev.touches,
-    t => new Point({ x: t.pageX, y: t.pageY })
-  )
-  event.type = { move: 'touchmove', end: 'touchend' } // TODO: use a proper enum
-  event.timeStamp = Date.now()
-
-  return event
-}
-
-export default Pinch
