@@ -81,11 +81,14 @@ function initReferent (referent, el, options) {
               if (value.required) requireOptions[key] = Trait.required
               else requireOptions[key] = value
             }, gesture.options)
+            // convert a gesture's options record into a trait instance where
+            // `options` overwrite a gesture's default options
             gesture.options = Trait.object(Object.assign((requireOptions), options))
 
+            // convert gesture record into a trait instance
             const t = Trait.create(
               Object.prototype,
-              Trait.compose(Trait(gesture), hivemind/* , Trait({ eventNotifier: this.eventNotifier }) */)
+              Trait.compose(Trait(gesture), hivemind)
             )
             return t
           },

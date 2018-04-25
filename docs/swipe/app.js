@@ -4,13 +4,16 @@ const listenButton = document.getElementById('listenButton')
 const messages = document.querySelectorAll('.message')
 
 // our custom referent
-const displaySwipe = {
+const catchSwipe = {
   gestures: [panzoom.gestures.Swipe],
 
+  // default options to referent and gestures
+  // - can be overriden via the options argument to panzoom()
   options: {
     distance: '70%'
   },
 
+  // life-cycle method
   listen: function () {
     // use promise
     this.promise('swipe').then(swipeHandler1)
@@ -28,6 +31,7 @@ const displaySwipe = {
       this.on('swipe', this.delegateEvent)
     }
   },
+  // life-cycle method
   unlisten: function () {
     document.body.removeEventListener('swipe', swipeHandler2, true)
 
@@ -36,6 +40,7 @@ const displaySwipe = {
     // scene.off('swipe', swipeHandler3) // this will work
     // scene.off('swipe', swipeHandler4) // once can not be unlisten to - off all swipe event listeners or turn off swipe completely
   },
+  // custom method
   delegateEvent: function (event) {
     const swipeEvent = new CustomEvent('swipe', { detail: event.direction })
     if (!this.el.dispatchEvent(swipeEvent)) {
@@ -44,7 +49,8 @@ const displaySwipe = {
   }
 }
 
-const scene = panzoom(document.querySelector('.scene'), displaySwipe, { domEvents: true })
+const scene = panzoom(document.querySelector('.scene'), catchSwipe, { domEvents: true })
+// scene.listen() is called automatically
 
 listenButton.onclick = function () {
   // unlisten will remove all event listeners
@@ -58,7 +64,6 @@ function getButtonText (scene) {
   return scene.isListening ? 'Unlisten' : 'Listen'
 }
 
-scene.listen()
 
 let counter1 = 0
 const title1 = 'promise (once)'
