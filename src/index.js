@@ -82,7 +82,11 @@ function initReferent (referent, el, options) {
             }, gesture.options)
             // convert a gesture's options record into a trait instance where
             // `options` overwrite a gesture's default options
-            gesture.options = Trait.object(Object.assign((defaultOptions), options))
+            try {
+              gesture.options = Trait.object(Object.assign((defaultOptions), options))
+            } catch (error) {
+              throw new Error(`${error.message} in options`)
+            }
 
             // convert gesture record into a trait instance
             const t = Trait.create(

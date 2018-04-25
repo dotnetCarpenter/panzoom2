@@ -10,7 +10,11 @@ const miniReferent = {
     domEvents: true,
     distance: '200px'
   },
-  listen () {},
+  listen () {
+    if (this.options.domEvents) {
+      // this.on('pinch')
+    }
+  },
   unlisten () {}
 }
 const listenButton = document.getElementById('listenButton')
@@ -83,7 +87,7 @@ function panEventUnpack (event) {
 }
 
 function panUnpack (panEvent) {
-  return '(' + panEvent.x.toFixed(2) + ', ' + panEvent.y.toFixed(2) + ')'
+  return '(' + panEvent.touches[0].x.toFixed(2) + ', ' + panEvent.touches[0].y.toFixed(2) + ')'
 }
 
 function wheelEventUnpack (event) {
