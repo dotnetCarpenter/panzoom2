@@ -55,11 +55,7 @@ export default Object.assign({
    * @param {GestureEvent} event
    */
   moveHandler (event) {
-    const distance = Math.sqrt( // TODO: abstract this somewhere
-      (event.touches[0].x - lastTouches.touches[0].x) ** 2
-      +
-      (event.touches[0].y - lastTouches.touches[0].y) ** 2
-    )
+    const distance = event.touches[0].distance(lastTouches.touches[0])
     // console.log(distance)
 
     if (distance > minDistance) { // TODO: consider zoom in distance?

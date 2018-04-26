@@ -35,13 +35,9 @@ export default {
   moveHandler (event) {
     // TODO: take timestamp into consideration - call endHandler if enough time has passed
 
-    const delta = new Point({ // TODO: abstract this somewhere
-      x: event.touches[0].x - lastTouches.touches[0].x,
-      y: event.touches[0].y - lastTouches.touches[0].y
-    })
-    // console.log(delta)
-
+    event.delta = event.touches[0].delta(lastTouches.touches[0])
     event.direction = event.getDirection(lastTouches)
+    // console.log(event.delta)
 
     this.fire('pan', event)
   },

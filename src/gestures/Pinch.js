@@ -46,17 +46,10 @@ export default {
     // TODO: take timestamp into consideration - call endHandler if enough time has passed
 
     // movement (translate)
-    const distanceFromFirstTouch = Math.sqrt( // TODO: abstract this somewhere
-      (event.touches[0].x - lastTouches.touches[0].x) ** 2
-      +
-      (event.touches[0].y - lastTouches.touches[0].y) ** 2
-    )
+    const distanceFromFirstTouch = event.touches[0].distance(lastTouches.touches[0])
+
     // distance between two first fingers
-    const distanceBetweenTwoFingers = Math.sqrt( // TODO: abstract this somewhere
-      (event.touches[0].x - lastTouches.touches[1].x) ** 2
-      +
-      (event.touches[0].y - lastTouches.touches[1].y) ** 2
-    )
+    const distanceBetweenTwoFingers = event.touches[0].distance(lastTouches.touches[1])
 
     const pinchOutwards = lastDistance && distanceBetweenTwoFingers > lastDistance ? true : false
     // console.log(pinchOutwards ? 'zoom in' : 'zoom out')
@@ -66,7 +59,7 @@ export default {
     const scale = distanceFromFirstTouch / distanceBetweenTwoFingers
         // console.log('scale', scale)
 
-    if (scale > pinch.threshold) {
+    if (scale > this.options.pinchThreshold) {
       // Focus formular ported from svg.panzoom.js - ask Ulrich why it's like that
       const currentFocus = new Point({
         x: event.touches[0].x + .5 * (event.touches[1].x - event.touches[0].x),
@@ -74,8 +67,8 @@ export default {
       })
 
       const lastFocus = new Point({
-        x: pinch.lastTouches.touches[0].x + 0.5 * (pinch.lastTouches.touches[1].x - pinch.lastTouches.touches[0].x),
-        y: pinch.lastTouches.touches[0].y + 0.5 * (pinch.lastTouches.touches[1].y - pinch.lastTouches.touches[0].y)
+        x: lastTouches.touches[0].x + 0.5 * (lastTouches.touches[1].x - lastTouches.touches[0].x),
+        y: lastTouches.touches[0].y + 0.5 * (lastTouches.touches[1].y - lastTouches.touches[0].y)
       })
 
       // console.log(scale)
