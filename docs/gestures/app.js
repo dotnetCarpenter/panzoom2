@@ -1,11 +1,11 @@
 /* global panzoom */
 const miniReferent = {
-  gestures: [
-    panzoom.gestures.Pinch,
-    panzoom.gestures.Pan,
-    panzoom.gestures.Wheel,
-    panzoom.gestures.Swipe
-  ],
+  gestures: {
+    Pinch: panzoom.gestures.Pinch,
+    Pan: panzoom.gestures.Pan,
+    Wheel: panzoom.gestures.Wheel,
+    Swipe: panzoom.gestures.Swipe
+  },
   options: {
     domEvents: true,
     distance: '200px'

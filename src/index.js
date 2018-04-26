@@ -35,7 +35,7 @@ function panzoom (el, referent = Zoom, options) {
 }
 
 function initReferent (referent, el, options) {
-  if (!(referent.gestures && referent.gestures[0])) {
+  if (!(referent.gestures && Object.values(referent.gestures)[0])) {
     throw new Error('Referent must have gestures')
   }
 
@@ -72,11 +72,16 @@ function initReferent (referent, el, options) {
         get isListening () { return isListening },
 
         gestures: map(
-          gesture => {
+          (gesture, name) => {
             gesture.el = el
 
             const defaultOptions = {}
             each((value, key) => {
+              // better error message than the one from traits.js
+              if (value.required && !options[key]) {
+                throw new Error(`options is missing ${key} - required by ${isNaN(name) ? name : 'a'} gesture`)
+              }
+
               if (value.required) defaultOptions[key] = Trait.required
               else defaultOptions[key] = value
             }, gesture.options)
