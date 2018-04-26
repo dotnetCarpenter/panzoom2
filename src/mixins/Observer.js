@@ -1,3 +1,10 @@
+import { compose, partial, each, filter, reduce, map } from '../utils'
+
+const mapReduce = compose(
+  partial(reduce)((a, b) => a.indexOf(b) > -1 ? a : a.concat([b]), []),
+  partial(map)(x => x[0])
+)
+
 export default function Observer () {
   let listeners = []
 
@@ -9,7 +16,7 @@ export default function Observer () {
     },
 
     fire (eventName, ...args) {
-      listeners.forEach(listener => {
+      each(listener => {
         if (listener[0] === eventName) {
           try {
             listener[1].apply(this, args)
@@ -18,11 +25,11 @@ export default function Observer () {
             listener[2](error)
           }
         }
-      })
+      }, listeners)
     },
 
     off (eventName, f) {
-      listeners = listeners.filter(
+      listeners = filter(
         listener => {
           if (listener[0] === eventName) {
             // if f is not defined then remove all listeners with the eventName
@@ -31,7 +38,7 @@ export default function Observer () {
           }
           return true
         }
-      )
+      , listeners)
     },
 
     once (eventName, f, errorHandler) {
@@ -67,9 +74,7 @@ export default function Observer () {
     },
 
     get currentListenerTypes () {
-      return listeners
-        .map(x => x[0])
-        .reduce((a, b) => a.indexOf(b) > -1 ? a : a.concat([b]), [])
+      return mapReduce(listeners)
     }
   }
 }

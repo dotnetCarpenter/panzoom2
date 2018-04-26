@@ -1,5 +1,4 @@
 import Point from '../models/Point'
-import { getEventTypeNames } from '../utils'
 
 let minDistance = ''
 let lastTouches = null
@@ -35,7 +34,7 @@ export default {
     }
 
     lastTouches = event
-    eventNames = getEventTypeNames(event)
+    eventNames = event.getEventTypeNames()
 
     this.on(eventNames.move, this.moveHandler)
     this.on(eventNames.end, this.endHandler)

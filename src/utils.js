@@ -5,7 +5,42 @@
  * @returns {function}
  */
 export function compose (...fs) {
-  return x => fs.reduceRight((x, a) => a(x), x)
+  return x => reduceRight((x, a) => a(x), x, fs)
+}
+
+export function reduceRight(f, init, list) {
+  return reduce(f, init, list.reverse())
+}
+
+/**
+ * Returns a new function where some of the arguments are pre defined.
+ * @param {function} f The function to partially apply arguments to
+ * @param {number} [arity] Optionally specify how many arguments the function f will take, before being called. Useful for variadic functions
+ * @returns {function}
+ */
+export function partial (f, context) {
+  let arity = f.length
+
+  return function partial (...xs) {
+    if (arity < xs.length) throw new TypeError((f.name || 'anonymous') + ' does not accept ' + xs.length + ' arguments')
+    return arity === xs.length ? f.apply(context, xs) : partial.bind(context, ...xs)
+  }
+}
+
+export function reduce (f, init, list) {
+  let result = init
+  each((value, key) => {
+    result = f(result, value, key)
+  }, list)
+  return result
+}
+
+export function filter (f, list) {
+  const seq = []
+  each((value, key) => {
+    if (f(value, key)) seq.push(value)
+  }, list)
+  return seq
 }
 
 /**
@@ -15,11 +50,11 @@ export function compose (...fs) {
  * @returns {array}
  */
 export function map (f, list) {
-  const m = []
+  const seq = []
   each((value, key) => {
-    m.push(f(value, key))
+    seq.push(f(value, key))
   }, list)
-  return m
+  return seq
 }
 
 /**
@@ -32,18 +67,4 @@ export function each (f, list) {
   for (let key in list) {
     f(list[key], key)
   }
-}
-
-/**
- * Detect mouse or touch move and end event names.
- * Given an event getEventTypeNames will return an
- * object, where move is touchmove/mousemove and
- * end is touchend/mouseup.
- * @param {event} event
- * @returns {object} { move: String, end: String }
- */
-export function getEventTypeNames (event) {
-  return event.type === 'touchstart'
-  ? { move: 'touchmove', end: 'touchend' }
-  : { move: 'mousemove', end: 'mouseup' }
 }

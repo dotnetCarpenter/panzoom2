@@ -1,5 +1,4 @@
 import Point from '../models/Point'
-import { getEventTypeNames } from '../utils'
 
 let lastTouches = null
 let eventNames = null
@@ -24,7 +23,7 @@ export default {
     // TODO: take timestamp into consideration - call endHandler if enough time has passed
     lastTouches = event
 
-    eventNames = getEventTypeNames(event)
+    eventNames = event.getEventTypeNames()
 
     this.on(eventNames.move, this.moveHandler, error => {
       console.error(error)
@@ -42,7 +41,7 @@ export default {
     })
     // console.log(delta)
 
-    event.direction = getDirection(lastTouches, event)
+    event.direction = event.getDirection(lastTouches)
 
     this.fire('pan', event)
   },
@@ -51,22 +50,5 @@ export default {
     this.off(eventNames.move, this.moveHandler)
     this.off(eventNames.end, this.endHandler)
     this.listen()
-  }
-}
-
-// TODO: Move to own model
-function getDirection (event1, event2) {
-  // https://stackoverflow.com/questions/2264072/detect-a-finger-swipe-through-javascript-on-the-iphone-and-android
-  const deltaX = event1.touches[0].x - event2.touches[0].x // TODO: make addition and substraction easier for Point
-  const deltaY = event1.touches[0].y - event2.touches[0].y
-
-  // TODO: return an enum instead
-  // console.log(deltaX, deltaY)
-  if (Math.abs(deltaX) > Math.abs(deltaY)) {
-    if (deltaX > 0) return 'left'
-    else return 'right'
-  } else {
-    if (deltaY > 0) return 'up'
-    else return 'down'
   }
 }

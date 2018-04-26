@@ -1,6 +1,6 @@
 import Point from '../models/Point'
 import { percentToPixel, getUnit } from '../mixins/LengthUnits'
-import { getEventTypeNames } from '../utils'
+import GestureEvent from '../models/GestureEvent';
 
 let minDistance = ''
 let lastTouches = null
@@ -34,18 +34,26 @@ export default Object.assign({
   },
 
   // custom methods
+  /**
+   *
+   * @param {GestureEvent} event
+   */
   startHandler (event) {
     this.unlisten()
 
     // TODO: take timestamp into consideration - call endHandler if enough time has passed
     lastTouches = event
 
-    eventNames = getEventTypeNames(event)
+    eventNames = event.getEventTypeNames()
 
     this.on(eventNames.move, this.moveHandler)
     this.on(eventNames.end, this.endHandler)
   },
 
+  /**
+   *
+   * @param {GestureEvent} event
+   */
   moveHandler (event) {
     const distance = Math.sqrt( // TODO: abstract this somewhere
       (event.touches[0].x - lastTouches.touches[0].x) ** 2
@@ -55,7 +63,7 @@ export default Object.assign({
     // console.log(distance)
 
     if (distance > minDistance) { // TODO: consider zoom in distance?
-      event.direction = getDirection(lastTouches, event)
+      event.direction = event.getDirection(lastTouches)
 
       this.fire('swipe', event)
 
@@ -72,20 +80,3 @@ export default Object.assign({
   percentToPixel
 
 })
-
-// TODO: Move to own model
-function getDirection (event1, event2) {
-  // https://stackoverflow.com/questions/2264072/detect-a-finger-swipe-through-javascript-on-the-iphone-and-android
-  const deltaX = event1.touches[0].x - event2.touches[0].x // TODO: make addition and substraction easier for Point
-  const deltaY = event1.touches[0].y - event2.touches[0].y
-
-  // TODO: return an enum instead
-  // console.log(deltaX, deltaY)
-  if (Math.abs(deltaX) > Math.abs(deltaY)) {
-    if (deltaX > 0) return 'left'
-    else return 'right'
-  } else {
-    if (deltaY > 0) return 'up'
-    else return 'down'
-  }
-}
