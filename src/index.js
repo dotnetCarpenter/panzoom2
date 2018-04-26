@@ -48,7 +48,7 @@ function initReferent (referent, el, options) {
   // referent.isInitialized = true
 
   // shared observer between a referent and all of its gestures
-  const hivemind = NativeEvents()
+  let hivemind = NativeEvents()
 
   let isListening = false
   let proxy = Trait.create(Object.prototype,
@@ -133,7 +133,8 @@ function initReferent (referent, el, options) {
           this.removeNativeEventHandlers()
           this.destroyListeners()
           this.destroyReferent()
-          return proxy = null
+
+          return proxy = hivemind = null
         }
       })
     )
