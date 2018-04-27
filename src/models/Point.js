@@ -24,8 +24,7 @@ class Point {
   distance (point) {
     const delta = this.delta(point)
     return Math.sqrt(
-      delta.x ** 2,
-      delta.y ** 2
+      delta.x ** 2 + delta.y ** 2
     )
   }
 }
