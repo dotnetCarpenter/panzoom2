@@ -20,7 +20,8 @@ export default {
   // default options
   options: {
     zoomFactor: 0.03,
-    domEvents: false
+    domEvents: false,
+    preventDefault: true
   },
 
   // life cycle handlers
@@ -62,7 +63,7 @@ export default {
       }
     }
 
-    event.preventDefault()
+    if (this.options.preventDefault) event.preventDefault()
     // TODO: add async zoom operation here?
     this.zoom(event.point, getScaleMultiplier(event.deltaY, this.options.zoomFactor))
   },

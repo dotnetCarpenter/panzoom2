@@ -130,9 +130,8 @@ function initReferent (referent, el, options) {
         },
 
         destroy () {
-          this.removeNativeEventHandlers()
           this.destroyListeners()
-          this.destroyReferent()
+          if (this.destroyReferent) this.destroyReferent()
 
           return proxy = hivemind = null
         }

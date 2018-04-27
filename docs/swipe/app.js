@@ -1,8 +1,5 @@
 'use strict'
 
-const listenButton = document.getElementById('listenButton')
-const messages = document.querySelectorAll('.message')
-
 // our custom referent
 const catchSwipe = {
   gestures: [panzoom.gestures.Swipe],
@@ -49,8 +46,26 @@ const catchSwipe = {
   }
 }
 
-const scene = panzoom(document.querySelector('.scene'), catchSwipe, { domEvents: true })
-// scene.listen() is called automatically
+const initializeButton = document.getElementById('initializeButton')
+const listenButton = document.getElementById('listenButton')
+const messages = document.querySelectorAll('.message')
+let scene
+
+initializeButton.onclick = function () {
+  if (scene) {
+    scene.destroy()
+    console.log(scene)
+    scene = null
+
+    initializeButton.textContent = 'Initialize'
+    listenButton.style.display = 'none'
+  } else {
+    scene  = panzoom(document.querySelector('.scene'), catchSwipe, { domEvents: true })
+    // scene.listen() is called automatically
+    initializeButton.textContent = 'Destroy'
+    listenButton.style.display = 'inline-block'
+  }
+}
 
 listenButton.onclick = function () {
   // unlisten will remove all event listeners

@@ -11,7 +11,8 @@ export default Object.assign({
   options: {
     distance: {
       required: true
-    }
+    },
+    preventDefault: false
   },
 
   // life cycle handlers
@@ -24,7 +25,7 @@ export default Object.assign({
     }
 
     this.on('mousedown', this.startHandler)
-    this.on('touchstart', this.startHandler)
+    this.on('touchstart', this.startHandler, { reject: errorHandler, passive: true })
     console.log('Swipe::listen')
   },
   unlisten () {
@@ -76,3 +77,7 @@ export default Object.assign({
   percentToPixel
 
 })
+
+function errorHandler (error) {
+  console.error(error, 'error happen in listener')
+}

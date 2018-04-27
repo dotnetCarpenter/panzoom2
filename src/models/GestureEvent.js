@@ -57,8 +57,8 @@ class GestureEvent {
     return event
   }
 
-  static addEvent (el, type, listener) {
-    el.addEventListener(type, listener, true)
+  static addEvent (el, type, listener, options) {
+    el.addEventListener(type, listener, options || true)
   }
 
   static removeEvent (el, type, listener) {

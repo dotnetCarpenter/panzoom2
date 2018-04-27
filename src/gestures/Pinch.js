@@ -14,11 +14,11 @@ export default {
 
   // life cycle handlers
   listen () {
-    this.on('touchstart', this.startHandler)
+    this.on('touchstart', this.startHandler, { reject: errorHandler, passive: this.options.preventDefault })
     console.log('Pinch::listen')
   },
   unlisten () {
-    this.off('touchstart', this.startHandler)
+    this.off('touchstart', this.startHandler, { reject: errorHandler, passive: this.options.preventDefault })
     console.log('Pinch::unlisten')
   },
 
@@ -85,4 +85,8 @@ export default {
     this.listen()
   }
 
+}
+
+function errorHandler (error) {
+  console.error(error, 'error happen in listener')
 }

@@ -4,10 +4,14 @@ let lastTouches = null
 let eventNames = null
 
 export default {
+  options: {
+    preventDefault: false
+  },
+
   // life cycle handlers
   listen () {
     this.on('mousedown', this.startHandler)
-    this.on('touchstart', this.startHandler)
+    this.on('touchstart', this.startHandler, { passive: !this.options.preventDefault })
     console.log('Pan::listen')
   },
   unlisten () {
@@ -18,6 +22,8 @@ export default {
 
   // custom methods
   startHandler (event) {
+    if (this.options.preventDefault) event.preventDefault()
+
     this.unlisten()
 
     // TODO: take timestamp into consideration - call endHandler if enough time has passed
