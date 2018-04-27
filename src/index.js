@@ -125,7 +125,7 @@ function initReferent (referent, el, options) {
             gesture.unlisten(arg)
           }, this.gestures)
 
-          this.unlistenReferent(arg)
+          if (this.unlistenReferent) this.unlistenReferent(arg)
 
           isListening = false
         },

@@ -41,8 +41,6 @@ export default {
   },
 
   moveHandler (event) {
-    if (this.options.preventDefault) event.preventDefault()
-
     // TODO: take timestamp into consideration - call endHandler if enough time has passed
 
     // movement (translate)

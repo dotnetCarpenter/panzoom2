@@ -52,10 +52,13 @@ class GestureEvent {
         : [new Point({ x: nativeEvent.pageX, y: nativeEvent.pageY })],
       type: nativeEvent.type,
       deltaY: nativeEvent.deltaY,
+      target: nativeEvent.target,
       preventDefault () {
         nativeEvent.preventDefault()
       },
-      target: nativeEvent.target
+      stopPropagation () {
+        nativeEvent.stopPropagation()
+      }
     }
 
     return event

@@ -16,8 +16,6 @@ export default {
   },
 
   moveHandler (event) {
-    if (this.options.preventDefault) event.preventDefault()
-
     // touchpads can give event.deltaY == 0, which is something we never want to handle
     if (event.deltaY === 0) return
 

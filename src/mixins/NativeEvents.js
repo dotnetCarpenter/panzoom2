@@ -3,10 +3,12 @@ import Trait from 'traits.js'
 import Observer from './Observer'
 
 import eventTypes from '../models/EventTypes'
+import eventTypesOptions from '../models/EventTypesOptions'
 import Point from '../models/Point'
 import GestureEvent from '../models/GestureEvent'
 
 import { map, each, compose } from '../utils'
+import { remToPixel } from './LengthUnits';
 
 export default function NativeEvents () {
 
@@ -49,8 +51,8 @@ export default function NativeEvents () {
 
         if (!isValidEventType(eventName)) return
 
-        if (options.passive && !supportsPassiveOption) options = null
-        else if (options.passive) options.useCapture = true
+        if (!supportsPassiveOption) options = null
+        else options = eventTypesOptions.get(eventName)
 
         let counter
         if (counter = nativeListeners.get(eventName)) {
@@ -81,7 +83,7 @@ export default function NativeEvents () {
         this.observerDestroy()
       },
 
-      // TODO: figure out how to reset event listener options
+      // FIXME: figure out how to reset event listener options
       addNativeEventHandlers () {
         each(type => {
           if (isValidEventType(type) && !nativeListeners.has(type)) {
@@ -104,6 +106,6 @@ export default function NativeEvents () {
   )
 }
 
-function isValidEventType (type) {
-  return eventTypes.indexOf(type) > -1
+function isValidEventType (eventName) {
+  return eventTypes.indexOf(eventName) > -1
 }

@@ -12,7 +12,7 @@ export default Object.assign({
     distance: {
       required: true
     },
-    preventDefault: false
+    passive: false
   },
 
   // life cycle handlers
@@ -24,8 +24,8 @@ export default Object.assign({
       )
     }
 
-    this.on('mousedown', this.startHandler)
-    this.on('touchstart', this.startHandler, { reject: errorHandler, passive: !this.options.preventDefault })
+    this.on('mousedown', this.startHandler, { reject: errorHandler })
+    this.on('touchstart', this.startHandler, { reject: errorHandler, passive: this.options.passive })
     console.log('Swipe::listen')
   },
   unlisten () {
@@ -40,8 +40,6 @@ export default Object.assign({
    * @param {GestureEvent} event
    */
   startHandler (event) {
-    if (this.options.preventDefault) event.preventDefault()
-
     this.unlisten()
 
     // TODO: take timestamp into consideration - call endHandler if enough time has passed
@@ -49,8 +47,8 @@ export default Object.assign({
 
     eventNames = event.getEventTypeNames()
 
-    this.on(eventNames.move, this.moveHandler)
-    this.on(eventNames.end, this.endHandler)
+    this.on(eventNames.move, this.moveHandler, { reject: errorHandler, passive: this.options.passive })
+    this.on(eventNames.end, this.endHandler, { reject: errorHandler })
   },
 
   /**

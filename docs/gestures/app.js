@@ -1,5 +1,5 @@
 /* global panzoom */
-const miniReferent = {
+const allGesturesReferent = {
   gestures: {
     Pinch: panzoom.gestures.Pinch,
     Pan: panzoom.gestures.Pan,
@@ -35,7 +35,7 @@ const miniReferent = {
 }
 const listenButton = document.getElementById('listenButton')
 const domMessages = document.querySelectorAll('.messages__message')
-const scene = panzoom(document.querySelector('.scene'), miniReferent)
+const scene = panzoom(document.querySelector('.scene'), allGesturesReferent)
 
 const messages = setupMessages()
 listen(messages)
@@ -47,7 +47,7 @@ function setupMessages () {
 
     let unpack
     if (messageEl.dataset.method === 'event') {
-      switch (gesture) {
+      switch (gesture) { // for DOM events
         case 'pinch':
           unpack = pinchEventUnpack
           break
@@ -57,10 +57,13 @@ function setupMessages () {
         case 'wheelEvent':
           unpack = wheelEventUnpack
           break
+        case 'swipe':
+          unpack = swipeEventUnpack
+          break
         default:
           unpack = eventDetail
       }
-    } else {
+    } else { // for panzoom2 events
       switch (gesture) {
         case 'pinch':
           unpack = pinchUnpack
@@ -70,6 +73,9 @@ function setupMessages () {
           break
         case 'wheelEvent':
           unpack = wheelUnpack
+          break
+        case 'swipe':
+          unpack = swipeUnpack
           break
         default:
           unpack = identity
@@ -112,6 +118,14 @@ function wheelEventUnpack (event) {
 
 function wheelUnpack (wheelEvent) {
   return 'deltaY: ' + wheelEvent.deltaY.toFixed(2) + ' (' + wheelEvent.point.x + ', ' + wheelEvent.point.y + ') in page (' + wheelEvent.page[0].x + ', ' + wheelEvent.page[0].y + ')'
+}
+
+function swipeEventUnpack (event) {
+  return swipeUnpack(eventDetail(event))
+}
+
+function swipeUnpack (swipeEvent) {
+  return 'direction: ' + swipeEvent.direction
 }
 
 function messagesFactory (gesture, method, title, messageEl, unpack) {
