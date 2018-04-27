@@ -60,7 +60,7 @@ initializeButton.onclick = function () {
     initializeButton.textContent = 'Initialize'
     listenButton.style.display = 'none'
   } else {
-    scene  = panzoom(document.querySelector('.scene'), catchSwipe, { domEvents: true })
+    scene  = panzoom(document.querySelector('.scene'), catchSwipe, { domEvents: true, preventDefault: true })
     // scene.listen() is called automatically
     initializeButton.textContent = 'Destroy'
     listenButton.style.display = 'inline-block'

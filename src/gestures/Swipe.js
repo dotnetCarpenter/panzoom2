@@ -25,7 +25,7 @@ export default Object.assign({
     }
 
     this.on('mousedown', this.startHandler)
-    this.on('touchstart', this.startHandler, { reject: errorHandler, passive: true })
+    this.on('touchstart', this.startHandler, { reject: errorHandler, passive: !this.options.preventDefault })
     console.log('Swipe::listen')
   },
   unlisten () {
@@ -40,6 +40,8 @@ export default Object.assign({
    * @param {GestureEvent} event
    */
   startHandler (event) {
+    if (this.options.preventDefault) event.preventDefault()
+
     this.unlisten()
 
     // TODO: take timestamp into consideration - call endHandler if enough time has passed

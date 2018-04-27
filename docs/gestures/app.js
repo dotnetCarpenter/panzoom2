@@ -156,8 +156,8 @@ function listen (messages) {
     scene.once(m.gesture, m.handler)
   })
 
-  // If you have unlisten then you have to enable listen again
-  // , but it's irrelevant when you start to listen again.
+  // If you have unlisten then you have to enable listen again,
+  // but it's irrelevant when you start to listen again.
   // .listen() is idempotent
   scene.listen()
 
