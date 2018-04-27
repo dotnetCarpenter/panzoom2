@@ -10,12 +10,28 @@ const miniReferent = {
     domEvents: true,
     distance: '200px'
   },
-  listen () {
+  listen: function () {
     if (this.options.domEvents) {
-      // this.on('pinch')
+      this.on('pinch', this.fireEvent('pinch'), { reject: function (error) { console.log(error) } })
+      this.on('pan', this.fireEvent('pan'), { reject: function (error) { console.log(error) } })
+      this.on('wheelEvent', this.fireEvent('wheelEvent'), { reject: function (error) { console.log(error) } })
+      this.on('swipe', this.fireEvent('swipe'), { reject: function (error) { console.log(error) } })
     }
   },
-  unlisten () {}
+  fireEvent: function (name) {
+    return function (event) {
+      const customEvent = new CustomEvent(name, {
+        detail: event,
+        bubbles: true,
+        cancelable: true,
+      })
+
+      if (!this.el.dispatchEvent(customEvent)) {
+        console.log(name + ' - event was cancelled')
+        return
+      }
+    }
+  }
 }
 const listenButton = document.getElementById('listenButton')
 const domMessages = document.querySelectorAll('.messages__message')
@@ -38,7 +54,7 @@ function setupMessages () {
         case 'pan':
           unpack = panEventUnpack
           break
-        case 'wheelDelta':
+        case 'wheelEvent':
           unpack = wheelEventUnpack
           break
         default:
@@ -52,7 +68,7 @@ function setupMessages () {
         case 'pan':
           unpack = panUnpack
           break
-        case 'wheelDelta':
+        case 'wheelEvent':
           unpack = wheelUnpack
           break
         default:
@@ -95,7 +111,7 @@ function wheelEventUnpack (event) {
 }
 
 function wheelUnpack (wheelEvent) {
-  return 'scale: ' + wheelEvent.scale.toFixed(2) + ' (' + wheelEvent.point.x + ', ' + wheelEvent.point.y + ')'
+  return 'deltaY: ' + wheelEvent.deltaY.toFixed(2) + ' (' + wheelEvent.point.x + ', ' + wheelEvent.point.y + ') in page (' + wheelEvent.page[0].x + ', ' + wheelEvent.page[0].y + ')'
 }
 
 function messagesFactory (gesture, method, title, messageEl, unpack) {
@@ -105,7 +121,7 @@ function messagesFactory (gesture, method, title, messageEl, unpack) {
     counter: 0,
     messageEl: messageEl,
     handler: function (payload) {
-      // if (gesture === 'wheelDelta') console.log('payload', payload)
+      // if (gesture === 'wheelEvent') console.log('payload', payload)
       message.messageEl.textContent = title + ' ' + ++message.counter + ': ' + unpack(payload)
     }
   }
