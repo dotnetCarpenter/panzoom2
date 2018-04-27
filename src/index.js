@@ -112,6 +112,7 @@ function initReferent (referent, el, options) {
 
           this.listenReferent(arg)
 
+          // TODO: maybe not needed since we call listen on all gestures and they add the native event handler via NativeEvents.js
           this.addNativeEventHandlers()
 
           isListening = true

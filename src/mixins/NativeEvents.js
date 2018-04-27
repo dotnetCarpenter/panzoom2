@@ -95,7 +95,7 @@ export default function NativeEvents () {
       removeNativeEventHandlers () {
         each(type => {
           if (isValidEventType(type) && nativeListeners.has(type)) {
-            GestureEvent.removeEvent(this.el, type, this.eventHandler)
+            GestureEvent.removeEvent(this.el, type, this.eventNotifier)
             nativeListeners.delete(type)
           }
         }, this.currentListenerTypes)
