@@ -18,10 +18,10 @@ export default Object.assign(percentToPixel, {
       required: true
     },
     get preventDefault () {
-      return isPassive
+      return !isPassive
     },
     set preventDefault (bool) {
-      isPassive = bool
+      isPassive = !bool
     }
   },
 

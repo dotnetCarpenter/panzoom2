@@ -68,8 +68,12 @@ export default function NativeEvents () {
       off: Trait.required,
       fire: Trait.required,
 
-      eventNotifier(event) {
-        this.fire(event.cancelable ? event.type : event.type + '.passive', new GestureEvent(event))
+      eventNotifier (event) {
+        this.fire(event.type, new GestureEvent(event))
+      },
+
+      eventNotifierPassive (event) {
+        this.fire(event.type + '.passive', new GestureEvent(event))
       },
 
       on (eventName, f, options = {}) {
@@ -80,11 +84,13 @@ export default function NativeEvents () {
         let realEventName;
         ({ options, realEventName} = normalisePassive(eventName))
 
+        const eventNotifier = options.passive ? this.eventNotifierPassive : this.eventNotifier
+
         const counter = nativeListeners.get(eventName)
         if (counter) {
           nativeListeners.set(eventName, counter + 1)
         } else {
-          GestureEvent.addEvent(this.el, realEventName, this.eventNotifier, options)
+          GestureEvent.addEvent(this.el, realEventName, eventNotifier, options)
           nativeListeners.set(eventName, 1)
         }
       },
@@ -115,8 +121,9 @@ export default function NativeEvents () {
         each(eventName => {
           if (isValidEventType(eventName) && !nativeListeners.has(eventName)) {
             let { options = {}, realEventName } = normalisePassive(eventName)
+            const eventNotifier = options.passive ? this.eventNotifierPassive : this.eventNotifier
             debugger
-            GestureEvent.addEvent(this.el, realEventName, this.eventNotifier, options)
+            GestureEvent.addEvent(this.el, realEventName, eventNotifier, options)
             nativeListeners.set(eventName, 1)
           }
         }, this.currentListenerTypes)
