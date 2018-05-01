@@ -14,16 +14,15 @@ class GestureEvent {
   getDirection (event) {
     // debugger
     // https://stackoverflow.com/questions/2264072/detect-a-finger-swipe-through-javascript-on-the-iphone-and-android
-    const deltaX = this.touches[0].x - event.touches[0].x // TODO: make addition and substraction easier for Point
-    const deltaY = this.touches[0].y - event.touches[0].y
+    const delta = this.touches[0].delta(event.touches[0])
 
     // TODO: return an enum instead
-    // console.log(deltaX, deltaY)
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      if (deltaX > 0) return 'right'
+    // console.log(delta.x, delta.y)
+    if (Math.abs(delta.x) > Math.abs(delta.y)) {
+      if (delta.x > 0) return 'right'
       else return 'left'
     } else {
-      if (deltaY > 0) return 'down'
+      if (delta.y > 0) return 'down'
       else return 'up'
     }
   }

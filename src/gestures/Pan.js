@@ -3,6 +3,10 @@ import Point from '../models/Point'
 let lastTouches = null
 let eventNames = null
 
+function errorHandler (error) {
+  console.error(error)
+}
+
 export default {
   options: {
     preventDefault: false
@@ -10,13 +14,13 @@ export default {
 
   // life cycle handlers
   listen () {
-    this.on('mousedown', this.startHandler)
-    this.on('touchstart', this.startHandler, { passive: !this.options.preventDefault })
+    this.on('mousedown', this.startHandler, { reject: errorHandler })
+    this.on('touchstart.passive', this.startHandler, { reject: errorHandler })
     console.log('Pan::listen')
   },
   unlisten () {
     this.off('mousedown', this.startHandler)
-    this.off('touchstart', this.startHandler)
+    this.off('touchstart.passive', this.startHandler)
     console.log('Pan::unlisten')
   },
 
@@ -29,11 +33,11 @@ export default {
 
     eventNames = event.getEventTypeNames()
 
-    this.on(eventNames.move, this.moveHandler, error => {
+    this.on(this.options.preventDefault ? eventNames.move : eventNames.move + '.passive', this.moveHandler, error => {
       console.error(error)
       this.unlisten()
     })
-    this.on(eventNames.end, this.endHandler)
+    this.on(eventNames.end, this.endHandler, { reject: errorHandler })
   },
 
   moveHandler (event) {
@@ -47,7 +51,7 @@ export default {
   },
 
   endHandler () {
-    this.off(eventNames.move, this.moveHandler)
+    this.off(this.options.preventDefault ? eventNames.move : eventNames.move + '.passive', this.moveHandler)
     this.off(eventNames.end, this.endHandler)
     this.listen()
   }

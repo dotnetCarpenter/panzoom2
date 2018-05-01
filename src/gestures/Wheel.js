@@ -7,12 +7,12 @@ export default {
 
   // life cycle handlers
   listen () {
-    this.on('wheel', this.moveHandler, { passive: !this.options.preventDefault })
+    this.on(this.options.preventDefault ? 'wheel' : 'wheel.passive', this.moveHandler)
     console.log('Wheel::listen')
   },
   unlisten () {
     console.log('Wheel::unlisten')
-    this.off('wheel', this.moveHandler)
+    this.off(this.options.preventDefault ? 'wheel' : 'wheel.passive', this.moveHandler)
   },
 
   moveHandler (event) {

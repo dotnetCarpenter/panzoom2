@@ -14,11 +14,11 @@ export default {
 
   // life cycle handlers
   listen () {
-    this.on('touchstart', this.startHandler, { reject: errorHandler, passive: this.options.preventDefault })
+    this.on('touchstart.passive', this.startHandler, { reject: errorHandler })
     console.log('Pinch::listen')
   },
   unlisten () {
-    this.off('touchstart', this.startHandler, { reject: errorHandler, passive: this.options.preventDefault })
+    this.off('touchstart.passive', this.startHandler, { reject: errorHandler })
     console.log('Pinch::unlisten')
   },
 
@@ -36,7 +36,7 @@ export default {
     lastTouches = event
     eventNames = event.getEventTypeNames()
 
-    this.on(eventNames.move, this.moveHandler)
+    this.on(preventDefault ? eventNames.move : eventNames.move + '.passive', this.moveHandler)
     this.on(eventNames.end, this.endHandler)
   },
 
@@ -78,7 +78,7 @@ export default {
     }
   },
   endHandler () {
-    this.off(eventNames.move, this.moveHandler)
+    this.off(preventDefault ? eventNames.move : eventNames.move + '.passive', this.moveHandler)
     this.off(eventNames.end, this.endHandler)
     this.listen()
   }

@@ -5,14 +5,24 @@ import GestureEvent from '../models/GestureEvent';
 let minDistance = ''
 let lastTouches = null
 let eventNames = null
+let isPassive = false
 
-export default Object.assign({
+function getEventName(eventName) {
+  return isPassive ? eventName + '.passive' : eventName
+}
+
+export default Object.assign(percentToPixel, {
   // required option(s)
   options: {
     distance: {
       required: true
     },
-    passive: false
+    get preventDefault () {
+      return isPassive
+    },
+    set preventDefault (bool) {
+      isPassive = bool
+    }
   },
 
   // life cycle handlers
@@ -25,12 +35,12 @@ export default Object.assign({
     }
 
     this.on('mousedown', this.startHandler, { reject: errorHandler })
-    this.on('touchstart', this.startHandler, { reject: errorHandler, passive: this.options.passive })
+    this.on('touchstart.passive', this.startHandler, { reject: errorHandler })
     console.log('Swipe::listen')
   },
   unlisten () {
     this.off('mousedown', this.startHandler)
-    this.off('touchstart', this.startHandler)
+    this.off('touchstart.passive', this.startHandler)
     console.log('Swipe::unlisten')
   },
 
@@ -47,7 +57,7 @@ export default Object.assign({
 
     eventNames = event.getEventTypeNames()
 
-    this.on(eventNames.move, this.moveHandler, { reject: errorHandler, passive: this.options.passive })
+    this.on(getEventName(eventNames.move), this.moveHandler, { reject: errorHandler })
     this.on(eventNames.end, this.endHandler, { reject: errorHandler })
   },
 
@@ -69,13 +79,10 @@ export default Object.assign({
   },
 
   endHandler () {
-    this.off(eventNames.move, this.moveHandler)
+    this.off(getEventName(eventNames.move), this.moveHandler)
     this.off(eventNames.end, this.endHandler)
     this.listen()
-  },
-
-  percentToPixel
-
+  }
 })
 
 function errorHandler (error) {

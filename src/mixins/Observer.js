@@ -28,17 +28,27 @@ export default function Observer () {
       }, listeners)
     },
 
+    /**
+     *
+     * @param {string} eventName The event type you want to remove
+     * @param {function} f The function listening for the event type to
+     * distinguish from other listeners for the same event type
+     */
     off (eventName, f) {
+      let notRemoved = true
+
       listeners = filter(
         listener => {
           if (listener[0] === eventName) {
             // if f is not defined then remove all listeners with the eventName
             if (!f) return false
-            else return listener[1] === f ? false : true
+            else return listener[1] === f ? notRemoved = false : true
           }
           return true
         }
       , listeners)
+
+      return !notRemoved
     },
 
     once (eventName, f, errorHandler) {

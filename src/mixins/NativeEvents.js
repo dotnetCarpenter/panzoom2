@@ -3,28 +3,54 @@ import Trait from 'traits.js'
 import Observer from './Observer'
 
 import eventTypes from '../models/EventTypes'
-import eventTypesOptions from '../models/EventTypesOptions'
 import Point from '../models/Point'
 import GestureEvent from '../models/GestureEvent'
 
 import { map, each, compose } from '../utils'
 import { remToPixel } from './LengthUnits';
 
+
+/* detect passive option for event listeners */
+let supportsPassiveOption = false
+try {
+  let opts = Object.defineProperty({}, 'passive', {
+    get: function() {
+      supportsPassiveOption = true
+    }
+  })
+  window.addEventListener('test', null, opts)
+} catch (e) {}
+/* end detect */
+// console.log('supportsPassiveOption', supportsPassiveOption)
+
+const matchPassive = /\.passive$/
+function isPassive (eventName) {
+  return matchPassive.test(eventName)
+}
+
+function isValidEventType (eventName) {
+  return eventTypes.indexOf(eventName.replace(matchPassive, '')) > -1
+}
+
+/**
+ * Returns the correct eventName and options object.
+ * @param {string} eventName Removes '.passive' from the eventName if passive is not supported
+ * @return {object} passive options if supported or true for options to use capture.
+ */
+function normalisePassive (eventName) {
+  return supportsPassiveOption && isPassive(eventName) ? {
+    realEventName: eventName.replace(matchPassive, ''),
+    options: {
+      capture: true,
+      passive: true
+    }
+  } : {
+    realEventName: eventName.replace(matchPassive, ''),
+    options: true
+  }
+}
+
 export default function NativeEvents () {
-
-  /* detect passive option for event listeners */
-  let supportsPassiveOption = false
-  try {
-    var opts = Object.defineProperty({}, 'passive', {
-      get: function() {
-        supportsPassiveOption = true
-      }
-    })
-    window.addEventListener('test', null, opts)
-  } catch (e) {}
-  /* end detect */
-  // console.log('supportsPassiveOption', supportsPassiveOption)
-
   let nativeListeners = new Map()
 
   return Trait.compose(
@@ -43,7 +69,7 @@ export default function NativeEvents () {
       fire: Trait.required,
 
       eventNotifier(event) {
-        this.fire(event.type, new GestureEvent(event))
+        this.fire(event.cancelable ? event.type : event.type + '.passive', new GestureEvent(event))
       },
 
       on (eventName, f, options = {}) {
@@ -51,29 +77,31 @@ export default function NativeEvents () {
 
         if (!isValidEventType(eventName)) return
 
-        if (!supportsPassiveOption) options = null
-        else options = eventTypesOptions.get(eventName)
+        let realEventName;
+        ({ options, realEventName} = normalisePassive(eventName))
 
-        let counter
-        if (counter = nativeListeners.get(eventName)) {
+        const counter = nativeListeners.get(eventName)
+        if (counter) {
           nativeListeners.set(eventName, counter + 1)
         } else {
-          GestureEvent.addEvent(this.el, eventName, this.eventNotifier, options)
+          GestureEvent.addEvent(this.el, realEventName, this.eventNotifier, options)
           nativeListeners.set(eventName, 1)
         }
       },
 
       off (eventName, f) {
-        this.observerOff(eventName, f)
+        if (!this.observerOff(eventName, f)) return
 
         if (!isValidEventType(eventName)) return
+
+        let { options, realEventName } = normalisePassive(eventName)
 
         let counter
         if (counter = nativeListeners.get(eventName)) {
           nativeListeners.set(eventName, counter - 1)
-          if (counter === 1) GestureEvent.removeEvent(this.el, eventName, this.eventNotifier)
+          if (counter === 1) GestureEvent.removeEvent(this.el, realEventName, this.eventNotifier, options)
         } else {
-          GestureEvent.removeEvent(this.el, eventName, this.eventNotifier)
+          GestureEvent.removeEvent(this.el, realEventName, this.eventNotifier, options)
         }
       },
 
@@ -83,29 +111,26 @@ export default function NativeEvents () {
         this.observerDestroy()
       },
 
-      // FIXME: figure out how to reset event listener options
       addNativeEventHandlers () {
-        each(type => {
-          if (isValidEventType(type) && !nativeListeners.has(type)) {
+        each(eventName => {
+          if (isValidEventType(eventName) && !nativeListeners.has(eventName)) {
+            let { options = {}, realEventName } = normalisePassive(eventName)
             debugger
-            GestureEvent.addEvent(this.el, type, this.eventNotifier)
-            nativeListeners.set(type, 1)
+            GestureEvent.addEvent(this.el, realEventName, this.eventNotifier, options)
+            nativeListeners.set(eventName, 1)
           }
         }, this.currentListenerTypes)
       },
 
       removeNativeEventHandlers () {
-        each(type => {
-          if (isValidEventType(type) && nativeListeners.has(type)) {
-            GestureEvent.removeEvent(this.el, type, this.eventNotifier)
-            nativeListeners.delete(type)
+        each(eventName => {
+          if (isValidEventType(eventName) && nativeListeners.has(eventName)) {
+            let { options, realEventName } = normalisePassive(eventName)
+            GestureEvent.removeEvent(this.el, realEventName, this.eventNotifier, options)
+            nativeListeners.delete(eventName)
           }
         }, this.currentListenerTypes)
       }
     })
   )
-}
-
-function isValidEventType (eventName) {
-  return eventTypes.indexOf(eventName) > -1
 }
