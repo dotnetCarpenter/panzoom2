@@ -122,7 +122,7 @@ export default function NativeEvents () {
           if (isValidEventType(eventName) && !nativeListeners.has(eventName)) {
             let { options = {}, realEventName } = normalisePassive(eventName)
             const eventNotifier = options.passive ? this.eventNotifierPassive : this.eventNotifier
-            debugger
+            // debugger
             GestureEvent.addEvent(this.el, realEventName, eventNotifier, options)
             nativeListeners.set(eventName, 1)
           }
