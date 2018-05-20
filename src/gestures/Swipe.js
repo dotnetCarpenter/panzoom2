@@ -11,7 +11,7 @@ function getEventName(eventName) {
   return isPassive ? eventName + '.passive' : eventName
 }
 
-export default Object.assign(percentToPixel, {
+export default Object.assign({percentToPixel}, {
   // required option(s)
   options: {
     distance: {
