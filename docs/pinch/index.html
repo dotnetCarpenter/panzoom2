@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>panzoom2 - Swipe Recognition</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+
+      font-size: 62.5%;
+    }
+
+    .scene {
+      width: 90vw;
+      height: calc(100vh - 5rem);
+      margin: 1px auto;
+
+      overflow-y: auto;
+
+      border: 1px solid darkcyan;
+    }
+
+    .nav {
+      width: 90vw;
+      margin: 0 auto;
+    }
+    .nav__list {
+      margin: 0;
+      padding: 0;
+    }
+    .nav__list li {
+      display: inline-block;
+    }
+
+    .button, .message {
+      height: 1.8rem;
+      margin-right: 1rem;
+
+      font-size: 1.6rem;
+      line-height: 1.6rem;
+
+      list-style: none;
+    }
+    .button {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <ul class="nav__list">
+      <li class="button" id="initializeButton">Initialize</li>
+      <li class="button" style="display:none;" id="listenButton">Unlisten</li>
+    </ul>
+    <ul>
+      <li class="message"></li>
+    </ul>
+  </nav>
+  <div class="scene"></div>
+
+  <script src="https://cdn.polyfill.io/v2/polyfill.minify.js?features=Promise,Object.assign,CustomEvent,Map&amp;flags=gated&amp;rum=0"></script>
+  <script src="/dist/panzoom.js"></script>
+  <script>
+    // Dynamic load to get local version of panzoom using browsersync
+    // or loading public unpkg version for github Pages.
+    if (!window.panzoom) {
+      loadScript('https://unpkg.com/panzoom2', loadScript.bind(null, 'app.js', null))
+    } else {
+      loadScript('app.js')
+    }
+    function loadScript (url, cb) {
+      const script = document.createElement('script')
+      script.src = url
+      if (cb) script.onload = cb
+      document.body.appendChild(script)
+    }
+  </script>
+</body>
+</html>

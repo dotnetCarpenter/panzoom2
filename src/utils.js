@@ -65,6 +65,7 @@ export function map (f, list) {
  */
 export function each (f, list) {
   for (let key in list) {
+    if (!list.hasOwnProperty(key)) continue
     f(list[key], key)
   }
 }

@@ -1,4 +1,5 @@
 import Point from './Point'
+import { map } from '../utils'
 
 class GestureEvent {
   constructor (nativeEvent) {
