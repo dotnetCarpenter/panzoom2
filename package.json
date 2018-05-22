@@ -7,7 +7,7 @@
     "test": "tap tests/*.test.*",
     "dev": "parallelshell -v 'npm run build -- --watch' 'npm run browsersync'",
     "build": "rollup --config rollup.config.js",
-    "browsersync": "browser-sync start --server --files 'dist/*.js' --startPath docs/",
+    "browsersync": "browser-sync start --config bs-config.js --server --files 'dist/*.js' --startPath docs/",
     "debug": "node --inspect-brk"
   },
   "keywords": [
