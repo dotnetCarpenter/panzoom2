@@ -19,7 +19,7 @@
 
     .scene {
       width: 90vw;
-      height: calc(100vh - 5rem);
+      height: calc(100vh - 15rem); /* leave room for scroll so that preventDefault is visible */
       margin: 1px auto;
 
       overflow-y: auto;
@@ -31,15 +31,18 @@
       width: 90vw;
       margin: 0 auto;
     }
+
     .nav__list {
       margin: 0;
       padding: 0;
     }
-    .nav__list li {
+    .nav__list__item {
       display: inline-block;
+
+      cursor: pointer;
     }
 
-    .button, .message {
+    .nav__list__item, .message {
       height: 1.8rem;
       margin-right: 1rem;
 
@@ -48,16 +51,18 @@
 
       list-style: none;
     }
-    .button {
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
   <nav class="nav">
     <ul class="nav__list">
-      <li class="button" id="initializeButton">Initialize</li>
-      <li class="button" style="display:none;" id="listenButton">Unlisten</li>
+      <li class="nav__list__item" id="initializeButton">Initialize</li>
+      <li class="nav__list__item" style="display:none;" id="listenButton">Unlisten</li>
+      <li class="nav__list__item">
+        <label>preventDefault (not passive):
+          <input id="preventDefault" type="checkbox" value="true">
+        </label>
+      </li>
     </ul>
     <ul>
       <li class="message"></li>
@@ -66,6 +71,7 @@
       <li class="message"></li>
     </ul>
   </nav>
+
   <div class="scene"></div>
 
   <script src="https://cdn.polyfill.io/v2/polyfill.minify.js?features=Promise,Object.assign,CustomEvent,Map&amp;flags=gated&amp;rum=0"></script>

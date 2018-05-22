@@ -7,7 +7,7 @@ let lastTouches = null
 let eventNames = null
 let isPassive = false
 
-function getEventName(eventName) {
+function getMaybePassiveEventName(eventName) {
   return isPassive ? eventName + '.passive' : eventName
 }
 
@@ -35,12 +35,12 @@ export default Object.assign({percentToPixel}, {
     }
 
     this.on('mousedown', this.startHandler, { reject: errorHandler })
-    this.on('touchstart.passive', this.startHandler, { reject: errorHandler })
+    this.on(this.options.preventDefault ? 'touchstart' : 'touchstart.passive', this.startHandler, { reject: errorHandler })
     console.log('Swipe::listen')
   },
   unlisten () {
     this.off('mousedown', this.startHandler)
-    this.off('touchstart.passive', this.startHandler)
+    this.off(this.options.preventDefault ? 'touchstart' : 'touchstart.passive', this.startHandler)
     console.log('Swipe::unlisten')
   },
 
@@ -50,6 +50,8 @@ export default Object.assign({percentToPixel}, {
    * @param {GestureEvent} event
    */
   startHandler (event) {
+    if (this.options.preventDefault) event.preventDefault()
+
     this.unlisten()
 
     // TODO: take timestamp into consideration - call endHandler if enough time has passed
@@ -57,7 +59,7 @@ export default Object.assign({percentToPixel}, {
 
     eventNames = event.getEventTypeNames()
 
-    this.on(getEventName(eventNames.move), this.moveHandler, { reject: errorHandler })
+    this.on(getMaybePassiveEventName(eventNames.move), this.moveHandler, { reject: errorHandler })
     this.on(eventNames.end, this.endHandler, { reject: errorHandler })
   },
 
@@ -66,6 +68,8 @@ export default Object.assign({percentToPixel}, {
    * @param {GestureEvent} event
    */
   moveHandler (event) {
+    if (this.options.preventDefault) event.preventDefault()
+
     const distance = event.touches[0].distance(lastTouches.touches[0])
     // console.log(distance)
 
@@ -79,7 +83,7 @@ export default Object.assign({percentToPixel}, {
   },
 
   endHandler () {
-    this.off(getEventName(eventNames.move), this.moveHandler)
+    this.off(getMaybePassiveEventName(eventNames.move), this.moveHandler)
     this.off(eventNames.end, this.endHandler)
     this.listen()
   }

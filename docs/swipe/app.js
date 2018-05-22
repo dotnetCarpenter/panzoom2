@@ -33,7 +33,9 @@ const catchSwipe = {
     document.body.removeEventListener('swipe', swipeHandler2, true)
 
     this.off('swipe') // will remove all event listeners for the 'swipe' event
-    // scene.off('swipe', swipeHandler1) // promise can not be unlisten to - off all swipe event listeners or turn off swipe completely
+    // scene.off('swipe', swipeHandler1) // promise are automatically unlisten after first resolve
+    //  off all swipe event listeners - off('swipe')
+    //  or turn off swipe completely - this.unlisten()
     // scene.off('swipe', swipeHandler3) // this will work
     // scene.off('swipe', swipeHandler4) // once can not be unlisten to - off all swipe event listeners or turn off swipe completely
   },
@@ -48,8 +50,13 @@ const catchSwipe = {
 
 const initializeButton = document.getElementById('initializeButton')
 const listenButton = document.getElementById('listenButton')
+const preventDefaultChkbox = document.getElementById('preventDefault')
 const messages = document.querySelectorAll('.message')
 let scene
+
+preventDefaultChkbox.onchange = function () {
+  if (scene) alert('Can not change options mid-air - you have to destroy/initialize before the option take effect')
+}
 
 initializeButton.onclick = function () {
   if (scene) {
@@ -60,7 +67,10 @@ initializeButton.onclick = function () {
     initializeButton.textContent = 'Initialize'
     listenButton.style.display = 'none'
   } else {
-    scene  = panzoom(document.querySelector('.scene'), catchSwipe, { domEvents: true, preventDefault: true })
+    scene  = panzoom(document.querySelector('.scene'), catchSwipe, {
+      domEvents: true,
+      preventDefault: Boolean(preventDefaultChkbox.checked)
+    })
     // scene.listen() is called automatically
     initializeButton.textContent = 'Destroy'
     listenButton.style.display = 'inline-block'
