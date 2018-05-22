@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>panzoom2 - Swipe Recognition</title>
+  <title>panzoom2 - Pinch Recognition</title>
   <style>
     * {
       box-sizing: border-box;
@@ -51,6 +51,17 @@
     .button {
       cursor: pointer;
     }
+
+    .focusCircle {
+      position: absolute;
+      width: 1.5rem;
+      height: 1.5rem;
+      top: -10rem; /* hide circle */
+      left: -10rem;/* hide circle */
+
+      background: radial-gradient(circle at center, red 0, blue, green 100%);
+      border-radius: 50%;
+    }
   </style>
 </head>
 <body>
@@ -64,6 +75,7 @@
     </ul>
   </nav>
   <div class="scene"></div>
+  <div class="focusCircle"></div>
 
   <script src="https://cdn.polyfill.io/v2/polyfill.minify.js?features=Promise,Object.assign,CustomEvent,Map&amp;flags=gated&amp;rum=0"></script>
   <script src="/dist/panzoom.js"></script>

@@ -12,10 +12,10 @@ export default {
    * observable gestures and the gestures property
    * will always be an array after initialization.
    */
-  gestures: [
+  gestures: {
     Pinch,
     Wheel
-  ],
+  },
 
   // default options
   options: {

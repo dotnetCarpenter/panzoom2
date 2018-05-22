@@ -7,7 +7,11 @@ const catchPinch = {
   // life-cycle method
   listen: function () {
     // use promise
-    this.promise('pinch').then(pinchHandler)
+    this.on('pinch', pinchHandler)
+  },
+
+  unlisten: function () {
+    this.off('pinch')
   }
 }
 
@@ -15,6 +19,7 @@ const initializeButton = document.getElementById('initializeButton')
 const listenButton = document.getElementById('listenButton')
 const messages = document.querySelectorAll('.message')
 const domScene = document.querySelector('.scene')
+const focusCircle = document.querySelector('.focusCircle')
 let scene
 
 initializeButton.onclick = function () {
@@ -26,7 +31,7 @@ initializeButton.onclick = function () {
     initializeButton.textContent = 'Initialize'
     listenButton.style.display = 'none'
   } else {
-    scene  = panzoom(domScene, catchPinch)
+    scene  = panzoom(domScene, catchPinch, {pinchThreshold: 0})
     // scene.listen() is called automatically
     initializeButton.textContent = 'Destroy'
     listenButton.style.display = 'inline-block'
@@ -47,9 +52,13 @@ function getButtonText (scene) {
 
 
 let counter1 = 0
-const title1 = 'promise (once)'
+const title1 = 'pinch'
 messages[0].textContent = title1
 function pinchHandler (event) {
-  messages[0].textContent = title1 + ' ' + ++counter1 + ' - ' + event.scale
-  console.log(event)
+  // if (event.scale < 0) debugger
+  focusCircle.style.top = event.point.y + 'px'
+  focusCircle.style.left = event.point.x + 'px'
+
+  messages[0].textContent = title1 + ' (' + ++counter1 + '): ' + event.scale
+  // console.log(event)
 }

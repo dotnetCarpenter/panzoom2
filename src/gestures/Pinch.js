@@ -4,9 +4,10 @@ let minDistance = ''
 let lastTouches = null
 let lastDistance = null
 let eventNames = null
+let pinchStart = true
 
 export default {
-  // required custom properties from option object
+  // custom properties with default values - use {required: true} if you don't want to set a default value
   options: {
     pinchThreshold: .2,
     preventDefault: true
@@ -25,7 +26,7 @@ export default {
 
   // custom methods
   startHandler (event) {
-    console.log('Pinch::startHandler')
+    // console.log('Pinch::startHandler')
     // KLUDGE: in Chrome we have to preventDefault already in touchStart since touchMove can be too late if the Chrome also initiates scrolling
     if (this.options.preventDefault) event.preventDefault()
 
@@ -46,7 +47,7 @@ export default {
   },
 
   moveHandler (event) {
-    console.log('Pinch::moveHandler')
+    // console.log('Pinch::moveHandler')
     if (this.options.preventDefault) event.preventDefault()
     // TODO: take timestamp into consideration - call endHandler if enough time has passed
 
@@ -55,6 +56,7 @@ export default {
 
     // distance between two first fingers
     const distanceBetweenTwoFingers = event.touches[0].distance(lastTouches.touches[1])
+    // const distanceBetweenTwoFingers = event.touches[0].distance(event.touches[1])
 
     const pinchOutwards = lastDistance && distanceBetweenTwoFingers > lastDistance ? true : false
     // console.log(pinchOutwards ? 'zoom in' : 'zoom out')
@@ -76,17 +78,23 @@ export default {
         y: lastTouches.touches[0].y + 0.5 * (lastTouches.touches[1].y - lastTouches.touches[0].y)
       })
 
-      // console.log(scale)
+      console.log(scale)
       event.point = currentFocus
       event.scale = pinchOutwards ? scale : -scale,
       event.focusAfterScale = new Point({ x: -lastFocus.x, y: -lastFocus.y })
 
-      this.fire('pinch', event)
+      if (pinchStart) {
+        pinchStart = false
+        this.fire('pinchstart', event)
+      } else {
+        this.fire('pinch', event)
+      }
     }
   },
   endHandler () {
     this.off(this.options.preventDefault ? eventNames.move : eventNames.move + '.passive', this.moveHandler)
     this.off(eventNames.end, this.endHandler)
+    pinchStart = true
     this.listen()
   }
 
