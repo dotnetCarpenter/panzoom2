@@ -18,11 +18,12 @@
     }
 
     .scene {
-      width: 90vw;
-      height: calc(100vh - 5rem);
-      margin: 1px auto;
-
-      overflow-y: auto;
+      position: absolute;
+      top: 7rem;
+      left: 1rem;
+      width: calc(100vw - 4rem);
+      height: calc(100vh - 16rem);
+      margin: 1rem;
 
       border: 1px solid darkcyan;
     }
@@ -52,15 +53,17 @@
       cursor: pointer;
     }
 
-    .focusCircle {
+    .circle {
       position: absolute;
       width: 1.5rem;
       height: 1.5rem;
       top: -10rem; /* hide circle */
       left: -10rem;/* hide circle */
 
-      background: radial-gradient(circle at center, red 0, blue, green 100%);
+      background: radial-gradient(circle at center, red 0, blue 42%, green 78%);
       border-radius: 50%;
+
+      /* will-change: top, left; */
     }
   </style>
 </head>
@@ -72,10 +75,14 @@
     </ul>
     <ul>
       <li class="message"></li>
+      <li class="message"></li>
+      <li class="message"></li>
     </ul>
   </nav>
   <div class="scene"></div>
-  <div class="focusCircle"></div>
+  <div class="focusCircle circle"></div>
+  <div class="firstCircle circle"></div>
+  <div class="secondCircle circle"></div>
 
   <script src="https://cdn.polyfill.io/v2/polyfill.minify.js?features=Promise,Object.assign,CustomEvent,Map&amp;flags=gated&amp;rum=0"></script>
   <script src="/dist/panzoom.js"></script>

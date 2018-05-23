@@ -5,6 +5,7 @@ let lastTouches = null
 let lastDistance = null
 let eventNames = null
 let pinchStart = true
+let fpsLastTime = 0
 
 export default {
   // custom properties with default values - use {required: true} if you don't want to set a default value
@@ -47,15 +48,21 @@ export default {
   },
 
   moveHandler (event) {
+    // TODO: use this to fire pinchend event after fps ellapsed time from last touchmove event
+    // const now = Date.now()
+    // const fps = 1000 / (now - fpsLastTime)
+    // fpsLastTime = now
+    // console.log('fps', fps)
+
     // console.log('Pinch::moveHandler')
     if (this.options.preventDefault) event.preventDefault()
-    // TODO: take timestamp into consideration - call endHandler if enough time has passed
 
     // movement (translate)
     const distanceFromFirstTouch = event.touches[0].distance(lastTouches.touches[0])
 
     // distance between two first fingers
     const distanceBetweenTwoFingers = event.touches[0].distance(lastTouches.touches[1])
+    // const distanceBetweenTwoFingers = event.touches[1].distance(lastTouches.touches[1])
     // const distanceBetweenTwoFingers = event.touches[0].distance(event.touches[1])
 
     const pinchOutwards = lastDistance && distanceBetweenTwoFingers > lastDistance ? true : false
@@ -69,8 +76,8 @@ export default {
     if (scale > this.options.pinchThreshold) {
       // Focus formular ported from svg.panzoom.js - ask fuzzyma why it's like that - fuzzyma found the algorithm on SO
       const currentFocus = new Point({
-        x: event.touches[0].x + .5 * (event.touches[1].x - event.touches[0].x),
-        y: event.touches[0].y + .5 * (event.touches[1].y - event.touches[0].y)
+        x: event.touches[0].x + 0.5 * (event.touches[1].x - event.touches[0].x),
+        y: event.touches[0].y + 0.5 * (event.touches[1].y - event.touches[0].y)
       })
 
       const lastFocus = new Point({
@@ -78,10 +85,11 @@ export default {
         y: lastTouches.touches[0].y + 0.5 * (lastTouches.touches[1].y - lastTouches.touches[0].y)
       })
 
-      console.log(scale)
+      // console.log(scale)
       event.point = currentFocus
-      event.scale = pinchOutwards ? scale : -scale,
+      event.scale = scale //pinchOutwards ? scale : -scale,
       event.focusAfterScale = new Point({ x: -lastFocus.x, y: -lastFocus.y })
+      event.lastTouches = lastTouches
 
       if (pinchStart) {
         pinchStart = false
