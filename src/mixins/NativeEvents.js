@@ -7,8 +7,6 @@ import Point from '../models/Point'
 import GestureEvent from '../models/GestureEvent'
 
 import { map, each, compose } from '../utils'
-import { remToPixel } from './LengthUnits';
-
 
 /* detect passive option for event listeners */
 let supportsPassiveOption = false
