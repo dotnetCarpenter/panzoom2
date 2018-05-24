@@ -28,19 +28,17 @@ export default {
   // custom methods
   startHandler (event) {
     // console.log('Pinch::startHandler')
-    // KLUDGE: in Chrome we have to preventDefault already in touchStart since touchMove can be too late if the Chrome also initiates scrolling
+    if (event.touches.length < 2) {
+      console.log('aborting because only one finger is detected')
+      return
+    }
+
+    // KLUDGE: in Chrome we have to preventDefault already in touchStart since touchMove can be too late if Chrome also initiates scroll
     if (this.options.preventDefault) event.preventDefault()
 
     this.unlisten()
 
     eventNames = event.getEventTypeNames()
-
-    if (event.touches.length < 2) {
-      this.endHandler()
-      console.log('aborting because only one finger is detected')
-      return
-    }
-
     lastTouches = event
 
     this.on(this.options.preventDefault ? eventNames.move : eventNames.move + '.passive', this.moveHandler, { reject: errorHandler })
@@ -48,7 +46,6 @@ export default {
   },
 
   moveHandler (event) {
-    // TODO: use this to fire pinchend event after fps ellapsed time from last touchmove event
     // const now = Date.now()
     // const fps = 1000 / (now - fpsLastTime)
     // fpsLastTime = now
@@ -89,7 +86,7 @@ export default {
       event.point = currentFocus
       event.scale = pinchOutwards ? scale : -scale // scale
       event.focusAfterScale = new Point({ x: -lastFocus.x, y: -lastFocus.y })
-      event.lastTouches = lastTouches
+      // event.lastTouches = lastTouches
 
       if (pinchStart) {
         pinchStart = false
@@ -100,6 +97,7 @@ export default {
     }
   },
   endHandler () {
+    // TODO: fire pinchend
     this.off(this.options.preventDefault ? eventNames.move : eventNames.move + '.passive', this.moveHandler)
     this.off(eventNames.end, this.endHandler)
     pinchStart = true

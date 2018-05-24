@@ -7,10 +7,12 @@ const catchPinch = {
   // life-cycle method
   listen: function () {
     this.on('pinch', pinchHandler)
+    this.on('pinchstart', pinchStartHandler)
   },
 
   unlisten: function () {
     this.off('pinch')
+    this.off('pinchstart')
   }
 }
 
@@ -22,6 +24,7 @@ const focusCircle = document.querySelector('.focusCircle')
 const firstCircle = document.querySelector('.firstCircle')
 const secondCircle = document.querySelector('.secondCircle')
 let scene
+let lastTouches
 
 initializeButton.onclick = function () {
   if (scene) {
@@ -60,6 +63,11 @@ const d2 = 'distance between two fingers: '
 messages[0].textContent = title
 messages[1].textContent = d1
 messages[2].textContent = d2
+
+function pinchStartHandler (event) {
+  lastTouches = event
+}
+
 function pinchHandler (event) {
   // if (event.scale < 0) debugger
   setCircle(focusCircle, event.point)
@@ -67,9 +75,9 @@ function pinchHandler (event) {
   setCircle(secondCircle, event.touches[1])
 
   messages[0].textContent = title + ' (' + ++counter + '): ' + event.scale.toFixed(3)
-  messages[1].textContent = d1 + event.touches[0].distance(event.lastTouches.touches[0]).toFixed(3)
-  messages[2].textContent = d2 + event.touches[1].distance(event.lastTouches.touches[1]).toFixed(3)
-  // console.log(event)
+
+  messages[1].textContent = d1 + event.touches[0].distance(lastTouches.touches[0]).toFixed(3)
+  messages[2].textContent = d2 + event.touches[1].distance(lastTouches.touches[1]).toFixed(3)
 }
 
 function setCircle (circle, point) {
