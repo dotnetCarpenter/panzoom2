@@ -6,10 +6,7 @@ const catchPinch = {
 
   // life-cycle method
   listen: function () {
-    // use promise
-    this.on('pinch', pinchHandler, function (error) {
-      throw error
-    })
+    this.on('pinch', pinchHandler)
   },
 
   unlisten: function () {

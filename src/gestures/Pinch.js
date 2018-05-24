@@ -17,12 +17,12 @@ export default {
   // life cycle handlers
   listen () {
     this.on(this.options.preventDefault ? 'touchstart' : 'touchstart.passive', this.startHandler, { reject: errorHandler })
-
-    console.log('Pinch::listen')
+  //   console.log('Pinch::listen')
   },
+
   unlisten () {
     this.off(this.options.preventDefault ? 'touchstart' : 'touchstart.passive', this.startHandler, { reject: errorHandler })
-    console.log('Pinch::unlisten')
+    // console.log('Pinch::unlisten')
   },
 
   // custom methods
@@ -66,7 +66,7 @@ export default {
     // const distanceBetweenTwoFingers = event.touches[0].distance(event.touches[1])
 
     const pinchOutwards = lastDistance && distanceBetweenTwoFingers > lastDistance ? true : false
-    // console.log(pinchOutwards ? 'zoom in' : 'zoom out')
+    console.log(pinchOutwards ? 'zoom in' : 'zoom out')
 
     lastDistance = distanceBetweenTwoFingers
 
@@ -87,7 +87,7 @@ export default {
 
       // console.log(scale)
       event.point = currentFocus
-      event.scale = scale //pinchOutwards ? scale : -scale,
+      event.scale = pinchOutwards ? scale : -scale // scale
       event.focusAfterScale = new Point({ x: -lastFocus.x, y: -lastFocus.y })
       event.lastTouches = lastTouches
 

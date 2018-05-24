@@ -11,7 +11,7 @@ export default function Observer () {
   return {
     on (eventName, f, reject) {
       if (!(f instanceof Function)) throw new TypeError('event handler is not a function')
-      if (!(reject instanceof Function)) reject = f
+      // if (!(reject instanceof Function)) reject = f
       listeners.push([eventName, f, reject])
     },
 
@@ -22,7 +22,8 @@ export default function Observer () {
             listener[1].apply(this, args)
             // listener[1](...args)
           } catch (error) {
-            listener[2](error)
+            if (listener[2]) listener[2](error)
+            else console.error ? console.error(error) : console.log(error)
           }
         }
       }, listeners)
