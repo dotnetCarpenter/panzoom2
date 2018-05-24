@@ -8,18 +8,23 @@ const catchPinch = {
   listen: function () {
     this.on('pinch', pinchHandler)
     this.on('pinchstart', pinchStartHandler)
+    this.on('pinchend', pinchEndHandler)
   },
 
   unlisten: function () {
     this.off('pinch')
     this.off('pinchstart')
+    this.off('pinchend')
   }
 }
 
 const initializeButton = document.getElementById('initializeButton')
 const listenButton = document.getElementById('listenButton')
 const messages = document.querySelectorAll('.message')
+
 const domScene = document.querySelector('div.scene')
+const svgOverlay = document.querySelector('svg.scene')
+
 const focusCircle = document.querySelector('.focusCircle')
 const firstCircle = document.querySelector('.firstCircle')
 const secondCircle = document.querySelector('.secondCircle')
@@ -36,7 +41,7 @@ initializeButton.onclick = function () {
     listenButton.style.display = 'none'
     counter = 0
   } else {
-    scene  = panzoom(domScene, catchPinch, {pinchThreshold: 0.01})
+    scene  = panzoom(domScene, catchPinch, {pinchThreshold: .08})
     // scene.listen() is called automatically
     initializeButton.textContent = 'Destroy'
     listenButton.style.display = 'inline-block'
@@ -64,10 +69,6 @@ messages[0].textContent = title
 messages[1].textContent = d1
 messages[2].textContent = d2
 
-function pinchStartHandler (event) {
-  lastTouches = event
-}
-
 function pinchHandler (event) {
   // if (event.scale < 0) debugger
   setCircle(focusCircle, event.point)
@@ -78,7 +79,42 @@ function pinchHandler (event) {
 
   messages[1].textContent = d1 + event.touches[0].distance(lastTouches.touches[0]).toFixed(3)
   messages[2].textContent = d2 + event.touches[1].distance(lastTouches.touches[1]).toFixed(3)
+
+  if (lastTouches) {
+    const line = createSvgElement('line')
+    setSvgAttribute(line, 'x1', lastTouches.touches[0].x)
+    setSvgAttribute(line, 'x2', lastTouches.touches[1].x)
+    setSvgAttribute(line, 'y1', lastTouches.touches[0].y)
+    setSvgAttribute(line, 'y2', lastTouches.touches[1].y)
+    svgOverlay.appendChild(line)
+  }
 }
+
+function pinchStartHandler (event) {
+  lastTouches = event
+
+  event.touches
+    .forEach(function (point) {
+      svgOverlay.appendChild(createSvgCircle(point))
+    })
+}
+
+function createSvgCircle (point) {
+  const circle = createSvgElement('circle')
+  setSvgAttribute(circle, 'r', 5)
+  setSvgAttribute(circle, 'cx', point.x)
+  setSvgAttribute(circle, 'cy', point.y)
+  return circle
+}
+
+function createSvgElement (name) {
+  return document.createElementNS('http://www.w3.org/2000/svg', name)
+}
+function setSvgAttribute (el, name, value) {
+  el.setAttribute(name, value)
+}
+
+function pinchEndHandler (event) {}
 
 function setCircle (circle, point) {
   circle.style.top = point.y + 'px'

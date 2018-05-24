@@ -40,3 +40,4 @@ You can use the polyfill service from [Financial Times](https://polyfill.io/v2/d
 - Ulrich-Matthias Schäfer's [svg.panzoom.js](https://github.com/svgdotjs/svg.panzoom.js/)
 - Eight Media's [HAMMER.JS](http://hammerjs.github.io/)
 - [User-defined gestures for surface computing](https://faculty.washington.edu/wobbrock/pubs/chi-09.02.pdf)
+- [Algorithms for 2D Multi-Touch Rotate, Scale & Translate (RST) Gestures](http://www.erikpaluka.com/blog/rst/)

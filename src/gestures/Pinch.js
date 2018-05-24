@@ -1,11 +1,11 @@
 import Point from '../models/Point'
 
 let minDistance = ''
-let lastTouches = null
-let lastDistance = null
-let eventNames = null
+let lastTouches
+let lastDistance = 0
+let eventNames = { move: null, end: null }
 let pinchStart = true
-let fpsLastTime = 0
+// let fpsLastTime = 0
 
 export default {
   // custom properties with default values - use {required: true} if you don't want to set a default value
@@ -68,10 +68,10 @@ export default {
     lastDistance = distanceBetweenTwoFingers
 
     const scale = distanceFromFirstTouch / distanceBetweenTwoFingers
-        // console.log('scale', scale)
+    // console.log('scale', scale)
 
     if (scale > this.options.pinchThreshold) {
-      // Focus formular ported from svg.panzoom.js - ask fuzzyma why it's like that - fuzzyma found the algorithm on SO
+      // The 2 focus formulars ported from svg.panzoom.js - ask fuzzyma why it's like that - fuzzyma found the algorithm on SO
       const currentFocus = new Point({
         x: event.touches[0].x + 0.5 * (event.touches[1].x - event.touches[0].x),
         y: event.touches[0].y + 0.5 * (event.touches[1].y - event.touches[0].y)
@@ -97,10 +97,10 @@ export default {
     }
   },
   endHandler () {
-    // TODO: fire pinchend
     this.off(this.options.preventDefault ? eventNames.move : eventNames.move + '.passive', this.moveHandler)
     this.off(eventNames.end, this.endHandler)
     pinchStart = true
+    this.fire('pinchend')
     this.listen()
   }
 
@@ -108,4 +108,8 @@ export default {
 
 function errorHandler (error) {
   console.error(error, 'error happen in listener')
+}
+
+function addScale (gestureEvent) {
+
 }
