@@ -84,14 +84,17 @@ function pinchHandler (event) {
   messages[1].textContent = d1 + event.touches[0].distance(lastTouches.touches[0]).toFixed(3)
   messages[2].textContent = d2 + event.touches[1].distance(lastTouches.touches[1]).toFixed(3)
 
-  appendToSvg(createLine(translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[0])))
-  appendToSvg(createLine(translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[1])))
+  appendToSvg(createLine('d1', translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[0])))
+  appendToSvg(createLine('d2', translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[1])))
 }
 
 function pinchStartHandler (event) {
   lastTouches = event
 
   firstTouchesCircles = event.viewport.map(translatePointToSvgPoint).map(createSvgCircle).map(appendToSvg)
+  firstTouchesCircles.forEach(function (circle, n) {
+    setAttribute(circle, 'class', n % 2 ? 'd2' : 'd1')
+  })
 }
 
 function pinchEndHandler (event) {}
@@ -101,12 +104,13 @@ function setCircle (circle, point) {
   circle.style.left = point.x + 'px'
 }
 
-function createLine(p1, p2) {
+function createLine(cssClass, p1, p2) {
   const line = createSvgElement('line')
-  setSvgAttribute(line, 'x1', p1.x)
-  setSvgAttribute(line, 'y1', p1.y)
-  setSvgAttribute(line, 'x2', p2.x)
-  setSvgAttribute(line, 'y2', p2.y)
+  setAttribute(line, 'x1', p1.x)
+  setAttribute(line, 'y1', p1.y)
+  setAttribute(line, 'x2', p2.x)
+  setAttribute(line, 'y2', p2.y)
+  setAttribute(line, 'class', cssClass)
   return line
 }
 
@@ -114,15 +118,15 @@ function createSvgElement (name) {
   return document.createElementNS('http://www.w3.org/2000/svg', name)
 }
 
-function setSvgAttribute (el, name, value) {
+function setAttribute (el, name, value) {
   el.setAttribute(name, value)
 }
 
 function createSvgCircle (point) {
   const circle = createSvgElement('circle')
-  setSvgAttribute(circle, 'r', '5px')
-  setSvgAttribute(circle, 'cx', point.x + 'px')
-  setSvgAttribute(circle, 'cy', point.y + 'px')
+  setAttribute(circle, 'r', '5px')
+  setAttribute(circle, 'cx', point.x + 'px')
+  setAttribute(circle, 'cy', point.y + 'px')
   return circle
 }
 

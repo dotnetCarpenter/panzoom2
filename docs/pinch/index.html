@@ -30,8 +30,7 @@
     svg.scene {
       pointer-events: none;
     }
-    svg.scene line {
-      stroke: gainsboro;
+    .scene line {
       opacity: .5;
     }
 
@@ -62,8 +61,8 @@
 
     .circle {
       position: absolute;
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1rem;
+      height: 1rem;
       top: -10rem; /* hide circle */
       left: -10rem;/* hide circle */
 
@@ -71,6 +70,17 @@
       border-radius: 50%;
 
       /* will-change: top, left; */
+    }
+
+    .d1 {
+      color: yellow;
+      stroke: yellow;
+      fill: yellow;
+    }
+    .d2 {
+      color: greenyellow;
+      stroke: greenyellow;
+      fill: greenyellow;
     }
   </style>
 </head>
@@ -82,8 +92,8 @@
     </ul>
     <ul>
       <li class="message"></li>
-      <li class="message"></li>
-      <li class="message"></li>
+      <li class="message d1"></li>
+      <li class="message d2"></li>
     </ul>
   </nav>
 
