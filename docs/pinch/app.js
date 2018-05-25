@@ -24,6 +24,7 @@ const messages = document.querySelectorAll('.message')
 
 const domScene = document.querySelector('div.scene')
 const svgOverlay = document.querySelector('svg.scene')
+const pointTranslator = translatePointToSvgPoint()
 
 const focusCircle = document.querySelector('.focusCircle')
 const firstCircle = document.querySelector('.firstCircle')
@@ -62,10 +63,6 @@ listenButton.onclick = function () {
   listenButton.textContent = getButtonText(scene)
 }
 
-function getButtonText (scene) {
-  return scene.isListening ? 'Unlisten' : 'Listen'
-}
-
 let counter = 0
 const title = 'pinch.scale'
 const d1 = 'distance from first touch: '
@@ -84,7 +81,6 @@ function pinchHandler (event) {
   messages[1].textContent = d1 + event.touches[0].distance(lastTouches.touches[0]).toFixed(3)
   messages[2].textContent = d2 + event.touches[1].distance(lastTouches.touches[1]).toFixed(3)
 
-  const pointTranslator = translatePointToSvgPoint()
   appendToSvg(createLine('d1', pointTranslator(lastTouches.viewport[0]), pointTranslator(event.viewport[0])))
   appendToSvg(createLine('d2', pointTranslator(lastTouches.viewport[0]), pointTranslator(event.viewport[1])))
 }
@@ -92,13 +88,27 @@ function pinchHandler (event) {
 function pinchStartHandler (event) {
   lastTouches = event
 
-  firstTouchesCircles = event.viewport.map(translatePointToSvgPoint()).map(createSvgCircle).map(appendToSvg)
+  firstTouchesCircles = event.viewport.map(pointTranslator).map(createSvgCircle).map(appendToSvg)
   firstTouchesCircles.forEach(function (circle, n) {
     setAttribute(circle, 'class', n % 2 ? 'd2' : 'd1')
   })
 }
 
 function pinchEndHandler (event) {}
+
+function translatePointToSvgPoint () {
+  const svgPoint = svgOverlay.createSVGPoint()
+  const sctmInverse = svgOverlay.getScreenCTM().inverse()
+  return function (point) {
+    svgPoint.x = point.x
+    svgPoint.y = point.y
+    return svgPoint.matrixTransform(sctmInverse)
+  }
+}
+
+function getButtonText (scene) {
+  return scene.isListening ? 'Unlisten' : 'Listen'
+}
 
 function setCircle (circle, point) {
   circle.style.top = point.y + 'px'
@@ -133,14 +143,4 @@ function createSvgCircle (point) {
 
 function appendToSvg (element) {
   return svgOverlay.appendChild(element)
-}
-
-function translatePointToSvgPoint () {
-  const svgPoint = svgOverlay.createSVGPoint()
-  const sctmInverse = svgOverlay.getScreenCTM().inverse()
-  return function (point) {
-    svgPoint.x = point.x
-    svgPoint.y = point.y
-    return svgPoint.matrixTransform(sctmInverse)
-  }
 }
