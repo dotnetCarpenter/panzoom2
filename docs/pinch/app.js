@@ -28,14 +28,16 @@ const svgOverlay = document.querySelector('svg.scene')
 const focusCircle = document.querySelector('.focusCircle')
 const firstCircle = document.querySelector('.firstCircle')
 const secondCircle = document.querySelector('.secondCircle')
-let scene
-let lastTouches
+let scene // panzoom object
+let lastTouches // start event
+let firstTouchesCircles = []
 
 initializeButton.onclick = function () {
   if (scene) {
     scene.destroy()
     console.log(scene)
     scene = null
+    svgOverlay.innerHTML = ''
 
     initializeButton.textContent = 'Initialize'
     listenButton.style.display = 'none'
@@ -50,8 +52,12 @@ initializeButton.onclick = function () {
 
 listenButton.onclick = function () {
   // unlisten will remove all event listeners
-  if (scene.isListening) scene.unlisten()
-  else scene.listen()
+  if (scene.isListening) {
+    scene.unlisten()
+    svgOverlay.innerHTML = ''
+  } else {
+    scene.listen()
+  }
 
   listenButton.textContent = getButtonText(scene)
 }
@@ -59,7 +65,6 @@ listenButton.onclick = function () {
 function getButtonText (scene) {
   return scene.isListening ? 'Unlisten' : 'Listen'
 }
-
 
 let counter = 0
 const title = 'pinch.scale'
@@ -76,42 +81,17 @@ function pinchHandler (event) {
   setCircle(secondCircle, event.touches[1])
 
   messages[0].textContent = title + ' (' + ++counter + '): ' + event.scale.toFixed(3)
-
   messages[1].textContent = d1 + event.touches[0].distance(lastTouches.touches[0]).toFixed(3)
   messages[2].textContent = d2 + event.touches[1].distance(lastTouches.touches[1]).toFixed(3)
 
-  if (lastTouches) {
-    const line = createSvgElement('line')
-    setSvgAttribute(line, 'x1', lastTouches.touches[0].x)
-    setSvgAttribute(line, 'x2', lastTouches.touches[1].x)
-    setSvgAttribute(line, 'y1', lastTouches.touches[0].y)
-    setSvgAttribute(line, 'y2', lastTouches.touches[1].y)
-    svgOverlay.appendChild(line)
-  }
+  appendToSvg(createLine(translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[0])))
+  appendToSvg(createLine(translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[1])))
 }
 
 function pinchStartHandler (event) {
   lastTouches = event
 
-  event.touches
-    .forEach(function (point) {
-      svgOverlay.appendChild(createSvgCircle(point))
-    })
-}
-
-function createSvgCircle (point) {
-  const circle = createSvgElement('circle')
-  setSvgAttribute(circle, 'r', 5)
-  setSvgAttribute(circle, 'cx', point.x)
-  setSvgAttribute(circle, 'cy', point.y)
-  return circle
-}
-
-function createSvgElement (name) {
-  return document.createElementNS('http://www.w3.org/2000/svg', name)
-}
-function setSvgAttribute (el, name, value) {
-  el.setAttribute(name, value)
+  firstTouchesCircles = event.viewport.map(translatePointToSvgPoint).map(createSvgCircle).map(appendToSvg)
 }
 
 function pinchEndHandler (event) {}
@@ -119,4 +99,40 @@ function pinchEndHandler (event) {}
 function setCircle (circle, point) {
   circle.style.top = point.y + 'px'
   circle.style.left = point.x + 'px'
+}
+
+function createLine(p1, p2) {
+  const line = createSvgElement('line')
+  setSvgAttribute(line, 'x1', p1.x)
+  setSvgAttribute(line, 'y1', p1.y)
+  setSvgAttribute(line, 'x2', p2.x)
+  setSvgAttribute(line, 'y2', p2.y)
+  return line
+}
+
+function createSvgElement (name) {
+  return document.createElementNS('http://www.w3.org/2000/svg', name)
+}
+
+function setSvgAttribute (el, name, value) {
+  el.setAttribute(name, value)
+}
+
+function createSvgCircle (point) {
+  const circle = createSvgElement('circle')
+  setSvgAttribute(circle, 'r', '5px')
+  setSvgAttribute(circle, 'cx', point.x + 'px')
+  setSvgAttribute(circle, 'cy', point.y + 'px')
+  return circle
+}
+
+function appendToSvg (element) {
+  return svgOverlay.appendChild(element)
+}
+
+function translatePointToSvgPoint (point) {
+  const svgPoint = svgOverlay.createSVGPoint()
+  svgPoint.x = point.x
+  svgPoint.y = point.y
+  return svgPoint.matrixTransform(svgOverlay.getScreenCTM().inverse())
 }

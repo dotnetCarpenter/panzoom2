@@ -5,6 +5,7 @@ class GestureEvent {
   constructor (nativeEvent) {
     const event = GestureEvent.normalizeEvent(nativeEvent)
     this.touches = event.touches
+    this.viewport = event.viewport
     this.page = event.page
     this.type = event.type
     this.deltaY = event.deltaY
@@ -43,10 +44,10 @@ class GestureEvent {
 
   static normalizeEvent (nativeEvent) {
     const event = {
-      // screen: nativeEvent.touches
-      //   ? map(t => new Point({ x: t.clientX, y: t.clientY }), nativeEvent.touches)
-      //   : [new Point({ x: nativeEvent.clientX, y: nativeEvent.clientY })]
-      // ,
+      viewport: nativeEvent.touches
+        ? map(t => new Point({ x: t.clientX, y: t.clientY }), nativeEvent.touches)
+        : [new Point({ x: nativeEvent.clientX, y: nativeEvent.clientY })]
+      ,
       touches: nativeEvent.touches
         ? map(t => new Point({ x: t.pageX, y: t.pageY }), nativeEvent.touches)
         : [new Point({ x: nativeEvent.pageX, y: nativeEvent.pageY })],
