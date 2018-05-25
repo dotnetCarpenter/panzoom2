@@ -84,14 +84,15 @@ function pinchHandler (event) {
   messages[1].textContent = d1 + event.touches[0].distance(lastTouches.touches[0]).toFixed(3)
   messages[2].textContent = d2 + event.touches[1].distance(lastTouches.touches[1]).toFixed(3)
 
-  appendToSvg(createLine('d1', translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[0])))
-  appendToSvg(createLine('d2', translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[1])))
+  const pointTranslator = translatePointToSvgPoint()
+  appendToSvg(createLine('d1', pointTranslator(lastTouches.viewport[0]), pointTranslator(event.viewport[0])))
+  appendToSvg(createLine('d2', pointTranslator(lastTouches.viewport[0]), pointTranslator(event.viewport[1])))
 }
 
 function pinchStartHandler (event) {
   lastTouches = event
 
-  firstTouchesCircles = event.viewport.map(translatePointToSvgPoint).map(createSvgCircle).map(appendToSvg)
+  firstTouchesCircles = event.viewport.map(translatePointToSvgPoint()).map(createSvgCircle).map(appendToSvg)
   firstTouchesCircles.forEach(function (circle, n) {
     setAttribute(circle, 'class', n % 2 ? 'd2' : 'd1')
   })
@@ -134,9 +135,12 @@ function appendToSvg (element) {
   return svgOverlay.appendChild(element)
 }
 
-function translatePointToSvgPoint (point) {
+function translatePointToSvgPoint () {
   const svgPoint = svgOverlay.createSVGPoint()
-  svgPoint.x = point.x
-  svgPoint.y = point.y
-  return svgPoint.matrixTransform(svgOverlay.getScreenCTM().inverse())
+  const sctmInverse = svgOverlay.getScreenCTM().inverse()
+  return function (point) {
+    svgPoint.x = point.x
+    svgPoint.y = point.y
+    return svgPoint.matrixTransform(sctmInverse)
+  }
 }
