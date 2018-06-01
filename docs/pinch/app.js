@@ -24,7 +24,6 @@ const messages = document.querySelectorAll('.message')
 
 const domScene = document.querySelector('div.scene')
 const svgOverlay = document.querySelector('svg.scene')
-const pointTranslator = translatePointToSvgPoint()
 
 const focusCircle = document.querySelector('.focusCircle')
 const firstCircle = document.querySelector('.firstCircle')
@@ -81,14 +80,14 @@ function pinchHandler (event) {
   messages[1].textContent = d1 + event.touches[0].distance(lastTouches.touches[0]).toFixed(3)
   messages[2].textContent = d2 + event.touches[1].distance(lastTouches.touches[1]).toFixed(3)
 
-  appendToSvg(createLine('d1', pointTranslator(lastTouches.viewport[0]), pointTranslator(event.viewport[0])))
-  appendToSvg(createLine('d2', pointTranslator(lastTouches.viewport[0]), pointTranslator(event.viewport[1])))
+  appendToSvg(createLine('d1', translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[0])))
+  appendToSvg(createLine('d2', translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[1])))
 }
 
 function pinchStartHandler (event) {
   lastTouches = event
 
-  firstTouchesCircles = event.viewport.map(pointTranslator).map(createSvgCircle).map(appendToSvg)
+  firstTouchesCircles = event.viewport.map(translatePointToSvgPoint).map(createSvgCircle).map(appendToSvg)
   firstTouchesCircles.forEach(function (circle, n) {
     setAttribute(circle, 'class', n % 2 ? 'd2' : 'd1')
   })
@@ -96,14 +95,17 @@ function pinchStartHandler (event) {
 
 function pinchEndHandler (event) {}
 
-function translatePointToSvgPoint () {
+function translatePointToSvgPoint (point) {
   const svgPoint = svgOverlay.createSVGPoint()
-  const sctmInverse = svgOverlay.getScreenCTM().inverse()
-  return function (point) {
-    svgPoint.x = point.x
-    svgPoint.y = point.y
-    return svgPoint.matrixTransform(sctmInverse)
-  }
+  // Calls to getScreenCTM() are slow but we need to call this method everytime
+  // the document is either scrolled or zoomed in/out (perhaps for more reasons),
+  // so we call it for every point transformation, since it's too easy to
+  // introduce a buggy getScreenCTM() object caching if some underlaying
+  // condition doesn't invalidate the cache.
+  const reverseScreenPoint = svgOverlay.getScreenCTM().inverse()
+  svgPoint.x = point.x
+  svgPoint.y = point.y
+  return svgPoint.matrixTransform(reverseScreenPoint)
 }
 
 function getButtonText (scene) {

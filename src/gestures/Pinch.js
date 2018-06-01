@@ -62,8 +62,8 @@ export default {
     // const distanceBetweenTwoFingers = event.touches[1].distance(lastTouches.touches[1])
     // const distanceBetweenTwoFingers = event.touches[0].distance(event.touches[1])
 
-    const pinchOutwards = lastDistance && distanceBetweenTwoFingers > lastDistance ? true : false
-    console.log(pinchOutwards ? 'zoom in' : 'zoom out')
+    // const pinchOutwards = lastDistance && distanceBetweenTwoFingers > lastDistance ? true : false
+    // console.log(pinchOutwards ? 'zoom in' : 'zoom out')
 
     lastDistance = distanceBetweenTwoFingers
 
@@ -84,7 +84,7 @@ export default {
 
       // console.log(scale)
       event.point = currentFocus
-      event.scale = pinchOutwards ? scale : -scale // scale
+      event.scale = scale // pinchOutwards ? scale : -scale
       event.focusAfterScale = new Point({ x: -lastFocus.x, y: -lastFocus.y })
       // event.lastTouches = lastTouches
 
@@ -107,7 +107,7 @@ export default {
 }
 
 function errorHandler (error) {
-  console.error(error, 'error happen in listener')
+  console.error('Error happen in a Pinch gesture listener ::', error)
 }
 
 function addScale (gestureEvent) {
