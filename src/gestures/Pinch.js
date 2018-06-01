@@ -6,7 +6,6 @@ let lastDistance = 0
 let eventNames = { move: null, end: null }
 let pinchStart = true
 // let fpsLastTime = 0
-// let rafTimer = 0
 
 export default {
   // custom properties with default values - use {required: true} if you don't want to set a default value
@@ -89,15 +88,12 @@ export default {
       event.focusAfterScale = new Point({ x: -lastFocus.x, y: -lastFocus.y })
       // event.lastTouches = lastTouches
 
-      // if (rafTimer) cancelAnimationFrame(rafTimer)
-      // rafTimer = requestAnimationFrame(function () {
-        if (pinchStart) {
-          pinchStart = false
-          this.fire('pinchstart', event)
-        } else {
-          this.fire('pinch', event)
-        }
-      // })
+      if (pinchStart) {
+        pinchStart = false
+        this.fire('pinchstart', event)
+      } else {
+        this.fire('pinch', event)
+      }
 
       // FIXME: scale should be calculated from distance from each finger continuesly instead of first touch
       // lastTouches = event
