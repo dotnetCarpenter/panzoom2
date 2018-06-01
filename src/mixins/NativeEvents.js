@@ -50,6 +50,10 @@ function normalisePassive (eventName) {
 
 export default function NativeEvents () {
   let nativeListeners = new Map()
+  // Note to future self: never implement requestAnimationFrame here since all
+  // different event types should fire almost simultaneously and cancelAnimationFrame()
+  // will just create a skewed distribution of events over time and do nothing for performance.
+  let rafTimer = 0
 
   return Trait.compose(
     Trait.resolve({
@@ -68,10 +72,18 @@ export default function NativeEvents () {
 
       eventNotifier (event) {
         this.fire(event.type, new GestureEvent(event))
+        // if (rafTimer) cancelAnimationFrame(rafTimer)
+        // rafTimer = requestAnimationFrame(() => {
+        //   this.fire(event.type, new GestureEvent(event))
+        // })
       },
 
       eventNotifierPassive (event) {
         this.fire(event.type + '.passive', new GestureEvent(event))
+        // if (rafTimer) cancelAnimationFrame(rafTimer)
+        // rafTimer = requestAnimationFrame(() => {
+        //   this.fire(event.type + '.passive', new GestureEvent(event))
+        // })
       },
 
       on (eventName, f, options = {}) {
