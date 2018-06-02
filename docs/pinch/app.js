@@ -8,7 +8,7 @@ const catchPinch = {
   listen: function () {
     this.on('pinch', pinchHandler)
     this.on('pinchstart', pinchStartHandler)
-    this.on('pinchend', pinchEndHandler)
+    // this.on('pinchend', pinchEndHandler)
   },
 
   unlisten: function () {
@@ -67,8 +67,8 @@ const title = 'pinch.scale'
 const d1 = 'distance from first touch: '
 const d2 = 'distance between two fingers: '
 messages[0].textContent = title
-messages[1].textContent = d1
-messages[2].textContent = d2
+// messages[1].textContent = d1
+// messages[2].textContent = d2
 
 function pinchHandler (event) {
   // if (event.scale < 0) debugger
@@ -77,11 +77,11 @@ function pinchHandler (event) {
   setCircle(secondCircle, event.touches[1])
 
   messages[0].textContent = title + ' (' + ++counter + '): ' + event.scale.toFixed(3)
-  messages[1].textContent = d1 + event.touches[0].distance(lastTouches.touches[0]).toFixed(3)
-  messages[2].textContent = d2 + event.touches[1].distance(lastTouches.touches[1]).toFixed(3)
+  // messages[1].textContent = d1 + event.touches[0].distance(lastTouches.touches[0]).toFixed(3)
+  // messages[2].textContent = d2 + event.touches[1].distance(lastTouches.touches[1]).toFixed(3)
 
   appendToSvg(createLine('d1', translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[0])))
-  appendToSvg(createLine('d2', translatePointToSvgPoint(lastTouches.viewport[0]), translatePointToSvgPoint(event.viewport[1])))
+  appendToSvg(createLine('d2', translatePointToSvgPoint(lastTouches.viewport[1]), translatePointToSvgPoint(event.viewport[1])))
 }
 
 function pinchStartHandler (event) {
@@ -93,7 +93,7 @@ function pinchStartHandler (event) {
   })
 }
 
-function pinchEndHandler (event) {}
+// function pinchEndHandler (event) {}
 
 function translatePointToSvgPoint (point) {
   const svgPoint = svgOverlay.createSVGPoint()

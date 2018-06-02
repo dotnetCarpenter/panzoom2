@@ -1,8 +1,8 @@
 import Point from '../models/Point'
 
 let minDistance = ''
-let lastTouches
-let lastDistance = 0
+let firstTouch
+// let lastDistance = 0
 let eventNames = { move: null, end: null }
 let pinchStart = true
 // let fpsLastTime = 0
@@ -39,7 +39,7 @@ export default {
     this.unlisten()
 
     eventNames = event.getEventTypeNames()
-    lastTouches = event
+    firstTouch = event
 
     this.on(this.options.preventDefault ? eventNames.move : eventNames.move + '.passive', this.moveHandler, { reject: errorHandler })
     this.on(eventNames.end, this.endHandler)
@@ -55,19 +55,20 @@ export default {
     if (this.options.preventDefault) event.preventDefault()
 
     // movement (translate)
-    const distanceFromFirstTouch = event.touches[0].distance(lastTouches.touches[0])
+    const distanceFromFirstTouch = event.touches[0].distance(firstTouch.touches[0])
 
     // distance between two first fingers
-    const distanceBetweenTwoFingers = event.touches[0].distance(lastTouches.touches[1])
+    const distanceBetweenTwoFingers = event.touches[0].distance(firstTouch.touches[1])
     // const distanceBetweenTwoFingers = event.touches[1].distance(lastTouches.touches[1])
     // const distanceBetweenTwoFingers = event.touches[0].distance(event.touches[1])
 
     // const pinchOutwards = lastDistance && distanceBetweenTwoFingers > lastDistance ? true : false
     // console.log(pinchOutwards ? 'zoom in' : 'zoom out')
 
-    lastDistance = distanceBetweenTwoFingers
+    // lastDistance = distanceBetweenTwoFingers
 
-    const scale = distanceFromFirstTouch / distanceBetweenTwoFingers
+    // const scale = distanceFromFirstTouch / distanceBetweenTwoFingers
+    const scale = event.touches[0].distance(event.touches[1]) - firstTouch.touches[0].distance(firstTouch.touches[1])
     // console.log('scale', scale)
 
     if (scale > this.options.pinchThreshold) {
@@ -77,15 +78,15 @@ export default {
         y: event.touches[0].y + 0.5 * (event.touches[1].y - event.touches[0].y)
       })
 
-      const lastFocus = new Point({
-        x: lastTouches.touches[0].x + 0.5 * (lastTouches.touches[1].x - lastTouches.touches[0].x),
-        y: lastTouches.touches[0].y + 0.5 * (lastTouches.touches[1].y - lastTouches.touches[0].y)
-      })
+      // const lastFocus = new Point({
+      //   x: lastTouches.touches[0].x + 0.5 * (lastTouches.touches[1].x - lastTouches.touches[0].x),
+      //   y: lastTouches.touches[0].y + 0.5 * (lastTouches.touches[1].y - lastTouches.touches[0].y)
+      // })
 
       // console.log(scale)
       event.point = currentFocus
       event.scale = scale // pinchOutwards ? scale : -scale
-      event.focusAfterScale = new Point({ x: -lastFocus.x, y: -lastFocus.y })
+      // event.focusAfterScale = new Point({ x: -lastFocus.x, y: -lastFocus.y })
       // event.lastTouches = lastTouches
 
       if (pinchStart) {
