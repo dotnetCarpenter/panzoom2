@@ -18,9 +18,10 @@ import Swipe from './gestures/Swipe'
 
 /**
  *
- * @param {HTMLElement} el
- * @param {object} referent
- * @param {object} options
+ * @param {HTMLElement} el The DOM element to use the referent on
+ * @param {object} referent The referent
+ * @param {object} options Options to be shared with all gestures and the referent
+ * @returns {object} referent
  */
 function panzoom (el, referent = Zoom, options) {
   if (!el) throw new TypeError('the first argument to panzoom must be an Element')

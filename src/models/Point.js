@@ -17,7 +17,7 @@ class Point {
   }
 
   /**
-   * Calculate the distance bewteen 2 points
+   * Calculate the distance between 2 points
    * @param {Point} point
    * @returns {number}
    */
