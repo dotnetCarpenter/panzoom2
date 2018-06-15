@@ -1,3 +1,4 @@
+import { mat2d } from 'gl-matrix'
 import Point from '../models/Point'
 
 let minDistance = ''
