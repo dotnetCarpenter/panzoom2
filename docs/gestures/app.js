@@ -117,7 +117,7 @@ function wheelEventUnpack (event) {
 }
 
 function wheelUnpack (wheelEvent) {
-  return 'deltaY: ' + wheelEvent.deltaY.toFixed(2) + ' (' + wheelEvent.point.x + ', ' + wheelEvent.point.y + ') in page (' + wheelEvent.page[0].x + ', ' + wheelEvent.page[0].y + ')'
+  return 'deltaY: ' + wheelEvent.deltaY.toFixed(2) + ' (' + wheelEvent.point.x + ', ' + wheelEvent.point.y + ') on screen (' + wheelEvent.viewport[0].x + ', ' + wheelEvent.viewport[0].y + ')'
 }
 
 function swipeEventUnpack (event) {
