@@ -141,7 +141,7 @@ module.exports = {
         "no-catch-shadow": "error",
         "no-confusing-arrow": "off",
         "no-continue": "off",
-        "no-console": "allow",
+        "no-console": "warn",
         "no-div-regex": "error",
         "no-duplicate-imports": "error",
         "no-else-return": "off",
