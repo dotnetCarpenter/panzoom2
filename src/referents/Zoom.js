@@ -64,7 +64,7 @@ export default {
     }
 
     if (this.options.preventDefault) event.preventDefault()
-    // TODO: add async zoom operation here?
+
     this.zoom(event.point, getScaleMultiplier(event.deltaY, this.options.zoomFactor))
   },
 
@@ -72,6 +72,7 @@ export default {
     translate3d.tx = point.x - multiplier * (point.x - translate3d.tx)
     translate3d.ty = point.y - multiplier * (point.y - translate3d.ty)
     translate3d.tz *= multiplier
+    // TODO: add async zoom operation here?
     this.el.style.transform = Translate3d.getMatrixString(translate3d)
   }
 }
